@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alexandr.ia Tourism Lab</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="call-mode">
+
+  <!-- Pantalla de Inicio para asegurar interacción del usuario (Autoplay & WebRTC) -->
+  <div id="startOverlay" class="start-overlay">
+    <img src="logo.png" alt="Anáhuac Logo" class="overlay-logo">
+    <h2 style="color: var(--primary-orange); font-family: var(--font-heading); margin-bottom: 0.5rem; font-size: 2rem;">Alexandr.ia Tourism Lab</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2rem; max-width: 400px; text-align: center;">Haz clic en el botón para conectar el avatar hiperrealista y activar tu micrófono. La conversación fluirá automáticamente.</p>
+    <button id="btnStartSimulation" onclick="startSimulation()" class="btn-start">Entrar a la Sala</button>
+  </div>
+
+  <div class="video-bg" id="videoBg"></div>
+  <div class="bg-blur-layer"></div>
+
+  <div class="room-container">
+    <!-- Top Header Navigation -->
+    <header class="call-header">
+      <div class="call-brand">
+        <div class="anahuac-logo">
+          <img src="logo.png" alt="Universidad Anáhuac" class="anahuac-img-logo">
+        </div>
+        <div class="live-dot"></div>
+        <span class="call-timer" id="callTimer">00:00</span>
+      </div>
+      
+      <div class="call-title-area">
+        <span class="scenario-pill" id="pillLabel">Conectando...</span>
+      </div>
+
+      <div class="call-actions">
+        <span class="quality-tag">HD Video • AI Engine</span>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="call-body">
+      
+      <!-- Left Sidebar (Chat & RAG) -->
+      <aside class="call-sidebar" id="callSidebar">
+        <div class="sidebar-header">
+          <h3>Asistente Alexandr.ia</h3>
+          <button class="close-sidebar-btn" onclick="toggleSidebar()">⛌</button>
+        </div>
+        
+        <div class="sidebar-tabs">
+          <button class="tab-btn active" id="tabTranscript" onclick="switchSidebarTab('transcript')">Chat y Notas</button>
+          <button class="tab-btn" id="tabRag" onclick="switchSidebarTab('rag')">Base de Datos</button>
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="sidebar-content active" id="viewTranscript">
+          <div class="transcript-timeline" id="transcriptTimeline">
+            <!-- Messages will be injected here -->
+          </div>
+          <form class="sidebar-input-form" onsubmit="handleUserSubmit(event)">
+            <input type="text" id="userInput" placeholder="Escribe un mensaje o habla..." autocomplete="off">
+            <button type="submit" class="send-icon-btn">➤</button>
+          </form>
+        </div>
+
+        <!-- RAG / Document Panel -->
+        <div class="sidebar-content" id="viewRag">
+          <div class="rag-panel">
+            <div class="upload-dropzone" onclick="triggerFileUpload()">
+              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📄</div>
+              <strong>Subir Proyecto (PDF/DOCX)</strong>
+              <p>Arrastra tu plan de negocios o presiona aquí para analizarlo.</p>
+              <input type="file" id="fileInput" style="display: none;" onchange="handleFileSelect(event)">
+            </div>
+            <div class="project-info-badge" id="projectInfo" style="display: none;">
+              <span id="projectName"></span>
+            </div>
+            <hr style="border: 1px solid var(--bg-border);">
+            <h4 style="font-size: 0.85rem; color: var(--primary-orange);">Leyes de Turismo (México)</h4>
+            <div class="rag-laws-list">
+              <button class="law-btn" onclick="askLaw('Ley General de Turismo')">Ley General de Turismo</button>
+              <button class="law-btn" onclick="askLaw('NOM-09-TUR-2002')">NOM-09-TUR (Guías)</button>
+              <button class="law-btn" onclick="askLaw('Ley de Inversión Extranjera')">Ley de Inversión Extranjera</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Central Video Stage -->
+      <main class="video-stage" id="videoStage">
+        <!-- Stream Badges Overlay -->
+        <div class="stream-badge top-left">
+          <div class="badge-dot"></div>
+          <span id="participantName">Conectando Avatar...</span>
+        </div>
+        <div class="stream-badge top-right">
+          <span id="roleLabel">Inicializando</span>
+        </div>
+
+        <!-- FULL SCREEN AVATAR COVER -> REPLACED WITH THINKING ORB -->
+        <div class="avatar-stream-container" id="avatarContainer" style="display: flex; justify-content: center; align-items: center;">
+          <div id="orb-mount"></div>
+        </div>
+
+        <script type="importmap">
+        {
+          "imports": {
+            "react": "https://esm.sh/react@18.2.0",
+            "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+            "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+            "thinking-orbs": "./orb-dist/index.es.js"
+          }
+        }
+        </script>
+
+        <script type="module">
+          import React from 'react';
+          import { createRoot } from 'react-dom/client';
+          import { ThinkingOrb } from 'thinking-orbs';
+          
+          let orbRoot = null;
+          
+          window.setOrbState = function(newState) {
+            const container = document.getElementById('orb-mount');
+            if (!container) return;
+            
+            if (!orbRoot) {
+              orbRoot = createRoot(container);
+            }
+            
+            orbRoot.render(React.createElement(ThinkingOrb, { 
+              state: newState, 
+              size: 512, 
+              theme: "dark" // Forzamos dark para que contraste bien con fondos oscuros
+            }));
+          }
+          
+          // Inicializar inmediatamente una vez que React cargue
+          window.setOrbState('breathing');
+          window.dispatchEvent(new Event('orbReady'));
+        </script>
+
+        <!-- Live Captions Box -->
+        <div class="live-captions-container">
+          <div class="caption-speaker" id="captionSpeaker">Sistema</div>
+          <div class="caption-text" id="captionText">"Haz clic en 'Entrar a la Sala' para comenzar..."</div>
+        </div>
+
+        <!-- Self-View PIP -->
+        <div class="self-pip">
+          <span class="pip-label">Tú (Estudiante)</span>
+          <div class="pip-avatar">👤</div>
+          <span class="pip-mic-status" id="pipMicStatus">🎙️ Esperando...</span>
+        </div>
+      </main>
+    </div>
+
+    <!-- Bottom Zoom/Meet Style Control Dock -->
+    <footer class="dock-footer">
+      <div class="dock-controls">
+        <!-- Mic Indicator Button (Now Auto-managed) -->
+        <button class="dock-btn mic-btn" id="btnMic" onclick="toggleMic()" title="El micrófono es automático, pero puedes forzarlo aquí">
+          <span class="dock-icon" id="micIcon">🎙️</span>
+          <span class="dock-label" id="micLabel">Micrófono</span>
+        </button>
+
+        <div class="dock-dropdown">
+          <button class="dock-btn" onclick="toggleScenarioDropdown()">
+            <span class="dock-icon">🎭</span>
+            <span class="dock-label">Cambiar Rol</span>
+          </button>
+          <div class="dropdown-menu" id="scenarioDropdown">
+            <button class="dropdown-item active" onclick="selectScenario('mentor')">🎓 Mentor Socrático</button>
+            <button class="dropdown-item" onclick="selectScenario('overbooking')">🏨 Crisis: Sobreventa</button>
+            <button class="dropdown-item" onclick="selectScenario('community')">🌿 Negociación: Comunidad</button>
+            <button class="dropdown-item" onclick="selectScenario('investor')">💼 Pitch Inversionistas</button>
+          </div>
+        </div>
+
+        <button class="dock-btn" onclick="toggleSidebar()">
+          <span class="dock-icon">💬</span>
+          <span class="dock-label">Chat/RAG</span>
+        </button>
+
+        <button class="dock-btn end-call-btn" onclick="resetCall()">
+          <span class="dock-icon">📞</span>
+          <span class="dock-label">Reiniciar</span>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

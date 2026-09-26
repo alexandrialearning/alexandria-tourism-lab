@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="orb" style="display:flex; justify-content:center; padding:100px; background:#000;"></div>
+  <script type="module">
+    import React from 'https://esm.sh/react@18';
+    import { createRoot } from 'https://esm.sh/react-dom@18/client';
+    import { ThinkingOrb } from 'https://esm.sh/thinking-orbs';
+    
+    const root = createRoot(document.getElementById('orb'));
+    root.render(React.createElement(ThinkingOrb, { state: 'listening', size: 64, theme: 'dark' }));
+  </script>
+</body>
+</html>

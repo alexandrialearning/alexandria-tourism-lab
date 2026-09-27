@@ -540,13 +540,35 @@ function askLaw(lawTitle) {
 }
 
 function resetCall() {
-  if (confirm('¿Deseas reiniciar la sesión de videollamada?')) {
+  if (confirm('¿Deseas reiniciar la sesión?')) {
+    // 1. Cortar el audio actual
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    
+    // 2. Reiniciar estados
     state.callDurationSeconds = 0;
+    state.currentScenario = 'none';
     elements.transcriptTimeline.innerHTML = '';
-    selectScenario('mentor');
-    const msg = "¡Hola! Bienvenido a tu sala de videollamada interactiva. Soy tu copiloto en Anáhuac Tourism Lab. ¿Qué proyecto o simulación quieres trabajar hoy?";
-    addTranscriptMsg('Copiloto Anáhuac', msg);
-    speakCaption('Copiloto Anáhuac', msg);
+    
+    // 3. Ocultar historial del caso y mostrar generador
+    const tabTranscriptBtn = document.getElementById('tabTranscript');
+    if (tabTranscriptBtn) {
+      tabTranscriptBtn.style.display = 'none';
+    }
+    switchSidebarTab('rag');
+    if (!state.sidebarOpen) toggleSidebar();
+    
+    // 4. Limpiar caja de contexto
+    const contextBox = document.getElementById('scenarioContextBox');
+    if (contextBox) {
+      contextBox.innerHTML = '';
+      contextBox.style.border = "none";
+    }
+
+    // 5. Reproducir mensaje de bienvenida nuevamente
+    const intro = `¡Hola ${state.userName}! Soy tu tutor de la Facultad de Turismo y Gastronomía de la Universidad Anáhuac. Por favor, selecciona un Generador de Casos en el panel lateral para iniciar tu evaluación.`;
+    speakCaption('Copiloto Anáhuac', intro);
   }
 }
 
@@ -688,4 +710,57 @@ async function triggerAgenticGenerator(usePdf = false) {
     elements.roleLabel.innerText = "Revisa la API Key o el PDF";
     updateOrb('breathing');
   }
+}
+
+async function openHistoryModal() {
+  document.getElementById('historyModal').style.display = 'flex';
+  const content = document.getElementById('historyModalContent');
+  content.innerHTML = 'Cargando historial...';
+  
+  if (!window.db) {
+    content.innerHTML = 'Error: Base de datos no conectada.';
+    return;
+  }
+  
+  try {
+    const snapshot = await db.collection("anonymous_sessions").orderBy('updatedAt', 'desc').limit(20).get();
+    if (snapshot.empty) {
+      content.innerHTML = 'No hay sesiones registradas.';
+      return;
+    }
+    
+    let html = '';
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const date = data.updatedAt ? data.updatedAt.toDate().toLocaleString('es-MX') : 'Fecha desconocida';
+      html += `<div style="background: rgba(255,255,255,0.05); margin-bottom: 1rem; padding: 1rem; border-radius: 8px;">`;
+      html += `<div style="color: var(--primary-orange); font-weight: bold; margin-bottom: 0.5rem;">${data.scenario}</div>`;
+      html += `<div style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 1rem;">ID: ${doc.id} | Última act: ${date}</div>`;
+      
+      const history = data.history || [];
+      if (history.length > 0) {
+        html += `<div style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px;">`;
+        history.forEach(msg => {
+          const isUser = msg.role === 'user';
+          const text = msg.parts[0].text;
+          const color = isUser ? '#60A5FA' : '#FFF';
+          const sender = isUser ? 'Estudiante' : 'Copiloto';
+          html += `<div style="margin-bottom: 0.5rem;"><strong style="color: ${color};">${sender}:</strong> ${text}</div>`;
+        });
+        html += `</div>`;
+      } else {
+        html += `<div style="color: #94A3B8; font-style: italic;">Sin mensajes en esta sesión.</div>`;
+      }
+      html += `</div>`;
+    });
+    
+    content.innerHTML = html;
+  } catch (err) {
+    console.error(err);
+    content.innerHTML = 'Error al cargar el historial.';
+  }
+}
+
+function closeHistoryModal() {
+  document.getElementById('historyModal').style.display = 'none';
 }

@@ -215,6 +215,11 @@
           <span class="dock-label">Chat/RAG</span>
         </button>
 
+        <button class="dock-btn" onclick="openHistoryModal()">
+          <span class="dock-icon">📂</span>
+          <span class="dock-label">Historial</span>
+        </button>
+
         <button class="dock-btn end-call-btn" onclick="resetCall()">
           <span class="dock-icon">📞</span>
           <span class="dock-label">Reiniciar</span>
@@ -224,6 +229,19 @@
         ⚡️ Powered by Alexandr.ia AI Learning Systems
       </div>
     </footer>
+  </div>
+
+  <!-- Modal de Historial de Casos -->
+  <div id="historyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1E293B; width: 90%; max-width: 800px; height: 80vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+      <div style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; background: #0F172A;">
+        <h3 style="color: #FFF; margin: 0; font-family: var(--font-heading);">📂 Historial de Sesiones Anónimas</h3>
+        <button onclick="closeHistoryModal()" style="background: transparent; border: none; color: #FFF; font-size: 1.5rem; cursor: pointer;">&times;</button>
+      </div>
+      <div id="historyModalContent" style="flex: 1; overflow-y: auto; padding: 1rem; color: #E2E8F0; font-size: 0.9rem;">
+        Cargando historial...
+      </div>
+    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>

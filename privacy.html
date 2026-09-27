@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviso de Privacidad - Anáhuac Tourism AI Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0B0E14;
+      color: #E2E8F0;
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1, h2, h3 {
+      font-family: 'Outfit', sans-serif;
+      color: #A78BFA;
+    }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.25rem; margin-top: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
+    p, li { font-size: 0.95rem; color: #94A3B8; margin-bottom: 1rem; }
+    ul { margin-bottom: 1.5rem; }
+    a { color: #E35205; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 2rem;
+      color: #FFF;
+      background: rgba(255,255,255,0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.2); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-btn">← Volver al Simulador</a>
+
+  <h1>Aviso de Privacidad (Anáhuac Tourism AI Lab)</h1>
+  <p>Cumplimiento consolidado bajo la LFPDPPP (México) y el GDPR (Unión Europea)</p>
+
+  <h2>1. Identidad y Domicilio del Responsable del Tratamiento</h2>
+  <p>Alexandr.ia AI Learning Systems (en adelante, el "Responsable"), es el creador, desarrollador tecnológico y responsable del tratamiento y protección de sus datos personales dentro de la plataforma Anáhuac Tourism AI Lab. Para efectos del presente aviso, el Responsable señala como su domicilio legal el ubicado en: Paseo de la luz 232, Paseos de Taxqueña, Coyoacán, C.P. 04250, Ciudad de México, CDMX, México. Correo electrónico de contacto oficial: info@alexandriads.com.</p>
+
+  <h2>2. Bases Jurídicas para el Tratamiento</h2>
+  <p>De conformidad con el Artículo 6 del GDPR y las disposiciones aplicables de la LFPDPPP, tratamos sus datos personales bajo los siguientes fundamentos legales:</p>
+  <ul>
+    <li><strong>Consentimiento:</strong> Para el registro inicial, la carga de documentos de estudio (PDF), el uso voluntario de herramientas de Inteligencia Artificial basadas en sus interacciones y el envío de actualizaciones de la plataforma (finalidades secundarias).</li>
+    <li><strong>Ejecución de un servicio / contrato:</strong> Para la provisión técnica, autenticación y correcto funcionamiento del entorno interactivo del Anáhuac Tourism AI Lab solicitado por el usuario.</li>
+    <li><strong>Interés legítimo:</strong> Para garantizar la seguridad informática de la infraestructura, prevención de fraudes y el proceso de disociación y anonimización de datos con fines analíticos y de mejora tecnológica.</li>
+  </ul>
+
+  <h2>3. Datos Personales Recabados y Obligaciones del Titular</h2>
+  <p>Para brindar acceso y operatividad a la plataforma Anáhuac Tourism AI Lab, el Responsable tratará los siguientes datos de usuarios mayores de edad:</p>
+  <ul>
+    <li><strong>3.1 Datos de Identidad y Autenticación (Firebase Authentication):</strong> Se guarda exclusivamente el acceso del usuario, gestionado por Google. Incluye Correo Electrónico / Matrícula (ej. alumno@anahuac.mx), Contraseña (encriptada irreversiblemente por Firebase, inaccesible de forma legible) y UID (número de identificación único asignado por el sistema) para la verificación de cuenta y gestión segura de sesiones.</li>
+    <li><strong>3.2 Base Documental y Temarios (Firestore: Colección documents):</strong> Cada vez que un alumno sube un archivo PDF al generador, se guarda un registro en Firestore que contiene: fileName (nombre original del archivo, ej. Syllabus_Sostenibilidad.pdf), content (muestra en texto plano de los primeros 5,000 caracteres extraídos del documento), uploadedBy (alias del usuario que lo subió: su correo sin el @dominio) y uploadedAt (fecha y hora exacta / Timestamp de la subida) para la estructuración del conocimiento y personalización pedagógica.</li>
+    <li><strong>3.3 Simulaciones y Evaluaciones (Firestore: Colección anonymous_sessions):</strong> Cada vez que se detona un escenario y el alumno interactúa con el Copiloto, se guarda de forma estrictamente anónima la sesión con los siguientes campos: sessionId (código alfanumérico aleatorio, ej. session_kw72nx9), scenario (título o rol del caso generado, ej. "Inversionista Rudo - Proyecto Ecoturístico"), history (arreglo ordenado con todos los mensajes de texto de la simulación) y updatedAt (fecha y hora / Timestamp del último mensaje enviado).</li>
+    <li><strong>3.4 Exclusión Absoluta de Datos Sensibles (Categorías Especiales):</strong> El Responsable no recaba ni trata datos personales sensibles bajo ninguna circunstancia en esta plataforma. Se solicita al usuario abstenerse de introducir este tipo de información (como datos de salud, opiniones políticas, convicciones religiosas, origen étnico o datos biométricos) en los campos de texto libre, micrófonos, o documentos PDF cargados.</li>
+    <li><strong>3.5 Datos Técnicos:</strong> Direcciones IP, tokens de sesión, tipo de navegador y comportamiento técnico dentro del sitio a través de cookies.</li>
+  </ul>
+
+  <h2>4. Finalidades del Tratamiento</h2>
+  <p><strong>4.1 Finalidades Primarias (Necesarias para el servicio):</strong></p>
+  <ul>
+    <li>4.1.1 Autenticación, creación y verificación de la cuenta de acceso al laboratorio.</li>
+    <li>4.1.2 Procesamiento de los documentos PDF cargados y de la configuración del usuario para generar simulaciones de rol inmersivas y escenarios agénticos dinámicos.</li>
+    <li>4.1.3 Prestación del servicio nativo de Inteligencia Artificial (evaluación socrática, procesamiento de voz a texto, procesamiento de prompts y asistencia tutorial).</li>
+    <li>4.1.4 Generación de métricas analíticas. Para este fin, y para proteger su privacidad, las conversaciones del chat, audio y datos de uso se someten a un proceso estricto de disociación para separarlos y desvincularlos por completo de la identidad y nombre del usuario, garantizando su total anonimato.</li>
+    <li>4.1.5 Soporte técnico, administración interna y mantenimiento de la seguridad de la infraestructura.</li>
+  </ul>
+  
+  <p><strong>4.2 Finalidades Secundarias:</strong></p>
+  <ul>
+    <li>4.2.1 Conservación y análisis histórico de interacciones para el entrenamiento y optimización continua de los algoritmos de procesamiento de lenguaje natural y motores generativos.</li>
+    <li>4.2.2 Envío de correos electrónicos informativos sobre actualizaciones tecnológicas o nuevas funciones pedagógicas.</li>
+  </ul>
+
+  <p><strong>4.3 Oposición:</strong> Si no desea que sus datos personales sean tratados para alguna o todas las finalidades secundarias, o bien, desea ejercer cualquiera de sus Derechos ARCO o prerrogativas de privacidad, puede manifestarlo enviando un correo electrónico a info@alexandriads.com. Bajo el GDPR, retirar su consentimiento para estas finalidades no afectará la licitud del tratamiento efectuado previamente. Para conocer el procedimiento detallado de ejercicio de todos sus derechos, por favor consulte la Sección 8 del presente aviso.</p>
+
+  <h2>5. Decisiones Automatizadas e Inteligencia Artificial</h2>
+  <p><strong>5.1</strong> Las interacciones en Anáhuac Tourism AI Lab son procesadas de manera automatizada por modelos fundacionales de lenguaje natural para generar respuestas de rol, analizar documentos y personalizar la experiencia evaluativa. Estas soluciones automatizadas no producen efectos jurídicos significativos ni afectan de forma adversa al Titular en los términos del Artículo 22 del GDPR, limitándose estrictamente a ser herramientas de asistencia académica, entrenamiento y evaluación formativa.</p>
+
+  <h2>6. Transferencias Internacionales de Datos</h2>
+  <p><strong>6.1</strong> El Responsable utiliza infraestructura en la nube de grado empresarial (como Google Cloud Platform, Firebase y APIs de Inteligencia Artificial Generativa) cuyos servidores pueden estar ubicados fuera de México o del Espacio Económico Europeo (EEE), principalmente en Estados Unidos.</p>
+  <p><strong>6.2</strong> Para cumplir con el GDPR, estas transferencias internacionales se respaldan mediante Cláusulas Contractuales Tipo (Standard Contractual Clauses - SCCs) aprobadas por la Comisión Europea. Cualquier reporte compartido con la institución académica o aliados se entregará exclusivamente en formatos estadísticos e irreversiblemente anonimizados.</p>
+
+  <h2>7. Plazos de Conservación y Proceso de Anonimización</h2>
+  <p><strong>7.1</strong> Los datos identificables del Titular (nombre y correo) se conservarán únicamente mientras la cuenta de la plataforma permanezca activa o durante los plazos estrictamente obligatorios para la atención de responsabilidades jurídicas.</p>
+  <p><strong>7.2</strong> Para los fines de analítica a largo plazo, investigación educativa y optimización de los algoritmos del producto (Learning Analytics), los datos de uso, documentos subidos, prompts e interacciones del chat pasarán por un proceso irreversible de disociación y anonimización. Es decir, el contenido de sus conversaciones con la IA siempre se separa permanentemente de sus datos de identidad (nombre o correo). Al perder de forma permanente cualquier vínculo con una persona física identificada o identificable, estos datos dejan de ser considerados "datos personales" ante la ley y podrán ser conservados de manera indefinida con fines estadísticos y de desarrollo tecnológico.</p>
+
+  <h2>8. Derechos del Titular (Derechos ARCO y Derechos GDPR)</h2>
+  <p>El Titular puede ejercer sus derechos de protección de datos enviando una solicitud formal a info@alexandriads.com. Sus derechos consolidados comprenden:</p>
+  <ul>
+    <li><strong>Acceso:</strong> Conocer qué datos personales tratamos y sus condiciones de uso.</li>
+    <li><strong>Rectificación:</strong> Solicitar la corrección de información inexacta o incompleta.</li>
+    <li><strong>Cancelación / Supresión:</strong> Solicitar el borrado total de sus datos cuando no sean necesarios o se retire el consentimiento.</li>
+    <li><strong>Oposición:</strong> Oponerse al tratamiento de sus datos para las finalidades secundarias.</li>
+    <li><strong>Limitación del Tratamiento:</strong> Solicitar la suspensión temporal del tratamiento de sus datos bajo supuestos específicos del GDPR.</li>
+    <li><strong>Portabilidad:</strong> Recibir sus datos personales en un formato estructurado y de lectura mecánica para transferirlos a otra entidad (GDPR).</li>
+  </ul>
+  <p>Para dar trámite a su solicitud, deberá acreditar su identidad mediante copia de una identificación oficial vigente u otro mecanismo de verificación equivalente. El Responsable resolverá en un plazo máximo de 20 días hábiles (México) o 1 mes (Unión Europea) según resulte aplicable.</p>
+
+  <h2>9. Medidas de Seguridad y Notificación de Brechas</h2>
+  <p><strong>9.1</strong> El Responsable mantiene estrictas medidas de seguridad técnicas, físicas y administrativas. En caso de ocurrir una vulneración de seguridad que represente un alto riesgo para los derechos de los usuarios, el Responsable notificará la brecha a los Titulares y a las autoridades competentes en un plazo máximo de 72 horas tras tener conocimiento de ella, en apego al estándar del GDPR.</p>
+
+  <h2>10. Autoridades Garantes</h2>
+  <p><strong>10.1</strong> Si el Titular considera que su derecho a la privacidad ha sido vulnerado, tiene a su disposición interponer una reclamación ante el Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales (INAI) en México, o ante la Autoridad de Control local correspondiente en su país de residencia dentro de la Unión Europea.</p>
+
+  <h2>11. Cambios al Aviso de Privacidad</h2>
+  <p><strong>11.1</strong> Este aviso puede modificarse debido a nuevos requerimientos legales, cambios operacionales en Anáhuac Tourism AI Lab o actualizaciones de los modelos de IA subyacentes. Las versiones vigentes estarán siempre disponibles para consulta en el portal web.</p>
+
+  <p><em>Última actualización: Septiembre 2026.</em></p>
+
+</body>
+</html>

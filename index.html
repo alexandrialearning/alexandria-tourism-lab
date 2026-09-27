@@ -21,7 +21,12 @@
         <input type="text" id="loginUsername" placeholder="ej. 00123456" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--bg-border); background: rgba(255,255,255,0.05); color: #FFF; font-size: 1rem; margin-bottom: 1rem;">
         
         <label style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Contraseña</label>
-        <input type="password" id="loginPassword" placeholder="••••••••" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--bg-border); background: rgba(255,255,255,0.05); color: #FFF; font-size: 1rem;">
+        <input type="password" id="loginPassword" placeholder="••••••••" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--bg-border); background: rgba(255,255,255,0.05); color: #FFF; font-size: 1rem; margin-bottom: 1rem;">
+        
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+          <input type="checkbox" id="privacyCheckbox" style="accent-color: var(--primary-orange); width: 16px; height: 16px; cursor: pointer;">
+          <label for="privacyCheckbox" style="color: var(--text-muted); font-size: 0.8rem; cursor: pointer;">He leído y acepto el <a href="privacy.html" target="_blank" style="color: var(--primary-orange); text-decoration: underline;">Aviso de Privacidad</a></label>
+        </div>
       </div>
 
       <button id="btnStartSimulation" onclick="handleLogin()" class="btn-start" style="width: 100%;">Iniciar Sesión</button>

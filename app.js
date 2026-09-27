@@ -71,9 +71,15 @@ document.addEventListener('DOMContentLoaded', () => {
 async function handleLogin() {
   const email = document.getElementById('loginUsername').value;
   const pass = document.getElementById('loginPassword').value;
+  const privacyChecked = document.getElementById('privacyCheckbox').checked;
   
   if (!email || !pass) {
     alert("Por favor, ingresa tu correo y contraseña.");
+    return;
+  }
+
+  if (!privacyChecked) {
+    alert("Debes leer y aceptar el Aviso de Privacidad para continuar.");
     return;
   }
   

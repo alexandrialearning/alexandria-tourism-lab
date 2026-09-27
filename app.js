@@ -66,6 +66,19 @@ window.addEventListener('orbReady', () => {
 document.addEventListener('DOMContentLoaded', () => {
   initSpeechRecognition();
   updateOrb('breathing');
+
+  // Mantener sesión activa al recargar
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      state.userName = user.email.split('@')[0];
+      document.getElementById('userProfileTag').innerText = `👤 ${state.userName}`;
+      document.getElementById('startOverlay').style.display = 'none';
+      startCallTimer();
+      // No reproducimos audio automáticamente al recargar para evitar sustos
+      elements.participantName.innerText = "Copiloto Anáhuac";
+      elements.roleLabel.innerText = "Facultad de Turismo y Gastronomía";
+    }
+  });
 });
 
 async function handleLogin() {

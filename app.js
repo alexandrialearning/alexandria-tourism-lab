@@ -403,7 +403,7 @@ async function generateResponse(userText) {
   // Flujo Agéntico Inteligente (Gemini)
   let GEMINI_API_KEY = atob("QVEuQWI4Uk42SnFqSXE3WEh6T3N6ZnJPYnU3VWpMSXo5WEYzSmswOFl4dDJBbXhZTkhYY1E=");
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
   
   // Limitar el historial para no exceder contexto, y asegurar que empiece con 'user' si es necesario, 
   // pero Gemini chat context requires alternating user/model. We will just pass the history array directly.
@@ -593,7 +593,7 @@ async function triggerAgenticGenerator(usePdf = false) {
   
   let GEMINI_API_KEY = atob("QVEuQWI4Uk42SnFqSXE3WEh6T3N6ZnJPYnU3VWpMSXo5WEYzSmswOFl4dDJBbXhZTkhYY1E=");
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
   
   let dynamicPrompt = agenticSystemPrompt;
   if (usePdf) {

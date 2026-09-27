@@ -380,36 +380,27 @@ function addTranscriptMsg(sender, text) {
 }
 
 async function generateResponse(userText) {
-  if (state.currentScenario !== 'agentic') {
-    // Escenarios fijos para velocidad de demo si no usan el generador agéntico
-    const textLower = userText.toLowerCase();
-    let reply = 'Excelente planteamiento. ¿Cómo garantiza tu propuesta que la derrama económica se quede en la comunidad local?';
-    
-    if (state.currentScenario === 'mentor' && (textLower.includes('capacidad de carga') || textLower.includes('sendero'))) {
-      reply = 'Para calcular la capacidad de carga física, debes multiplicar el área del sendero por la densidad permitida de visitantes y ajustar por factores ecológicos. ¿Qué área tiene tu ruta?';
-    } else if (state.currentScenario === 'overbooking') {
-      reply = '¡Pagué mi reservación hace 3 meses! Si no me trasladan inmediatamente a un hotel equivalente, llamaré a la Procuraduría del Consumidor.';
-    } else if (state.currentScenario === 'community') {
-      reply = 'Queremos ver una propuesta formal firmada donde el 30% de los guías de la ruta sean miembros de nuestra asamblea ejidal.';
-    } else if (state.currentScenario === 'investor') {
-      reply = 'Sus proyecciones de ocupación en temporada baja son arriesgadas. Ajuste la TIR al 18% y volveremos a negociar.';
-    }
-    
-    addTranscriptMsg(state.currentScenario === 'mentor' ? 'Alex (Mentor)' : 'Simulador', reply);
-    speakCaption(state.currentScenario === 'mentor' ? 'Alex' : 'Simulador', reply);
-    return;
-  }
-
-  // Flujo Agéntico Inteligente (Gemini)
+  // Flujo Agéntico Inteligente Universal (Gemini para TODO)
   let GEMINI_API_KEY = atob("QVEuQWI4Uk42SnFqSXE3WEh6T3N6ZnJPYnU3VWpMSXo5WEYzSmswOFl4dDJBbXhZTkhYY1E=");
-
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
   
-  // Limitar el historial para no exceder contexto, y asegurar que empiece con 'user' si es necesario, 
-  // pero Gemini chat context requires alternating user/model. We will just pass the history array directly.
+  let roleContext = "Eres un evaluador estricto. Sigue tu rol asignado previamente, NUNCA rompas el personaje. Responde de forma breve, concisa y oral (máximo 2 párrafos).";
   
+  if (state.currentScenario === 'mentor') {
+    roleContext = "Eres Alex, un Mentor Socrático experto en turismo. Nunca das la respuesta directa, siempre respondes con preguntas profundas que hagan pensar al estudiante sobre sostenibilidad y rentabilidad.";
+  } else if (state.currentScenario === 'overbooking') {
+    roleContext = "Eres un huésped furioso en el lobby del hotel. Hiciste tu reserva hace 3 meses y acaba de ocurrir un overbooking. Estás muy enojado, exiges soluciones inmediatas y amenazas con Profeco. Responde breve y cortante.";
+  } else if (state.currentScenario === 'community') {
+    roleContext = "Eres el líder de una asamblea ejidal indígena. Un empresario quiere construir un proyecto en tu tierra. Eres desconfiado, defiendes la naturaleza y quieres garantías por escrito. Hablas con firmeza.";
+  } else if (state.currentScenario === 'investor') {
+    roleContext = "Eres un inversionista de Wall Street rudo y analítico. Evalúas un pitch turístico. Cuestionas agresivamente el ROI, la TIR y las proyecciones de ventas. No tienes tiempo que perder.";
+  } else {
+    // Escenario agéntico generado por PDF o Aleatorio
+    roleContext = "Eres la Persona Antagónica asignada en este escenario de evaluación turística. NUNCA rompas tu personaje. Desafía agresivamente los argumentos del estudiante. Responde de forma breve y conversacional (máximo 2 párrafos).";
+  }
+
   const systemInstruction = {
-    parts: [{ text: "Eres el personaje de la simulación. Sigue tu rol asignado previamente, NUNCA rompas el personaje. Responde de forma breve, concisa y oral (máximo 2 párrafos). Genera presión sobre el estudiante." }]
+    parts: [{ text: roleContext }]
   };
 
   try {

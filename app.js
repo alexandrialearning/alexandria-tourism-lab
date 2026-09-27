@@ -111,11 +111,9 @@ async function startSimulation() {
   startCallTimer();
   
   elements.participantName.innerText = "Copiloto Anáhuac";
-  elements.roleLabel.innerText = "Tutor Pedagógico";
+  elements.roleLabel.innerText = "Facultad de Turismo y Gastronomía";
   
-  const intro = `¡Hola ${state.userName}! Bienvenido a tu sala interactiva. Por favor, selecciona un Generador de Casos en el panel lateral para iniciar tu simulación.`;
-  // No añadimos al transcript porque el tabTranscript está oculto, o si queremos que se vea, no lo decimos.
-  // Wait, if the transcript is hidden, they won't see this text. BUT speakCaption will say it out loud!
+  const intro = `¡Hola ${state.userName}! Soy tu tutor de la Facultad de Turismo y Gastronomía de la Universidad Anáhuac. Por favor, selecciona un Generador de Casos en el panel lateral para iniciar tu evaluación.`;
   await speakCaption('Copiloto Anáhuac', intro);
 }
 

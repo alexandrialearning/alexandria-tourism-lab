@@ -639,7 +639,13 @@ async function triggerAgenticGenerator(usePdf = false) {
       contextBox.style.border = "1px solid var(--primary-orange)";
     }
 
-    if (!state.sidebarOpen && usePdf) toggleSidebar(); // Cerrar sidebar si estaba abierto para RAG
+    // Desbloquear historial del caso y cambiar a esa vista
+    const tabTranscriptBtn = document.getElementById('tabTranscript');
+    if (tabTranscriptBtn) {
+      tabTranscriptBtn.style.display = 'block';
+    }
+    switchSidebarTab('transcript');
+    if (!state.sidebarOpen) toggleSidebar();
     
     addTranscriptMsg(scenario.ai_name, scenario.first_message);
     speakCaption(scenario.ai_name, scenario.first_message);

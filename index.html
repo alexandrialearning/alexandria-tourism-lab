@@ -63,13 +63,18 @@
         </div>
         
         <div class="sidebar-tabs">
-          <button class="tab-btn active" id="tabTranscript" onclick="switchSidebarTab('transcript')">Historial del Caso</button>
-          <button class="tab-btn" id="tabRag" onclick="switchSidebarTab('rag')">Generador de Casos</button>
+          <button class="tab-btn" id="tabTranscript" onclick="switchSidebarTab('transcript')" style="display: none;">Historial del Caso</button>
+          <button class="tab-btn active" id="tabRag" onclick="switchSidebarTab('rag')">Generador de Casos</button>
         </div>
 
         <!-- Chat Panel -->
-        <div class="sidebar-content active" id="viewTranscript">
-          <div class="transcript-timeline" id="transcriptTimeline">
+        <div class="sidebar-content" id="viewTranscript">
+          <!-- Caja de Contexto -->
+          <div id="scenarioContextBox" style="background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1rem; color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; flex-shrink: 0;">
+            Esperando a que inicies un escenario...
+          </div>
+          
+          <div class="transcript-timeline" id="transcriptTimeline" style="flex-grow: 1;">
             <!-- Messages will be injected here -->
           </div>
           <form class="sidebar-input-form" onsubmit="handleUserSubmit(event)">
@@ -79,7 +84,7 @@
         </div>
 
         <!-- RAG / Document Panel -->
-        <div class="sidebar-content" id="viewRag">
+        <div class="sidebar-content active" id="viewRag">
           <div class="rag-panel">
             
             <h4 style="color: #FFF; margin-bottom: 0.5rem;">1. Opción Aleatoria</h4>
@@ -103,14 +108,6 @@
             <button class="btn-start" style="width:100%; margin-bottom:1.5rem; background:var(--accent-purple); border-color:var(--accent-purple);" onclick="triggerAgenticGenerator(true)">
               ✨ Generar desde este PDF
             </button>
-
-            <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0;"></div>
-
-            <!-- Caja de Contexto -->
-            <h4 style="color: #FFF; margin-bottom: 0.5rem;">Contexto de la Simulación</h4>
-            <div id="scenarioContextBox" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;">
-              Esperando a que inicies un escenario...
-            </div>
 
           </div>
         </div>

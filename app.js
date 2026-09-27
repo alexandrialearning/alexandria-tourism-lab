@@ -110,13 +110,13 @@ async function startSimulation() {
   document.getElementById('startOverlay').style.display = 'none';
   startCallTimer();
   
-  elements.participantName.innerText = "Alex (Copiloto Alexandr.ia)";
+  elements.participantName.innerText = "Copiloto Anáhuac";
   elements.roleLabel.innerText = "Tutor Pedagógico";
   
   const intro = `¡Hola ${state.userName}! Bienvenido a tu sala interactiva. Por favor, selecciona un Generador de Casos en el panel lateral para iniciar tu simulación.`;
   // No añadimos al transcript porque el tabTranscript está oculto, o si queremos que se vea, no lo decimos.
   // Wait, if the transcript is hidden, they won't see this text. BUT speakCaption will say it out loud!
-  await speakCaption('Alex', intro);
+  await speakCaption('Copiloto Anáhuac', intro);
 }
 
 function startCallTimer() {
@@ -303,11 +303,11 @@ function selectScenario(scenarioKey) {
   if (scenarioKey === 'mentor') {
     elements.videoBg.className = 'video-bg';
     elements.pillLabel.innerText = 'Modo: Mentor Socrático';
-    elements.participantName.innerText = 'Alex (Copiloto Alexandr.ia)';
+    elements.participantName.innerText = 'Copiloto Anáhuac';
     elements.roleLabel.innerText = 'Tutor Pedagógico';
     const msg = '¡De vuelta a nuestro espacio de tutoría socrática! ¿Revisamos tu borrador de proyecto o tienes alguna duda legal?';
-    addTranscriptMsg('Alex (Mentor)', msg);
-    speakCaption('Alex', msg);
+    addTranscriptMsg('Copiloto Anáhuac', msg);
+    speakCaption('Copiloto Anáhuac', msg);
   } else if (scenarioKey === 'overbooking') {
     elements.videoBg.className = 'video-bg theme-overbooking';
     elements.pillLabel.innerText = 'Crisis 🏨: Sobreventa en Hotel';
@@ -399,7 +399,7 @@ async function generateResponse(userText) {
   let roleContext = "Eres un evaluador estricto. Sigue tu rol asignado previamente, NUNCA rompas el personaje. Responde de forma breve, concisa y oral (máximo 2 párrafos).";
   
   if (state.currentScenario === 'mentor') {
-    roleContext = "Eres Alex, un Mentor Socrático experto en turismo. Nunca das la respuesta directa, siempre respondes con preguntas profundas que hagan pensar al estudiante sobre sostenibilidad y rentabilidad.";
+    roleContext = "Eres un Copiloto, un Mentor Socrático experto en turismo. Nunca das la respuesta directa, siempre respondes con preguntas profundas que hagan pensar al estudiante sobre sostenibilidad y rentabilidad.";
   } else if (state.currentScenario === 'overbooking') {
     roleContext = "Eres un huésped furioso en el lobby del hotel. Hiciste tu reserva hace 3 meses y acaba de ocurrir un overbooking. Estás muy enojado, exiges soluciones inmediatas y amenazas con Profeco. Responde breve y cortante.";
   } else if (state.currentScenario === 'community') {
@@ -530,9 +530,9 @@ function resetCall() {
     state.callDurationSeconds = 0;
     elements.transcriptTimeline.innerHTML = '';
     selectScenario('mentor');
-    const msg = "¡Hola! Bienvenido a tu sala de videollamada interactiva. Soy tu copiloto en Alexandr.ia Tourism Lab. ¿Qué proyecto o simulación quieres trabajar hoy?";
-    addTranscriptMsg('Alex (Copiloto)', msg);
-    speakCaption('Alex', msg);
+    const msg = "¡Hola! Bienvenido a tu sala de videollamada interactiva. Soy tu copiloto en Anáhuac Tourism Lab. ¿Qué proyecto o simulación quieres trabajar hoy?";
+    addTranscriptMsg('Copiloto Anáhuac', msg);
+    speakCaption('Copiloto Anáhuac', msg);
   }
 }
 
@@ -540,7 +540,7 @@ function resetCall() {
 // Agentic Scenario Generator (Syllabus based)
 // -----------------------------------------------------------------
 const agenticSystemPrompt = `
-Eres un Generador de Escenarios Agénticos para 'Alexandr.ia Tourism Lab'.
+Eres un Generador de Escenarios Agénticos para 'Anáhuac Tourism Lab'.
 Tu objetivo es crear un escenario de Roleplay inmersivo y de alta presión para evaluar oralmente a un estudiante de Administración Turística.
 
 Temas de evaluación disponibles (elige UNO al azar o combínalos estratégicamente):

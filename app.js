@@ -1,3 +1,18 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyAyhBWleVkUBM8C4LkMAmqt1e1glUEkfMc",
+  authDomain: "anahuac-tourism.firebaseapp.com",
+  projectId: "anahuac-tourism",
+  storageBucket: "anahuac-tourism.firebasestorage.app",
+  messagingSenderId: "675954232934",
+  appId: "1:675954232934:web:3c5269b303cacf720267a7",
+  measurementId: "G-QMWWW53JJQ"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
 const state = {
   currentScenario: 'mentor',
   isSpeaking: false,
@@ -51,20 +66,43 @@ document.addEventListener('DOMContentLoaded', () => {
   updateOrb('breathing');
 });
 
-function handleLogin() {
-  const username = document.getElementById('loginUsername').value;
+async function handleLogin() {
+  const email = document.getElementById('loginUsername').value;
   const pass = document.getElementById('loginPassword').value;
   
-  if (!username) {
-    alert("Por favor, ingresa tu matrícula o nombre.");
+  if (!email || !pass) {
+    alert("Por favor, ingresa tu correo y contraseña.");
     return;
   }
   
-  // Guardar nombre del usuario
-  state.userName = username;
-  document.getElementById('userProfileTag').innerText = `👤 ${username}`;
-  
-  startSimulation();
+  try {
+    const btn = document.getElementById('btnStartSimulation');
+    const originalText = btn.innerText;
+    btn.innerText = "Autenticando...";
+    btn.disabled = true;
+
+    try {
+      // Intentar iniciar sesión
+      await auth.signInWithEmailAndPassword(email, pass);
+    } catch (err) {
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+        // Si no existe, lo creamos para el prototipo
+        await auth.createUserWithEmailAndPassword(email, pass);
+      } else {
+        throw err;
+      }
+    }
+    
+    state.userName = email.split('@')[0];
+    document.getElementById('userProfileTag').innerText = `👤 ${state.userName}`;
+    startSimulation();
+    
+  } catch (error) {
+    alert("Error de autenticación: " + error.message);
+    const btn = document.getElementById('btnStartSimulation');
+    btn.innerText = "Iniciar Sesión";
+    btn.disabled = false;
+  }
 }
 
 async function startSimulation() {
@@ -379,18 +417,52 @@ function switchSidebarTab(tabName) {
 
 function triggerFileUpload() { document.getElementById('fileInput').click(); }
 
-function handleFileSelect(e) {
+async function handleFileSelect(e) {
   const file = e.target.files[0];
   if (file) {
     state.currentProject = file.name;
-    document.getElementById('projectName').innerText = `📄 ${file.name} (Indexado en RAG)`;
+    document.getElementById('projectName').innerText = `📄 ${file.name} (Procesando vectores...)`;
     document.getElementById('projectInfo').style.display = 'block';
     
-    // Read file as Base64 for Gemini
+    // Read file as Base64 for fallback
     const reader = new FileReader();
-    reader.onload = (event) => {
-      // Remover el prefijo 'data:application/pdf;base64,'
+    reader.onload = async (event) => {
       state.currentFileBase64 = event.target.result.split(',')[1];
+      
+      try {
+        // Extraer texto usando pdf.js
+        const pdfData = atob(state.currentFileBase64);
+        const uint8Array = new Uint8Array(pdfData.length);
+        for (let i = 0; i < pdfData.length; i++) {
+          uint8Array[i] = pdfData.charCodeAt(i);
+        }
+        
+        const loadingTask = pdfjsLib.getDocument({data: uint8Array});
+        const pdf = await loadingTask.promise;
+        let fullText = "";
+        
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map(item => item.str).join(' ');
+          fullText += pageText + " ";
+        }
+        
+        state.extractedPdfText = fullText;
+        
+        // Guardar documento crudo en Firestore (Simulando la base vectorial para el prototipo)
+        await db.collection("documents").add({
+          fileName: file.name,
+          content: fullText.substring(0, 5000), // Guardamos una muestra para no exceder límites
+          uploadedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          uploadedBy: state.userName || 'unknown'
+        });
+        
+        document.getElementById('projectName').innerText = `📄 ${file.name} (Indexado en Firestore)`;
+      } catch (err) {
+        console.error("Error procesando PDF o subiendo a Firestore:", err);
+        document.getElementById('projectName').innerText = `📄 ${file.name} (Error procesando)`;
+      }
     };
     reader.readAsDataURL(file);
   }

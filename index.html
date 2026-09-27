@@ -181,7 +181,7 @@
     </div>
 
     <!-- Bottom Zoom/Meet Style Control Dock -->
-    <footer class="dock-footer">
+    <footer class="dock-footer" style="flex-direction: column; align-items: center; gap: 0.5rem; padding-bottom: 0.5rem;">
       <div class="dock-controls">
         <!-- Mic Indicator Button (Now Auto-managed) -->
         <button class="dock-btn mic-btn" id="btnMic" onclick="toggleMic()" title="El micrófono es automático, pero puedes forzarlo aquí">
@@ -211,6 +211,9 @@
           <span class="dock-icon">📞</span>
           <span class="dock-label">Reiniciar</span>
         </button>
+      </div>
+      <div style="font-size: 0.7rem; color: rgba(255,255,255,0.4); font-family: monospace; letter-spacing: 0.5px;">
+        ⚡️ Powered by Alexandr.ia AI Learning Systems
       </div>
     </footer>
   </div>

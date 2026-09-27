@@ -263,6 +263,7 @@ function initSpeechRecognition() {
 }
 
 function startListening() {
+  if (state.currentScenario !== 'agentic') return;
   autoListen = true;
   if (recognition && !state.isRecording && !state.isSpeaking) {
     try { recognition.start(); } catch(e){}
@@ -277,7 +278,11 @@ function stopMic() {
 }
 
 function toggleMic() {
-  if (state.isRecording) {
+  if (state.currentScenario !== 'agentic') {
+    alert("Genera un escenario primero antes de hablar.");
+    return;
+  }
+  if (state.currentRecording || state.isRecording) {
     stopMic();
   } else {
     startListening();

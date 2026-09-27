@@ -633,3 +633,55 @@ body.call-mode {
   background: rgba(227, 82, 5, 0.08);
   color: var(--primary-orange);
 }
+
+/* Mobile Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .call-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0.5rem;
+  }
+  .call-title-area {
+    margin-top: 0.5rem;
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .call-body {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  .video-stage {
+    min-height: 40vh;
+    flex: none;
+  }
+  
+  .call-sidebar {
+    width: 100%;
+    flex: 1;
+    min-height: 50vh;
+  }
+  
+  .dock-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 20px;
+    padding: 0.5rem;
+  }
+  
+  .dock-label {
+    display: none; /* Ocultar texto de botones en móvil para ahorrar espacio */
+  }
+  
+  .login-card {
+    width: 95%;
+    padding: 1.5rem;
+  }
+  
+  .avatar-container {
+    width: 150px;
+    height: 150px;
+  }
+}

@@ -5,12 +5,6 @@ const firebaseConfig = {
   storageBucket: "anahuac-tourism.firebasestorage.app",
   messagingSenderId: "675954232934",
   appId: "1:675954232934:web:3c5269b303cacf720267a7",
-  measurementId: "G-QMWWW53JJQ"
-};
-// PWA Service Worker Registration
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fail: ', err));
   });
 }
 

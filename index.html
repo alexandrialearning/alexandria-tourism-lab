@@ -9,12 +9,23 @@
 </head>
 <body class="call-mode">
 
-  <!-- Pantalla de Inicio para asegurar interacción del usuario (Autoplay & WebRTC) -->
+  <!-- Pantalla de Inicio / Login Screen -->
   <div id="startOverlay" class="start-overlay">
-    <img src="logo.png" alt="Anáhuac Logo" class="overlay-logo">
-    <h2 style="color: var(--primary-orange); font-family: var(--font-heading); margin-bottom: 0.5rem; font-size: 2rem;">Alexandr.ia Tourism Lab</h2>
-    <p style="color: var(--text-muted); margin-bottom: 2rem; max-width: 400px; text-align: center;">Haz clic en el botón para conectar el avatar hiperrealista y activar tu micrófono. La conversación fluirá automáticamente.</p>
-    <button id="btnStartSimulation" onclick="startSimulation()" class="btn-start">Entrar a la Sala</button>
+    <div class="login-card">
+      <img src="logo.png" alt="Anáhuac Logo" class="overlay-logo">
+      <h2 style="color: var(--primary-orange); font-family: var(--font-heading); margin-bottom: 0.5rem; font-size: 2rem;">Alexandr.ia Tourism Lab</h2>
+      <p style="color: var(--text-muted); margin-bottom: 2rem; text-align: center;">Acceso al Simulador de Liderazgo Turístico</p>
+      
+      <div style="width: 100%; text-align: left; margin-bottom: 1.5rem;">
+        <label style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Matrícula o Correo Institucional</label>
+        <input type="text" id="loginUsername" placeholder="ej. 00123456" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--bg-border); background: rgba(255,255,255,0.05); color: #FFF; font-size: 1rem; margin-bottom: 1rem;">
+        
+        <label style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Contraseña</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--bg-border); background: rgba(255,255,255,0.05); color: #FFF; font-size: 1rem;">
+      </div>
+
+      <button id="btnStartSimulation" onclick="handleLogin()" class="btn-start" style="width: 100%;">Iniciar Sesión</button>
+    </div>
   </div>
 
   <div class="video-bg" id="videoBg"></div>
@@ -36,6 +47,7 @@
       </div>
 
       <div class="call-actions">
+        <span class="quality-tag" id="userProfileTag">Invitado</span>
         <span class="quality-tag">HD Video • AI Engine</span>
       </div>
     </header>
@@ -52,6 +64,7 @@
         
         <div class="sidebar-tabs">
           <button class="tab-btn active" id="tabTranscript" onclick="switchSidebarTab('transcript')">Historial del Caso</button>
+          <button class="tab-btn" id="tabRag" onclick="switchSidebarTab('rag')">Subir PDF</button>
         </div>
 
         <!-- Chat Panel -->
@@ -63,6 +76,25 @@
             <input type="text" id="userInput" placeholder="Escribe un mensaje o habla..." autocomplete="off">
             <button type="submit" class="send-icon-btn">➤</button>
           </form>
+        </div>
+
+        <!-- RAG / Document Panel -->
+        <div class="sidebar-content" id="viewRag">
+          <div class="rag-panel">
+            <div class="upload-dropzone" onclick="triggerFileUpload()">
+              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📄</div>
+              <strong>Subir PDF de Estudio</strong>
+              <p>Arrastra un temario, ley o rúbrica para generar un escenario.</p>
+              <input type="file" id="fileInput" accept=".pdf" style="display: none;" onchange="handleFileSelect(event)">
+            </div>
+            <div class="project-info-badge" id="projectInfo" style="display: none;">
+              <span id="projectName"></span>
+            </div>
+            
+            <button class="btn-start" style="width:100%; margin-top:15px; background:var(--accent-purple); border-color:var(--accent-purple);" onclick="triggerAgenticGenerator(true)">
+              ✨ Generar desde este PDF
+            </button>
+          </div>
         </div>
       </aside>
 

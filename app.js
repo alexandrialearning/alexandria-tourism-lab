@@ -51,6 +51,22 @@ document.addEventListener('DOMContentLoaded', () => {
   updateOrb('breathing');
 });
 
+function handleLogin() {
+  const username = document.getElementById('loginUsername').value;
+  const pass = document.getElementById('loginPassword').value;
+  
+  if (!username) {
+    alert("Por favor, ingresa tu matrícula o nombre.");
+    return;
+  }
+  
+  // Guardar nombre del usuario
+  state.userName = username;
+  document.getElementById('userProfileTag').innerText = `👤 ${username}`;
+  
+  startSimulation();
+}
+
 async function startSimulation() {
   document.getElementById('startOverlay').style.display = 'none';
   startCallTimer();
@@ -58,7 +74,7 @@ async function startSimulation() {
   elements.participantName.innerText = "Alex (Copiloto Alexandr.ia)";
   elements.roleLabel.innerText = "Tutor Pedagógico";
   
-  const intro = "¡Hola! Bienvenido a tu sala de videollamada interactiva. Soy tu copiloto en Alexandr.ia Tourism Lab. ¿Qué proyecto o simulación quieres trabajar hoy?";
+  const intro = `¡Hola ${state.userName}! Bienvenido a tu sala interactiva. Soy tu copiloto en Alexandr.ia Tourism Lab. ¿Qué simulación quieres trabajar hoy?`;
   addTranscriptMsg('Alex (Copiloto)', intro);
   await speakCaption('Alex', intro);
 }
@@ -434,14 +450,25 @@ INSTRUCCIONES CLAVE:
 5. Emite la primera frase del diálogo de forma retadora. NUNCA rompas el personaje.
 `;
 
-async function triggerAgenticGenerator() {
+async function triggerAgenticGenerator(usePdf = false) {
+  if (usePdf) {
+    if (!state.currentProject || !state.currentProject.toLowerCase().includes('.pdf')) {
+      alert('Primero debes arrastrar un Syllabus (PDF) en el área designada.');
+      return;
+    }
+    if (!state.currentFileBase64) {
+      alert('Esperando a que el archivo termine de procesarse... inténtalo en unos segundos.');
+      return;
+    }
+  }
+
   elements.scenarioDropdown.classList.remove('show');
   state.currentScenario = 'agentic';
   elements.videoBg.className = 'video-bg theme-investor'; // Tema dinámico oscuro
   
-  elements.pillLabel.innerText = 'Generando escenario aleatorio...';
-  elements.participantName.innerText = 'Gemini Inventando Rol...';
-  elements.roleLabel.innerText = 'Consultando Temarios';
+  elements.pillLabel.innerText = usePdf ? 'Analizando PDF...' : 'Generando escenario aleatorio...';
+  elements.participantName.innerText = usePdf ? 'Gemini Extrayendo Datos...' : 'Gemini Inventando Rol...';
+  elements.roleLabel.innerText = usePdf ? 'Leyendo documento adjunto' : 'Consultando Temarios';
   
   updateOrb('working');
   
@@ -457,16 +484,37 @@ async function triggerAgenticGenerator() {
   }
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
-  const promptText = agenticSystemPrompt + "\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  \"title\": \"Ej. 🌿 Auditoría GSTC\",\n  \"ai_name\": \"Ej. Auditora Internacional\",\n  \"ai_role\": \"Ej. Evaluando Economía Circular\",\n  \"first_message\": \"Ej. Como auditora he revisado sus indicadores...\"\n}";
+  let dynamicPrompt = agenticSystemPrompt;
+  if (usePdf) {
+    dynamicPrompt = `Eres un Generador de Escenarios Agénticos. Ignora los temas precargados. Lee el documento PDF adjunto.
+    Extrae las competencias más importantes de este documento específico y genera un escenario de Roleplay inmersivo y de alta presión para evaluar al alumno sobre el contenido de este PDF.
+    
+    INSTRUCCIONES CLAVE:
+    1. Asume una Persona Antagónica o Evaluadora relevante al contenido del PDF.
+    2. Asigna un Rol de Defensa al alumno coherente con el PDF.
+    3. Plantea un conflicto crítico que el alumno solo pueda resolver justificándose con la teoría del documento.
+    4. Emite la primera frase del diálogo de forma retadora. NUNCA rompas el personaje.`;
+  }
+  
+  const promptText = dynamicPrompt + "\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  \"title\": \"Ej. 🌿 Auditoría GSTC\",\n  \"ai_name\": \"Ej. Auditora Internacional\",\n  \"ai_role\": \"Ej. Evaluando Economía Circular\",\n  \"first_message\": \"Ej. Como auditora he revisado sus indicadores...\"\n}";
   
   try {
+    const parts = [];
+    if (usePdf && state.currentFileBase64) {
+      parts.push({
+        inlineData: {
+          mimeType: "application/pdf",
+          data: state.currentFileBase64
+        }
+      });
+    }
+    parts.push({ text: promptText });
+
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [{
-          parts: [{ text: promptText }]
-        }],
+        contents: [{ parts }],
         generationConfig: {
           responseMimeType: "application/json"
         }
@@ -483,6 +531,8 @@ async function triggerAgenticGenerator() {
     elements.participantName.innerText = scenario.ai_name;
     elements.roleLabel.innerText = scenario.ai_role;
     
+    if (!state.sidebarOpen && usePdf) toggleSidebar(); // Cerrar sidebar si estaba abierto para RAG
+    
     addTranscriptMsg(scenario.ai_name, scenario.first_message);
     speakCaption(scenario.ai_name, scenario.first_message);
     
@@ -490,7 +540,7 @@ async function triggerAgenticGenerator() {
     console.error(error);
     elements.pillLabel.innerText = "Error generando escenario";
     elements.participantName.innerText = "Error";
-    elements.roleLabel.innerText = "Revisa la API Key";
+    elements.roleLabel.innerText = "Revisa la API Key o el PDF";
     updateOrb('breathing');
   }
 }

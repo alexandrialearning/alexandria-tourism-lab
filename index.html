@@ -64,7 +64,7 @@
         
         <div class="sidebar-tabs">
           <button class="tab-btn active" id="tabTranscript" onclick="switchSidebarTab('transcript')">Historial del Caso</button>
-          <button class="tab-btn" id="tabRag" onclick="switchSidebarTab('rag')">Subir PDF</button>
+          <button class="tab-btn" id="tabRag" onclick="switchSidebarTab('rag')">Generador de Casos</button>
         </div>
 
         <!-- Chat Panel -->
@@ -81,19 +81,37 @@
         <!-- RAG / Document Panel -->
         <div class="sidebar-content" id="viewRag">
           <div class="rag-panel">
-            <div class="upload-dropzone" onclick="triggerFileUpload()">
+            
+            <h4 style="color: #FFF; margin-bottom: 0.5rem;">1. Opción Aleatoria</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Usa los temarios oficiales de Turismo.</p>
+            <button class="btn-start" style="width:100%; margin-bottom:1.5rem; background: var(--bg-hover); border: 1px solid var(--primary-orange); color: var(--primary-orange);" onclick="triggerAgenticGenerator(false)">
+              🎲 Generar Escenario Aleatorio
+            </button>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0;"></div>
+
+            <h4 style="color: #FFF; margin-bottom: 0.5rem;">2. Opción desde PDF</h4>
+            <div class="upload-dropzone" onclick="triggerFileUpload()" style="margin-bottom: 10px;">
               <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📄</div>
               <strong>Subir PDF de Estudio</strong>
-              <p>Arrastra un temario, ley o rúbrica para generar un escenario.</p>
-              <input type="file" id="fileInput" accept=".pdf" style="display: none;" onchange="handleFileSelect(event)">
             </div>
-            <div class="project-info-badge" id="projectInfo" style="display: none;">
+            <input type="file" id="fileInput" accept=".pdf" style="display: none;" onchange="handleFileSelect(event)">
+            <div class="project-info-badge" id="projectInfo" style="display: none; margin-bottom: 10px;">
               <span id="projectName"></span>
             </div>
             
-            <button class="btn-start" style="width:100%; margin-top:15px; background:var(--accent-purple); border-color:var(--accent-purple);" onclick="triggerAgenticGenerator(true)">
+            <button class="btn-start" style="width:100%; margin-bottom:1.5rem; background:var(--accent-purple); border-color:var(--accent-purple);" onclick="triggerAgenticGenerator(true)">
               ✨ Generar desde este PDF
             </button>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0;"></div>
+
+            <!-- Caja de Contexto -->
+            <h4 style="color: #FFF; margin-bottom: 0.5rem;">Contexto de la Simulación</h4>
+            <div id="scenarioContextBox" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;">
+              Esperando a que inicies un escenario...
+            </div>
+
           </div>
         </div>
       </aside>
@@ -186,8 +204,6 @@
             <button class="dropdown-item" onclick="selectScenario('overbooking')">🏨 Crisis: Sobreventa</button>
             <button class="dropdown-item" onclick="selectScenario('community')">🌿 Negociación: Comunidad</button>
             <button class="dropdown-item" onclick="selectScenario('investor')">💼 Pitch Inversionistas</button>
-            <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 0.5rem 0;"></div>
-            <button class="dropdown-item" style="color: #A78BFA; font-weight: 600;" onclick="triggerAgenticGenerator()">✨ Escenario Aleatorio (IA)</button>
           </div>
         </div>
 

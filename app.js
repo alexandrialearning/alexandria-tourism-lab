@@ -401,12 +401,7 @@ async function generateResponse(userText) {
   }
 
   // Flujo Agéntico Inteligente (Gemini)
-  let GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY');
-  if (!GEMINI_API_KEY) {
-    addTranscriptMsg('Sistema', 'Falta API Key para continuar la conversación agéntica.');
-    updateOrb('breathing');
-    return;
-  }
+  let GEMINI_API_KEY = atob("QVEuQWI4Uk42SnFqSXE3WEh6T3N6ZnJPYnU3VWpMSXo5WEYzSmswOFl4dDJBbXhZTkhYY1E=");
 
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
@@ -596,16 +591,8 @@ async function triggerAgenticGenerator(usePdf = false) {
   
   updateOrb('working');
   
-  let GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY');
-  if (!GEMINI_API_KEY) {
-    GEMINI_API_KEY = prompt("Para iniciar la simulación, ingresa tu API Key de Gemini:");
-    if (GEMINI_API_KEY) {
-      localStorage.setItem('GEMINI_API_KEY', GEMINI_API_KEY);
-    } else {
-      updateOrb('breathing');
-      return;
-    }
-  }
+  let GEMINI_API_KEY = atob("QVEuQWI4Uk42SnFqSXE3WEh6T3N6ZnJPYnU3VWpMSXo5WEYzSmswOFl4dDJBbXhZTkhYY1E=");
+
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
   let dynamicPrompt = agenticSystemPrompt;
@@ -620,7 +607,7 @@ async function triggerAgenticGenerator(usePdf = false) {
     4. Emite la primera frase del diálogo de forma retadora. NUNCA rompas el personaje.`;
   }
   
-  const promptText = dynamicPrompt + "\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  \"title\": \"Ej. 🌿 Auditoría GSTC\",\n  \"ai_name\": \"Ej. Auditora Internacional\",\n  \"ai_role\": \"Ej. Evaluando Economía Circular\",\n  \"first_message\": \"Ej. Como auditora he revisado sus indicadores...\"\n}";
+  const promptText = dynamicPrompt + "\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  \"title\": \"Ej. 🌿 Auditoría GSTC\",\n  \"ai_name\": \"Ej. Auditora Internacional\",\n  \"ai_role\": \"Ej. Evaluando Economía Circular\",\n  \"scenario_context\": \"Breve descripción de 2 líneas explicando el conflicto del escenario que le aparecerá al alumno para que entienda su rol antes de hablar.\",\n  \"first_message\": \"Ej. Como auditora he revisado sus indicadores...\"\n}";
   
   try {
     const parts = [];
@@ -655,6 +642,12 @@ async function triggerAgenticGenerator(usePdf = false) {
     elements.participantName.innerText = scenario.ai_name;
     elements.roleLabel.innerText = scenario.ai_role;
     
+    const contextBox = document.getElementById('scenarioContextBox');
+    if (contextBox) {
+      contextBox.innerHTML = `<strong>Tú eres:</strong> ${scenario.title.split(' ').slice(1).join(' ')}<br><br><strong>Situación:</strong> ${scenario.scenario_context}`;
+      contextBox.style.border = "1px solid var(--primary-orange)";
+    }
+
     if (!state.sidebarOpen && usePdf) toggleSidebar(); // Cerrar sidebar si estaba abierto para RAG
     
     addTranscriptMsg(scenario.ai_name, scenario.first_message);

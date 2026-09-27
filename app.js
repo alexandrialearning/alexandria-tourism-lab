@@ -23,7 +23,8 @@ const state = {
   currentProject: null,
   customVoiceId: 'sDh3eviBhiuHKi0MjTNq',
   ttsApiKey: 'sk_4197546279e7106e0b4d72bfa7f870dd1316bd4e71fbd682',
-  conversationHistory: []
+  conversationHistory: [],
+  sessionId: null
 };
 
 let recognition = null;
@@ -360,6 +361,15 @@ function addTranscriptMsg(sender, text) {
     parts: [{ text: text }]
   });
 
+  // Guardado permanente y anónimo de la sesión
+  if (state.sessionId && window.db) {
+    db.collection("anonymous_sessions").doc(state.sessionId).set({
+      scenario: elements.pillLabel ? elements.pillLabel.innerText : 'Desconocido',
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      history: state.conversationHistory
+    }, { merge: true }).catch(err => console.error("Error guardando sesión:", err));
+  }
+
   const msgDiv = document.createElement('div');
   msgDiv.className = `transcript-msg ${sender === 'Tú' ? 'user' : 'alex'}`;
   
@@ -573,6 +583,9 @@ INSTRUCCIONES CLAVE:
 `;
 
 async function triggerAgenticGenerator(usePdf = false) {
+  state.sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
+  state.conversationHistory = [];
+  
   if (usePdf) {
     if (!state.currentProject || !state.currentProject.toLowerCase().includes('.pdf')) {
       alert('Primero debes arrastrar un Syllabus (PDF) en el área designada.');

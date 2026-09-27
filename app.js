@@ -369,6 +369,14 @@ function handleFileSelect(e) {
     state.currentProject = file.name;
     document.getElementById('projectName').innerText = `📄 ${file.name} (Indexado en RAG)`;
     document.getElementById('projectInfo').style.display = 'block';
+    
+    // Read file as Base64 for Gemini
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      // Remover el prefijo 'data:application/pdf;base64,'
+      state.currentFileBase64 = event.target.result.split(',')[1];
+    };
+    reader.readAsDataURL(file);
   }
 }
 
@@ -385,5 +393,104 @@ function resetCall() {
     const msg = "¡Hola! Bienvenido a tu sala de videollamada interactiva. Soy tu copiloto en Alexandr.ia Tourism Lab. ¿Qué proyecto o simulación quieres trabajar hoy?";
     addTranscriptMsg('Alex (Copiloto)', msg);
     speakCaption('Alex', msg);
+  }
+}
+
+// -----------------------------------------------------------------
+// Agentic Scenario Generator (Syllabus based)
+// -----------------------------------------------------------------
+const agenticSystemPrompt = `
+Eres un Generador de Escenarios Agénticos para 'Alexandr.ia Tourism Lab'.
+Tu objetivo es crear un escenario de Roleplay inmersivo y de alta presión para evaluar oralmente a un estudiante de Administración Turística.
+
+Temas de evaluación disponibles (elige UNO al azar o combínalos estratégicamente):
+
+1. MERCADOTECNIA TURÍSTICA AVANZADA:
+- Comunicando valor: Transición a modelos híbridos Offline/Online y las 5 etapas del marketing.
+- Distribución y Omnicanalidad: Sinergia de canales, economía digital, Big Data y mapeo del Customer Journey.
+- Promoción: Gestión de contenidos por segmento y métricas de efectividad.
+- Ventas y Competitividad: Macrosegmentación, microsegmentación y optimización del portafolio de marcas.
+- Macroeconomía Turística: Aeropuertos, HUB economy, optimización de slots, alianzas y "destinos blindados".
+- Branding: Valor integral, mapas mentales del consumidor y pirámide de marca.
+- Marketing Digital: Hiperconveniencia, Customer centricity, APPs y las 5 etapas del Inbound marketing.
+- Integración Omnicanal 360°: Reach en medios fusionados, Content Experience y minimización de volatilidad.
+- Storytelling y Visual Telling: Campañas seriadas y adopción de tecnología 4G/5G en la experiencia del viajero.
+
+2. ESTADÍSTICA PARA LA DIRECCIÓN: Distribución normal, series de tiempo, regresión lineal múltiple.
+3. SOSTENIBILIDAD Y TURISMO AVANZADO:
+- Evolución multidisciplinaria: Dimensión económica, ambiental, sistemas de bienestar social (salud, educación, vivienda), equidad, inclusión y el balance político entre libre mercado, Estado y comunidades.
+- Retos contemporáneos (México y el mundo): Brechas económicas, protección del patrimonio cultural, crisis climática, pérdida de biodiversidad, contaminación, gobernanza participativa y gestión de contingencias/desastres.
+- Arreglos institucionales: Papel de la ONU (PNUD, PNUMA, OMT), Objetivos de Desarrollo Sostenible (ODS), atribuciones gubernamentales (federal, estatal, municipal), ONG's y filantropía.
+- Indicadores de sostenibilidad: Métricas cuantitativas/cualitativas de agua, emisiones/aire, eficiencia energética, recursos costeros, biodiversidad, manejo de residuos y programas de reducción de la pobreza.
+- Turismo como palanca de desarrollo: Desarrollo regenerativo y regional, economía circular, innovación tecnológica, emprendedurismo (PyMEs), y gestión en ciudades, zonas rurales y ANPs (Áreas Naturales Protegidas).
+- Competitividad turística: Sostenibilidad como requisito indispensable de operación y ventaja competitiva diferenciadora.
+- Certificación internacional: Criterios del Consejo Global de Turismo Sostenible (GSTC), sellos internacionales, auditorías, programas y distintivos nacionales oficiales.
+
+INSTRUCCIONES CLAVE:
+1. Elige aleatoriamente UN subtema específico de la lista anterior (ya sea de Marketing o de Sostenibilidad).
+2. Asume una Persona Antagónica o Evaluadora (Ej. CEO estricto, Auditor del GSTC, Inversionista rudo, Activista ambiental, Periodista incisivo, Director de Aerolínea, Representante de la OMT o Líder Ejidal).
+3. Asigna un Rol de Defensa al alumno (Ej. Estratega de Marca, Gerente de RSE, Director de Hotel, Funcionario de Turismo).
+4. Plantea un conflicto crítico y muy específico que el alumno solo pueda resolver justificándose con la teoría del tema elegido (Ej. Defender el presupuesto de una campaña Inbound, justificar el balance político frente al mercado, o defender los indicadores métricos de agua frente a una auditoría).
+5. Emite la primera frase del diálogo de forma retadora. NUNCA rompas el personaje.
+`;
+
+async function triggerAgenticGenerator() {
+  elements.scenarioDropdown.classList.remove('show');
+  state.currentScenario = 'agentic';
+  elements.videoBg.className = 'video-bg theme-investor'; // Tema dinámico oscuro
+  
+  elements.pillLabel.innerText = 'Generando escenario aleatorio...';
+  elements.participantName.innerText = 'Gemini Inventando Rol...';
+  elements.roleLabel.innerText = 'Consultando Temarios';
+  
+  updateOrb('working');
+  
+  let GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY');
+  if (!GEMINI_API_KEY) {
+    GEMINI_API_KEY = prompt("Para iniciar la simulación, ingresa tu API Key de Gemini:");
+    if (GEMINI_API_KEY) {
+      localStorage.setItem('GEMINI_API_KEY', GEMINI_API_KEY);
+    } else {
+      updateOrb('breathing');
+      return;
+    }
+  }
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  
+  const promptText = agenticSystemPrompt + "\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  \"title\": \"Ej. 🌿 Auditoría GSTC\",\n  \"ai_name\": \"Ej. Auditora Internacional\",\n  \"ai_role\": \"Ej. Evaluando Economía Circular\",\n  \"first_message\": \"Ej. Como auditora he revisado sus indicadores...\"\n}";
+  
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{ text: promptText }]
+        }],
+        generationConfig: {
+          responseMimeType: "application/json"
+        }
+      })
+    });
+    
+    if (!response.ok) throw new Error("Error en la API de Gemini");
+    
+    const data = await response.json();
+    const resultText = data.candidates[0].content.parts[0].text;
+    const scenario = JSON.parse(resultText);
+    
+    elements.pillLabel.innerText = scenario.title;
+    elements.participantName.innerText = scenario.ai_name;
+    elements.roleLabel.innerText = scenario.ai_role;
+    
+    addTranscriptMsg(scenario.ai_name, scenario.first_message);
+    speakCaption(scenario.ai_name, scenario.first_message);
+    
+  } catch (error) {
+    console.error(error);
+    elements.pillLabel.innerText = "Error generando escenario";
+    elements.participantName.innerText = "Error";
+    elements.roleLabel.innerText = "Revisa la API Key";
+    updateOrb('breathing');
   }
 }

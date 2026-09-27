@@ -22,7 +22,8 @@ const state = {
   timerInterval: null,
   currentProject: null,
   customVoiceId: 'sDh3eviBhiuHKi0MjTNq',
-  ttsApiKey: 'sk_4197546279e7106e0b4d72bfa7f870dd1316bd4e71fbd682'
+  ttsApiKey: 'sk_4197546279e7106e0b4d72bfa7f870dd1316bd4e71fbd682',
+  conversationHistory: []
 };
 
 let recognition = null;
@@ -350,6 +351,11 @@ function sendPrompt(promptText) {
 }
 
 function addTranscriptMsg(sender, text) {
+  state.conversationHistory.push({
+    role: sender === 'Tú' ? 'user' : 'model',
+    parts: [{ text: text }]
+  });
+
   const msgDiv = document.createElement('div');
   msgDiv.className = `transcript-msg ${sender === 'Tú' ? 'user' : 'alex'}`;
   
@@ -373,22 +379,68 @@ function addTranscriptMsg(sender, text) {
   elements.transcriptTimeline.scrollTop = elements.transcriptTimeline.scrollHeight;
 }
 
-function generateResponse(userText) {
-  const textLower = userText.toLowerCase();
-  let reply = 'Excelente planteamiento. ¿Cómo garantiza tu propuesta que la derrama económica se quede en la comunidad local?';
-  
-  if (state.currentScenario === 'mentor' && (textLower.includes('capacidad de carga') || textLower.includes('sendero'))) {
-    reply = 'Para calcular la capacidad de carga física, debes multiplicar el área del sendero por la densidad permitida de visitantes y ajustar por factores ecológicos. ¿Qué área tiene tu ruta?';
-  } else if (state.currentScenario === 'overbooking') {
-    reply = '¡Pagué mi reservación hace 3 meses! Si no me trasladan inmediatamente a un hotel equivalente, llamaré a la Procuraduría del Consumidor.';
-  } else if (state.currentScenario === 'community') {
-    reply = 'Queremos ver una propuesta formal firmada donde el 30% de los guías de la ruta sean miembros de nuestra asamblea ejidal.';
-  } else if (state.currentScenario === 'investor') {
-    reply = 'Sus proyecciones de ocupación en temporada baja son arriesgadas. Ajuste la TIR al 18% y volveremos a negociar.';
+async function generateResponse(userText) {
+  if (state.currentScenario !== 'agentic') {
+    // Escenarios fijos para velocidad de demo si no usan el generador agéntico
+    const textLower = userText.toLowerCase();
+    let reply = 'Excelente planteamiento. ¿Cómo garantiza tu propuesta que la derrama económica se quede en la comunidad local?';
+    
+    if (state.currentScenario === 'mentor' && (textLower.includes('capacidad de carga') || textLower.includes('sendero'))) {
+      reply = 'Para calcular la capacidad de carga física, debes multiplicar el área del sendero por la densidad permitida de visitantes y ajustar por factores ecológicos. ¿Qué área tiene tu ruta?';
+    } else if (state.currentScenario === 'overbooking') {
+      reply = '¡Pagué mi reservación hace 3 meses! Si no me trasladan inmediatamente a un hotel equivalente, llamaré a la Procuraduría del Consumidor.';
+    } else if (state.currentScenario === 'community') {
+      reply = 'Queremos ver una propuesta formal firmada donde el 30% de los guías de la ruta sean miembros de nuestra asamblea ejidal.';
+    } else if (state.currentScenario === 'investor') {
+      reply = 'Sus proyecciones de ocupación en temporada baja son arriesgadas. Ajuste la TIR al 18% y volveremos a negociar.';
+    }
+    
+    addTranscriptMsg(state.currentScenario === 'mentor' ? 'Alex (Mentor)' : 'Simulador', reply);
+    speakCaption(state.currentScenario === 'mentor' ? 'Alex' : 'Simulador', reply);
+    return;
   }
+
+  // Flujo Agéntico Inteligente (Gemini)
+  let GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY');
+  if (!GEMINI_API_KEY) {
+    addTranscriptMsg('Sistema', 'Falta API Key para continuar la conversación agéntica.');
+    updateOrb('breathing');
+    return;
+  }
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
   
-  addTranscriptMsg(state.currentScenario === 'mentor' ? 'Alex (Mentor)' : 'Simulador', reply);
-  speakCaption(state.currentScenario === 'mentor' ? 'Alex' : 'Simulador', reply);
+  // Limitar el historial para no exceder contexto, y asegurar que empiece con 'user' si es necesario, 
+  // pero Gemini chat context requires alternating user/model. We will just pass the history array directly.
+  
+  const systemInstruction = {
+    parts: [{ text: "Eres el personaje de la simulación. Sigue tu rol asignado previamente, NUNCA rompas el personaje. Responde de forma breve, concisa y oral (máximo 2 párrafos). Genera presión sobre el estudiante." }]
+  };
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction,
+        contents: state.conversationHistory
+      })
+    });
+
+    if (!response.ok) throw new Error("API Error");
+
+    const data = await response.json();
+    const replyText = data.candidates[0].content.parts[0].text;
+    
+    const aiName = elements.participantName.innerText;
+    addTranscriptMsg(aiName, replyText);
+    speakCaption(aiName, replyText);
+
+  } catch (error) {
+    console.error(error);
+    addTranscriptMsg('Sistema', 'Error de conexión con la IA. ' + error.message);
+    updateOrb('breathing');
+  }
 }
 
 function toggleSidebar() {

@@ -113,8 +113,9 @@ async function startSimulation() {
   elements.participantName.innerText = "Alex (Copiloto Alexandr.ia)";
   elements.roleLabel.innerText = "Tutor Pedagógico";
   
-  const intro = `¡Hola ${state.userName}! Bienvenido a tu sala interactiva. Soy tu copiloto en Alexandr.ia Tourism Lab. ¿Qué simulación quieres trabajar hoy?`;
-  addTranscriptMsg('Alex (Copiloto)', intro);
+  const intro = `¡Hola ${state.userName}! Bienvenido a tu sala interactiva. Por favor, selecciona un Generador de Casos en el panel lateral para iniciar tu simulación.`;
+  // No añadimos al transcript porque el tabTranscript está oculto, o si queremos que se vea, no lo decimos.
+  // Wait, if the transcript is hidden, they won't see this text. BUT speakCaption will say it out loud!
   await speakCaption('Alex', intro);
 }
 
@@ -380,6 +381,12 @@ function addTranscriptMsg(sender, text) {
 }
 
 async function generateResponse(userText) {
+  if (state.currentScenario !== 'agentic') {
+    // Si el usuario presiona el micrófono antes de generar escenario, le recordamos
+    speakCaption('Sistema', 'Por favor, selecciona un generador de escenarios en el panel lateral primero.');
+    return;
+  }
+
   // Flujo Agéntico Inteligente Universal (Gemini para TODO)
   let GEMINI_API_KEY = atob("QVEuQWI4Uk42SnFqSXE3WEh6T3N6ZnJPYnU3VWpMSXo5WEYzSmswOFl4dDJBbXhZTkhYY1E=");
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
@@ -497,6 +504,8 @@ async function handleFileSelect(e) {
         });
         
         document.getElementById('projectName').innerText = `📄 ${file.name} (Indexado en Firestore)`;
+        // Iniciar el escenario automáticamente
+        triggerAgenticGenerator(true);
       } catch (err) {
         console.error("Error procesando PDF o subiendo a Firestore:", err);
         document.getElementById('projectName').innerText = `📄 ${file.name} (Error procesando)`;

@@ -324,51 +324,6 @@ function toggleMic() {
   }
 }
 
-function toggleScenarioDropdown() {
-  elements.scenarioDropdown.classList.toggle('show');
-}
-
-function selectScenario(scenarioKey) {
-  state.currentScenario = scenarioKey;
-  elements.scenarioDropdown.classList.remove('show');
-
-  const items = elements.scenarioDropdown.querySelectorAll('.dropdown-item');
-  items.forEach(item => item.classList.remove('active'));
-
-  if (scenarioKey === 'mentor') {
-    elements.videoBg.className = 'video-bg';
-    elements.pillLabel.innerText = 'Modo: Mentor Socrático';
-    elements.participantName.innerText = 'Copiloto Anáhuac';
-    elements.roleLabel.innerText = 'Tutor Pedagógico';
-    const msg = '¡De vuelta a nuestro espacio de tutoría socrática! ¿Revisamos tu borrador de proyecto o tienes alguna duda legal?';
-    addTranscriptMsg('Copiloto Anáhuac', msg);
-    speakCaption('Copiloto Anáhuac', msg);
-  } else if (scenarioKey === 'overbooking') {
-    elements.videoBg.className = 'video-bg theme-overbooking';
-    elements.pillLabel.innerText = 'Crisis 🏨: Sobreventa en Hotel';
-    elements.participantName.innerText = 'Sr. Martínez (Huésped)';
-    elements.roleLabel.innerText = 'Rol: Cliente Exigente';
-    const msg = `¡Esto es inaceptable! Vengo viajando horas y me dicen que no hay habitación disponible. ¡Exijo hablar con el gerente!`;
-    addTranscriptMsg('Sr. Martínez', msg);
-    speakCaption('Sr. Martínez', msg);
-  } else if (scenarioKey === 'community') {
-    elements.videoBg.className = 'video-bg theme-community';
-    elements.pillLabel.innerText = 'Negociación 🌿: Comunidad Rural';
-    elements.participantName.innerText = 'Doña Elena (Asamblea)';
-    elements.roleLabel.innerText = 'Rol: Líder Ejidal';
-    const msg = 'Buenas tardes. Nos preocupa que los grupos de turistas traigan basura. ¿Cómo se va a beneficiar nuestra gente?';
-    addTranscriptMsg('Doña Elena', msg);
-    speakCaption('Doña Elena', msg);
-  } else if (scenarioKey === 'investor') {
-    elements.videoBg.className = 'video-bg theme-investor';
-    elements.pillLabel.innerText = 'Pitch 💼: Fondo de Inversión';
-    elements.participantName.innerText = 'Lic. Valenzuela';
-    elements.roleLabel.innerText = 'Rol: Inversionista';
-    const msg = 'Tiene 2 minutos. Su propuesta de Yield Management me parece muy optimista. ¿Cómo justifica esas tarifas?';
-    addTranscriptMsg('Lic. Valenzuela', msg);
-    speakCaption('Lic. Valenzuela', msg);
-  }
-}
 
 function handleUserSubmit(e) {
   e.preventDefault();

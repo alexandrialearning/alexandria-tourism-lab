@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mantener sesión activa al recargar
   auth.onAuthStateChanged((user) => {
     if (user) {
-      state.userName = user.email.split('@')[0];
+      state.userName = user.displayName || user.email.split('@')[0];
       document.getElementById('userProfileTag').innerText = `👤 ${state.userName}`;
       document.getElementById('startOverlay').style.display = 'none';
       document.getElementById('btnLogout').style.display = 'inline-block';
@@ -92,12 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function handleLogin() {
+  const name = document.getElementById('loginName').value.trim();
   const email = document.getElementById('loginUsername').value;
   const pass = document.getElementById('loginPassword').value;
   const privacyChecked = document.getElementById('privacyCheckbox').checked;
   
-  if (!email || !pass) {
-    alert("Por favor, ingresa tu correo y contraseña.");
+  if (!name || !email || !pass) {
+    alert("Por favor, ingresa tu nombre, correo y contraseña.");
     return;
   }
 
@@ -108,23 +109,28 @@ async function handleLogin() {
   
   try {
     const btn = document.getElementById('btnStartSimulation');
-    const originalText = btn.innerText;
     btn.innerText = "Autenticando...";
     btn.disabled = true;
 
+    let userCredential;
     try {
-      // Intentar iniciar sesión
-      await auth.signInWithEmailAndPassword(email, pass);
+      userCredential = await auth.signInWithEmailAndPassword(email, pass);
     } catch (err) {
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        // Si no existe, lo creamos para el prototipo
-        await auth.createUserWithEmailAndPassword(email, pass);
+        userCredential = await auth.createUserWithEmailAndPassword(email, pass);
       } else {
         throw err;
       }
     }
     
-    state.userName = email.split('@')[0];
+    // Si escribió un nombre y el perfil no lo tiene o lo quiere actualizar
+    if (userCredential.user && name) {
+      await userCredential.user.updateProfile({ displayName: name });
+      state.userName = name;
+    } else {
+      state.userName = userCredential.user.displayName || email.split('@')[0];
+    }
+    
     document.getElementById('userProfileTag').innerText = `👤 ${state.userName}`;
     localStorage.setItem('privacyAccepted', 'true');
     startSimulation();
@@ -533,10 +539,10 @@ async function finishCall(auto = false) {
     parts: [{ 
       text: `Eres un profesor experto en turismo evaluando una simulación.
 Lee la transcripción de la conversación.
-Genera un reporte final para el alumno en formato Markdown con esta estructura exacta:
+Genera un reporte final para el alumno "${state.userName}" en formato Markdown con esta estructura exacta:
 **Resolución de conflicto:** [Calificación de 1 a 10]/10
 **Uso de lenguaje técnico:** [Calificación de 1 a 10]/10
-**Comentario del mentor:** "[Un párrafo de feedback constructivo de 2-3 líneas]".`
+**Comentario del mentor:** "[Un párrafo de feedback constructivo de 2-3 líneas dirigiéndote a ${state.userName} por su nombre]".`
     }]
   };
 
@@ -708,7 +714,7 @@ async function triggerAgenticGenerator(usePdf = false) {
     5. IMPORTANTE: Como el alumno es el Director, asume que tú (la IA) eres un mando medio o tercero que NO entiende a fondo los términos muy técnicos. Exígele al alumno que te los explique con palabras sencillas para poder ejecutar sus órdenes. NUNCA rompas el personaje.`;
   }
   
-  const promptText = dynamicPrompt + "\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  \"title\": \"Ej. 🌿 Auditoría GSTC\",\n  \"ai_name\": \"Ej. Auditora Internacional\",\n  \"ai_role\": \"Ej. Evaluando Economía Circular\",\n  \"scenario_context\": \"Breve descripción de 2 líneas explicando el conflicto del escenario que le aparecerá al alumno para que entienda su rol antes de hablar.\",\n  \"first_message\": \"Ej. Como auditora he revisado sus indicadores...\"\n}";
+  const promptText = dynamicPrompt + `\n\nIMPORTANTE: El nombre del alumno es "${state.userName}". Debes dirigirte a él o mencionarlo por su nombre en tu 'first_message' dependiendo del rol que le asignaste (Ej. "Director ${state.userName}", "Licenciado ${state.userName}", "Jefe ${state.userName}", etc.).\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  "title": "Ej. 🌿 Auditoría GSTC",\n  "ai_name": "Ej. Auditora Internacional",\n  "ai_role": "Ej. Evaluando Economía Circular",\n  "scenario_context": "Breve descripción de 2 líneas explicando el conflicto del escenario que le aparecerá al alumno para que entienda su rol antes de hablar.",\n  "first_message": "Ej. Director ${state.userName}, he revisado sus indicadores..."\n}`;
   
   try {
     const parts = [];

@@ -44,7 +44,6 @@ const elements = {
   btnMic: document.getElementById('btnMic'),
   micIcon: document.getElementById('micIcon'),
   micLabel: document.getElementById('micLabel'),
-  scenarioDropdown: document.getElementById('scenarioDropdown'),
   pipMicStatus: document.getElementById('pipMicStatus')
 };
 
@@ -701,7 +700,6 @@ async function triggerAgenticGenerator(usePdf = false) {
     }
   }
 
-  elements.scenarioDropdown.classList.remove('show');
   state.currentScenario = 'agentic';
   elements.videoBg.className = 'video-bg theme-investor'; // Tema dinámico oscuro
   

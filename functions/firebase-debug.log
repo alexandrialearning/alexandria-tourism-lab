@@ -1,0 +1,95 @@
+[debug] [2026-09-28T18:29:15.991Z] ----------------------------------------------------------------------
+[debug] [2026-09-28T18:29:16.002Z] Command:       /Users/eugeniosalasi/.nvm/versions/node/v24.13.0/bin/node /Users/eugeniosalasi/.nvm/versions/node/v24.13.0/bin/firebase deploy --only functions
+[debug] [2026-09-28T18:29:16.002Z] CLI Version:   15.13.0
+[debug] [2026-09-28T18:29:16.002Z] Platform:      darwin
+[debug] [2026-09-28T18:29:16.002Z] Node Version:  v24.13.0
+[debug] [2026-09-28T18:29:16.002Z] Time:          Mon Sep 28 2026 12:29:16 GMT-0600 (Central Standard Time)
+[debug] [2026-09-28T18:29:16.002Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-09-28T18:29:16.839Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-09-28T18:29:16.839Z] > authorizing via signed-in user (alexandria.learning@gmail.com)
+[debug] [2026-09-28T18:29:16.839Z] [iam] checking project anahuac-tourism for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2026-09-28T18:29:16.841Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:16.841Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:16.841Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/anahuac-tourism:testIamPermissions [none]
+[debug] [2026-09-28T18:29:16.841Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/anahuac-tourism:testIamPermissions  x-goog-user-project=anahuac-tourism
+[debug] [2026-09-28T18:29:16.841Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/anahuac-tourism:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-09-28T18:29:17.057Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/anahuac-tourism:testIamPermissions 200
+[debug] [2026-09-28T18:29:17.057Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/anahuac-tourism:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-09-28T18:29:17.057Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:17.057Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:17.057Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/anahuac-tourism/serviceAccounts/anahuac-tourism@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2026-09-28T18:29:17.058Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/anahuac-tourism/serviceAccounts/anahuac-tourism@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2026-09-28T18:29:17.354Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/anahuac-tourism/serviceAccounts/anahuac-tourism@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2026-09-28T18:29:17.354Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/anahuac-tourism/serviceAccounts/anahuac-tourism@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'anahuac-tourism'...
+[info] 
+[info] i  deploying functions 
+[debug] [2026-09-28T18:29:17.357Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:17.357Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:17.357Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/anahuac-tourism [none]
+[debug] [2026-09-28T18:29:17.453Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/anahuac-tourism 200
+[debug] [2026-09-28T18:29:17.453Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/anahuac-tourism {"projectNumber":"675954232934","projectId":"anahuac-tourism","lifecycleState":"ACTIVE","name":"Anahuac Tourism","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2026-09-27T04:23:05.468Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2026-09-28T18:29:17.455Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:17.455Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:17.455Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/anahuac-tourism/adminSdkConfig [none]
+[debug] [2026-09-28T18:29:17.699Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/anahuac-tourism/adminSdkConfig 200
+[debug] [2026-09-28T18:29:17.699Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/anahuac-tourism/adminSdkConfig {"projectId":"anahuac-tourism","storageBucket":"anahuac-tourism.firebasestorage.app"}
+[debug] [2026-09-28T18:29:17.700Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:17.700Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:17.700Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/anahuac-tourism/configs [none]
+[debug] [2026-09-28T18:29:17.950Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/anahuac-tourism/configs 200
+[debug] [2026-09-28T18:29:17.950Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/anahuac-tourism/configs {}
+[debug] [2026-09-28T18:29:17.951Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-09-28T18:29:18.621Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.0.1",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2026-09-28T18:29:18.621Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2026-09-28T18:29:18.623Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-09-28T18:29:18.633Z] Found firebase-functions binary at '/Users/eugeniosalasi/.gemini/antigravity/scratch/alexandria-tourism-lab/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8040
+
+[debug] [2026-09-28T18:29:19.191Z] Got response from /__/functions.yaml {"endpoints":{"callGeminiAPI":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":10,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","secretEnvironmentVariables":[{"key":"GEMINI_API_KEY"}],"labels":{},"callableTrigger":{},"entryPoint":"callGeminiAPI"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] i  extensions: ensuring required API firebaseextensions.googleapis.com is enabled... 
+[debug] [2026-09-28T18:29:23.212Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:23.212Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:23.212Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/anahuac-tourism/services/firebaseextensions.googleapis.com [none]
+[debug] [2026-09-28T18:29:23.212Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/anahuac-tourism/services/firebaseextensions.googleapis.com  x-goog-user-project=anahuac-tourism
+[debug] [2026-09-28T18:29:23.788Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/anahuac-tourism/services/firebaseextensions.googleapis.com 200
+[debug] [2026-09-28T18:29:23.788Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/anahuac-tourism/services/firebaseextensions.googleapis.com [omitted]
+[warn] ⚠  extensions: missing required API firebaseextensions.googleapis.com. Enabling now... 
+[debug] [2026-09-28T18:29:23.789Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:23.789Z] Checked if tokens are valid: true, expires at: 1790622072844
+[debug] [2026-09-28T18:29:23.789Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/anahuac-tourism/services/firebaseextensions.googleapis.com:enable [none]
+[debug] [2026-09-28T18:29:23.789Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/anahuac-tourism/services/firebaseextensions.googleapis.com:enable  x-goog-user-project=anahuac-tourism
+[debug] [2026-09-28T18:29:24.374Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/anahuac-tourism/services/firebaseextensions.googleapis.com:enable 200
+[debug] [2026-09-28T18:29:24.375Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/anahuac-tourism/services/firebaseextensions.googleapis.com:enable [omitted]

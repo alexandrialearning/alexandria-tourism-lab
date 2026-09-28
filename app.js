@@ -481,8 +481,8 @@ async function generateResponse(userText) {
 }
 
 function toggleSidebar() {
-  elements.callSidebar.classList.toggle('hidden');
-  state.sidebarOpen = !elements.callSidebar.classList.contains('hidden');
+  // Función desactivada: El sidebar ya no se puede ocultar
+  state.sidebarOpen = true;
 }
 
 function switchSidebarTab(tabName) {

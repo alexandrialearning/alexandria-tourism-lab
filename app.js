@@ -28,7 +28,6 @@ const state = {
 };
 
 let recognition = null;
-let autoListen = true;
 
 const elements = {
   videoBg: document.getElementById('videoBg'),
@@ -278,39 +277,36 @@ function initSpeechRecognition() {
   };
 
   recognition.onerror = (e) => {
-    if (e.error === 'no-speech' && !state.isSpeaking && autoListen) {
-      try { recognition.start(); } catch(err){}
-    }
+    // Silencio o no-speech: no hacer nada
   };
 
   recognition.onend = () => {
     state.isRecording = false;
     elements.btnMic.classList.remove('active-mic');
+    elements.btnMic.style.background = "var(--bg-card)";
     elements.micIcon.innerText = '🎙️';
-    elements.micLabel.innerText = 'Micrófono (Auto)';
+    elements.micLabel.innerText = 'Toca para Hablar';
     elements.pipMicStatus.innerText = '🎙️ En espera';
     elements.pipMicStatus.style.color = '#34D399';
     
     if (!state.isSpeaking && window.setOrbState) {
       window.setOrbState('breathing');
     }
-
-    if (autoListen && !state.isSpeaking) {
-      try { recognition.start(); } catch(err){}
-    }
   };
 }
 
 function startListening() {
   if (state.currentScenario !== 'agentic') return;
-  autoListen = true;
   if (recognition && !state.isRecording && !state.isSpeaking) {
-    try { recognition.start(); } catch(e){}
+    try { 
+      recognition.start();
+      elements.btnMic.style.background = "var(--primary-orange)";
+      elements.micLabel.innerText = "Toca para Enviar";
+    } catch(e){}
   }
 }
 
 function stopMic() {
-  autoListen = false;
   if (recognition && state.isRecording) {
     recognition.stop();
   }

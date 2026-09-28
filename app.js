@@ -28,6 +28,7 @@ const state = {
 };
 
 let recognition = null;
+let autoListen = true;
 
 const elements = {
   videoBg: document.getElementById('videoBg'),
@@ -272,52 +273,58 @@ function initSpeechRecognition() {
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
     elements.userInput.value = transcript;
-    stopPushToTalk(null); 
+    stopMic(); 
     handleUserSubmit(new Event('submit'));
   };
 
   recognition.onerror = (e) => {
-    // Ignore no-speech errors since it's push to talk now
+    if (e.error === 'no-speech' && !state.isSpeaking && autoListen) {
+      try { recognition.start(); } catch(err){}
+    }
   };
 
   recognition.onend = () => {
     state.isRecording = false;
     elements.btnMic.classList.remove('active-mic');
     elements.micIcon.innerText = '🎙️';
-    elements.micLabel.innerText = 'Mantener p/Hablar';
+    elements.micLabel.innerText = 'Micrófono (Auto)';
     elements.pipMicStatus.innerText = '🎙️ En espera';
     elements.pipMicStatus.style.color = '#34D399';
     
     if (!state.isSpeaking && window.setOrbState) {
       window.setOrbState('breathing');
     }
+
+    if (autoListen && !state.isSpeaking) {
+      try { recognition.start(); } catch(err){}
+    }
   };
 }
 
-function startPushToTalk(event) {
-  if (event) event.preventDefault(); // Evitar doble evento en táctil
-  if (state.currentScenario !== 'agentic') {
-    if (event.type === 'mousedown') alert("Genera un escenario primero antes de hablar.");
-    return;
-  }
-  
-  // Evitamos grabar si la IA está hablando
-  if (state.isSpeaking) return;
-  
-  if (recognition && !state.isRecording) {
-    try { 
-      recognition.start(); 
-      elements.btnMic.style.transform = 'scale(0.95)';
-    } catch(e){}
+function startListening() {
+  if (state.currentScenario !== 'agentic') return;
+  autoListen = true;
+  if (recognition && !state.isRecording && !state.isSpeaking) {
+    try { recognition.start(); } catch(e){}
   }
 }
 
-function stopPushToTalk(event) {
-  if (event) event.preventDefault();
-  elements.btnMic.style.transform = 'scale(1)';
-  
+function stopMic() {
+  autoListen = false;
   if (recognition && state.isRecording) {
     recognition.stop();
+  }
+}
+
+function toggleMic() {
+  if (state.currentScenario !== 'agentic') {
+    alert("Genera un escenario primero antes de hablar.");
+    return;
+  }
+  if (state.currentRecording || state.isRecording) {
+    stopMic();
+  } else {
+    startListening();
   }
 }
 

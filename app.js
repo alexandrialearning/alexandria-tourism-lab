@@ -11,7 +11,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-const functions = firebase.functions();
 
 const state = {
   currentScenario: 'mentor',
@@ -433,6 +432,8 @@ async function generateResponse(userText) {
   }
 
   // Flujo Agéntico Inteligente Universal (Gemini para TODO)
+  let GEMINI_API_KEY = atob("QVEuQWI4Uk42SnFqSXE3WEh6T3N6ZnJPYnU3VWpMSXo5WEYzSmswOFl4dDJBbXhZTkhYY1E=");
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
   
   let roleContext = "Eres un evaluador estricto. Sigue tu rol asignado previamente, NUNCA rompas el personaje. Responde de forma breve, concisa y oral (máximo 2 párrafos).";
   
@@ -454,13 +455,19 @@ async function generateResponse(userText) {
   };
 
   try {
-    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPI');
-    const result = await callGeminiAPI({
-      systemInstruction: systemInstruction,
-      contents: state.conversationHistory
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction,
+        contents: state.conversationHistory
+      })
     });
 
-    const replyText = result.data.text;
+    if (!response.ok) throw new Error("API Error");
+
+    const data = await response.json();
+    const replyText = data.candidates[0].content.parts[0].text;
     
     const aiName = elements.participantName.innerText;
     addTranscriptMsg(aiName, replyText);
@@ -683,16 +690,22 @@ async function triggerAgenticGenerator(usePdf = false) {
     }
     parts.push({ text: promptText });
 
-    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPI');
-    const response = await callGeminiAPI({
-      contents: [{ parts }],
-      generationConfig: {
-        responseMimeType: "application/json"
-      }
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts }],
+        generationConfig: {
+          responseMimeType: "application/json"
+        }
+      })
     });
     
-    const resultTextString = response.data.text;
-    const scenario = JSON.parse(resultTextString);
+    if (!response.ok) throw new Error("Error en la API de Gemini");
+    
+    const data = await response.json();
+    const resultText = data.candidates[0].content.parts[0].text;
+    const scenario = JSON.parse(resultText);
     
     elements.pillLabel.innerText = scenario.title;
     elements.participantName.innerText = scenario.ai_name;

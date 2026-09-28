@@ -843,3 +843,50 @@ async function handleLogout() {
     }
   }
 }
+
+async function openSyllabusModal() {
+  document.getElementById('syllabusModal').style.display = 'flex';
+  const content = document.getElementById('syllabusContent');
+  
+  if (state.currentFileBase64) {
+    if (state.extractedTopics) {
+      content.innerHTML = state.extractedTopics;
+      return;
+    }
+    
+    content.innerHTML = '<div style="text-align: center;">Analizando documento para extraer el temario... ⏳</div>';
+    
+    try {
+      const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPI');
+      const response = await callGeminiAPI({
+        contents: [{
+          parts: [
+            { inlineData: { mimeType: "application/pdf", data: state.currentFileBase64 } },
+            { text: "Extrae un temario en formato HTML (usa <ul> y <li>, sin markdown). Extrae los 5 temas o competencias principales de este documento que un alumno debería dominar." }
+          ]
+        }]
+      });
+      
+      let html = response.data.text;
+      // Limpiar markdown si gemini lo devuelve por error
+      html = html.replace(/```html/g, '').replace(/```/g, '');
+      
+      state.extractedTopics = `<h3>Temario de: ${state.currentProject}</h3>` + html;
+      content.innerHTML = state.extractedTopics;
+    } catch (e) {
+      console.error(e);
+      content.innerHTML = 'Error extrayendo temas del PDF.';
+    }
+  } else {
+    content.innerHTML = `
+      <h3>Temario Base (Por defecto)</h3>
+      <p>Al no haber subido un PDF, la IA te evaluará aleatoriamente sobre los siguientes temas:</p>
+      <ul>
+        <li><strong>Mercadotecnia Turística Avanzada:</strong> Omnicanalidad, Inbound marketing, Macrosegmentación.</li>
+        <li><strong>Sostenibilidad y Turismo:</strong> Desarrollo regenerativo, Criterios GSTC, Indicadores de impacto.</li>
+        <li><strong>Estadística para la Dirección:</strong> Distribución normal, series de tiempo, regresión.</li>
+      </ul>
+      <p style="margin-top: 1rem; font-size: 0.9em; color: #64748B;">Para personalizar este temario, arrastra un archivo PDF en la pestaña "RAG" del panel izquierdo.</p>
+    `;
+  }
+}

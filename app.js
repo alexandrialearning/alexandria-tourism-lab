@@ -601,6 +601,28 @@ Genera un reporte final para el alumno en formato Markdown con esta estructura e
     feedbackText = feedbackText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     feedbackText = feedbackText.replace(/\n/g, '<br>');
 
+    // Detener la simulación para evitar que el micrófono se abra
+    state.currentScenario = 'feedback';
+    
+    // Parsear texto para generar mensaje de voz resumido
+    let resScore = "10";
+    let lenScore = "10";
+    let comment = "Gran trabajo en la sesión de hoy.";
+    
+    try {
+      const resMatch = feedbackText.match(/Resolución de conflicto:\s*(?:<[^>]+>)*\**(\d+)/i);
+      if (resMatch) resScore = resMatch[1];
+      
+      const lenMatch = feedbackText.match(/Uso de lenguaje técnico:\s*(?:<[^>]+>)*\**(\d+)/i);
+      if (lenMatch) lenScore = lenMatch[1];
+      
+      const commentMatch = feedbackText.match(/Comentario del mentor:\s*(?:<[^>]+>)*\**"?([^"]+)"?/i) || feedbackText.match(/Comentario del mentor:\s*(?:<[^>]+>)*\**(.*)/i);
+      if (commentMatch) comment = commentMatch[1].replace(/<[^>]+>/g, '').trim();
+    } catch(e) { console.warn("Parsing feedback failed:", e); }
+    
+    // Hablar el resultado (pero ocultar las captions visualmente atrás del modal está bien)
+    speakCaption('Profesor Anáhuac', `Se acabó el tiempo. Revisé tu desempeño y lograste un ${resScore} de 10 en resolución y ${lenScore} en lenguaje. ${comment}`);
+    
     document.getElementById('feedbackContent').innerHTML = feedbackText;
     updateOrb('neutral');
     

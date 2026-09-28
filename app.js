@@ -809,10 +809,10 @@ async function triggerAgenticGenerator(usePdf = false) {
     speakCaption(scenario.ai_name, scenario.first_message);
     
   } catch (error) {
-    console.error(error);
-    elements.pillLabel.innerText = "Error generando escenario";
+    console.error("Generator Error:", error);
+    elements.pillLabel.innerText = "Error: " + error.message;
     elements.participantName.innerText = "Error";
-    elements.roleLabel.innerText = "Revisa la API Key o el PDF";
+    elements.roleLabel.innerText = "Revisa la consola para más detalles";
     updateOrb('breathing');
     
     if (btnGen) {

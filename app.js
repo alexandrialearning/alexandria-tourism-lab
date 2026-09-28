@@ -557,34 +557,79 @@ function askLaw(lawTitle) {
   sendPrompt(`¿Qué establece la regulación sobre "${lawTitle}" para proyectos turísticos?`);
 }
 
-function resetCall() {
-  if (confirm('¿Deseas reiniciar la sesión?')) {
-    // 1. Cortar el audio actual
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-    
-    // 2. Reiniciar estados
-    state.callDurationSeconds = 0;
-    state.currentScenario = 'none';
-    elements.transcriptTimeline.innerHTML = '';
-    
-    // 3. Ocultar historial del caso y mostrar generador
-    const tabTranscriptBtn = document.getElementById('tabTranscript');
-    if (tabTranscriptBtn) {
-      tabTranscriptBtn.style.display = 'none';
-    }
-    switchSidebarTab('rag');
-    if (!state.sidebarOpen) toggleSidebar();
-    
-    // 4. Limpiar caja de contexto
-    const contextBox = document.getElementById('scenarioContextBox');
-    if (contextBox) {
-      contextBox.innerHTML = '';
-      contextBox.style.border = "none";
-    }
+async function finishCall() {
+  if (!confirm('¿Deseas finalizar la simulación y recibir tu evaluación?')) return;
+  
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  updateOrb('working');
 
-    // 5. Reproducir mensaje de bienvenida nuevamente
+  document.getElementById('feedbackModal').style.display = 'flex';
+  document.getElementById('feedbackContent').innerHTML = 'Generando rúbrica de evaluación...<br><br><small>Por favor espera, la IA está analizando la conversación completa.</small>';
+
+  const systemInstruction = {
+    parts: [{ 
+      text: `Eres un profesor experto en turismo evaluando una simulación.
+Lee la transcripción de la conversación.
+Genera un reporte final para el alumno en formato Markdown con esta estructura exacta:
+**Resolución de conflicto:** [Calificación de 1 a 10]/10
+**Uso de lenguaje técnico:** [Calificación de 1 a 10]/10
+**Comentario del mentor:** "[Un párrafo de feedback constructivo de 2-3 líneas]".`
+    }]
+  };
+
+  try {
+    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPI');
+    const result = await callGeminiAPI({
+      systemInstruction: systemInstruction,
+      contents: state.conversationHistory
+    });
+
+    // Convirtiendo markdown simple a HTML
+    let feedbackText = result.data.text;
+    feedbackText = feedbackText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    feedbackText = feedbackText.replace(/\n/g, '<br>');
+
+    document.getElementById('feedbackContent').innerHTML = feedbackText;
+    updateOrb('neutral');
+  } catch (error) {
+    console.error(error);
+    document.getElementById('feedbackContent').innerHTML = 'Error al generar la evaluación: ' + error.message;
+    updateOrb('breathing');
+  }
+}
+
+function closeFeedbackModal() {
+  document.getElementById('feedbackModal').style.display = 'none';
+  // Llama a la confirmación de reinicio automáticamente, pero bypass el confirm extra
+  forceResetCall();
+}
+
+function forceResetCall() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  state.callDurationSeconds = 0;
+  state.currentScenario = 'none';
+  elements.transcriptTimeline.innerHTML = '';
+  const tabTranscriptBtn = document.getElementById('tabTranscript');
+  if (tabTranscriptBtn) tabTranscriptBtn.style.display = 'none';
+  switchSidebarTab('ai');
+  updateOrb('breathing');
+  elements.pillLabel.innerText = 'Selecciona un escenario';
+  elements.participantName.innerText = 'Esperando escenario...';
+  elements.roleLabel.innerText = 'AI Roleplay';
+  state.conversationHistory = [];
+  const contextBox = document.getElementById('scenarioContextBox');
+  if (contextBox) {
+    contextBox.innerHTML = '';
+    contextBox.style.border = 'none';
+  }
+  elements.videoBg.className = 'video-bg theme-default';
+}
+
+function resetCall() {
+  if (confirm('¿Deseas reiniciar la sesión sin guardar?')) {
+    forceResetCall();
+    
+    // Reproducir mensaje de bienvenida nuevamente
     const intro = `¡Hola ${state.userName}! Soy tu tutor de la Facultad de Turismo y Gastronomía de la Universidad Anáhuac. Por favor, selecciona un Generador de Casos en el panel lateral para iniciar tu evaluación.`;
     speakCaption('Copiloto Anáhuac', intro);
   }

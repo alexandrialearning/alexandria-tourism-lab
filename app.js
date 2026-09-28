@@ -728,6 +728,12 @@ async function triggerAgenticGenerator(usePdf = false) {
   
   const promptText = dynamicPrompt + `\n\nIMPORTANTE: El nombre del alumno es "${state.userName}". Debes dirigirte a él o mencionarlo por su nombre en tu 'first_message' dependiendo del rol que le asignaste (Ej. "Director ${state.userName}", "Licenciado ${state.userName}", "Jefe ${state.userName}", etc.).\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  "title": "Ej. 🌿 Auditoría GSTC",\n  "ai_name": "Ej. Auditora Internacional",\n  "ai_role": "Ej. Evaluando Economía Circular",\n  "scenario_context": "Breve descripción de 2 líneas explicando el conflicto del escenario que le aparecerá al alumno para que entienda su rol antes de hablar.",\n  "first_message": "Ej. Director ${state.userName}, he revisado sus indicadores..."\n}`;
   
+  const btnGen = document.getElementById('btnGenerateScenario');
+  if (btnGen) {
+    btnGen.innerText = "⏳ Generando...";
+    btnGen.disabled = true;
+  }
+  
   try {
     const parts = [];
     if (usePdf && state.currentFileBase64) {
@@ -748,9 +754,16 @@ async function triggerAgenticGenerator(usePdf = false) {
       }
     });
     
-    // Simulate the fetch response format for the rest of the code
-    const resultTextString = response.data.text;
+    // Clean up potential markdown formatting from Gemini
+    let resultTextString = response.data.text;
+    resultTextString = resultTextString.replace(/```json/gi, '').replace(/```/g, '').trim();
+    
     const scenario = JSON.parse(resultTextString);
+    
+    if (btnGen) {
+      btnGen.innerText = "🎲 Generar Escenario Aleatorio";
+      btnGen.disabled = false;
+    }
     
     elements.pillLabel.innerText = scenario.title;
     elements.participantName.innerText = scenario.ai_name;
@@ -779,6 +792,11 @@ async function triggerAgenticGenerator(usePdf = false) {
     elements.participantName.innerText = "Error";
     elements.roleLabel.innerText = "Revisa la API Key o el PDF";
     updateOrb('breathing');
+    
+    if (btnGen) {
+      btnGen.innerText = "🎲 Reintentar Escenario";
+      btnGen.disabled = false;
+    }
   }
 }
 

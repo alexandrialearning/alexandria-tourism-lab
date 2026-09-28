@@ -685,3 +685,12 @@ body.call-mode {
     height: 150px;
   }
 }
+
+#loginName, #loginUsername, #loginPassword {
+  color: #000 !important;
+  background-color: #FFF !important;
+}
+
+#loginName::placeholder, #loginUsername::placeholder, #loginPassword::placeholder {
+  color: #666 !important;
+}

@@ -657,17 +657,17 @@ Temas de evaluación disponibles (elige UNO al azar o combínalos estratégicame
 - Competitividad turística: Sostenibilidad como requisito indispensable de operación y ventaja competitiva diferenciadora.
 - Certificación internacional: Criterios del Consejo Global de Turismo Sostenible (GSTC), sellos internacionales, auditorías, programas y distintivos nacionales oficiales.
 
-INSTRUCCIONES CLAVE (PERSONALIDAD EXTREMA):
+INSTRUCCIONES CLAVE (SITUACIONES COTIDIANAS):
 1. Elige aleatoriamente UN subtema específico de la lista anterior.
-2. ADOPTA UNA PERSONALIDAD EXTREMA, IMPACIENTE Y DIFÍCIL. Debes ser alguien con quien es muy estresante lidiar en el mundo del turismo/gastronomía. Ejemplos: 
-   - Un Chef Ejecutivo furioso porque el salón está lleno y algo falló.
-   - Un Huésped VIP extremadamente molesto y amenazando con demandar.
-   - Un Inversionista rudo y sarcástico que quiere cancelar el presupuesto hoy mismo.
-   - Un Auditor del GSTC súper cuadrado, frío y amenazante.
-3. Asigna un Rol de Defensa al alumno (Ej. Gerente de Turno, Director de Hotel, Sommelier, Estratega).
-4. Plantea un conflicto crítico y muy específico que el alumno solo pueda resolver justificándose con la teoría del tema elegido.
-5. Emite la primera frase del diálogo de forma MUY retadora, apurada o molesta. Usa frases de presión ("¡Necesito una respuesta ya!", "¡Tengo a 50 personas esperando!"). 
-6. Durante toda la conversación, si el alumno titubea o responde cosas genéricas, interrúmpelo o presiónalo más. ¡NUNCA rompas el personaje!`;
+2. ADOPTA UNA PERSONALIDAD COTIDIANA PERO DIFÍCIL. Debes ser alguien con quien el alumno lidiaría en un día normal de trabajo. Ejemplos: 
+   - Un Huésped que no entiende un cargo extra en su cuenta.
+   - Un Empleado Nuevo y confundido que comete errores básicos y al que hay que capacitar.
+   - Un Proveedor Local que no entiende por qué le pides empaques sustentables.
+   - Un Chef estresado porque faltan insumos básicos para la cena.
+3. Asigna un Rol al alumno adecuado a la situación (Ej. Recepcionista, Capitán de Meseros, Encargado de Compras).
+4. Plantea una situación común y del día a día (no una crisis directiva) que el alumno deba resolver usando los conceptos del temario.
+5. Emite la primera frase del diálogo. 
+6. IMPORTANTE: Si el tema elegido tiene términos muy técnicos (Ej. Yield Management, Macrosegmentación), asegúrate de que tu personaje NO los entienda y exígele al alumno que los explique con palabras sencillas y ejemplos de la vida real. NUNCA rompas el personaje.`;
 
 async function triggerAgenticGenerator(usePdf = false) {
   state.sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
@@ -700,12 +700,12 @@ async function triggerAgenticGenerator(usePdf = false) {
     dynamicPrompt = `Eres un Generador de Escenarios Agénticos. Ignora los temas precargados. Lee el documento PDF adjunto.
     Extrae las competencias más importantes de este documento específico y genera un escenario de Roleplay inmersivo y de alta presión para evaluar al alumno sobre el contenido de este PDF.
     
-    INSTRUCCIONES CLAVE (PERSONALIDAD EXTREMA):
-    1. ADOPTA UNA PERSONALIDAD EXTREMA, IMPACIENTE Y DIFÍCIL relevante al contenido del PDF (Ej. Un jefe furioso, un auditor implacable, un huésped enojado).
-    2. Asigna un Rol de Defensa al alumno coherente con el PDF.
-    3. Plantea un conflicto crítico que el alumno solo pueda resolver justificándose con la teoría del documento.
-    4. Emite la primera frase del diálogo de forma MUY retadora, apurada o molesta. Usa frases de presión ("¡Necesito una respuesta ya!").
-    5. Durante la conversación presiona al alumno si titubea. NUNCA rompas el personaje.`;
+    INSTRUCCIONES CLAVE (SITUACIONES COTIDIANAS):
+    1. ADOPTA UNA PERSONALIDAD COTIDIANA PERO DIFÍCIL relevante al contenido del PDF (Ej. Un huésped confundido, un empleado nuevo que comete errores, un proveedor terco).
+    2. Asigna un Rol al alumno coherente con el PDF (Ej. Recepcionista, Capitán de Meseros).
+    3. Plantea una situación común y del día a día donde el alumno deba aplicar la teoría del documento.
+    4. Emite la primera frase del diálogo.
+    5. IMPORTANTE: Si el PDF contiene términos muy técnicos o abstractos, asegúrate de que tu personaje NO los entienda. Exígele al alumno que te los explique con palabras sencillas y peras y manzanas. NUNCA rompas el personaje.`;
   }
   
   const promptText = dynamicPrompt + "\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  \"title\": \"Ej. 🌿 Auditoría GSTC\",\n  \"ai_name\": \"Ej. Auditora Internacional\",\n  \"ai_role\": \"Ej. Evaluando Economía Circular\",\n  \"scenario_context\": \"Breve descripción de 2 líneas explicando el conflicto del escenario que le aparecerá al alumno para que entienda su rol antes de hablar.\",\n  \"first_message\": \"Ej. Como auditora he revisado sus indicadores...\"\n}";

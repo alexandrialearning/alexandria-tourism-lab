@@ -5,9 +5,8 @@ const firebaseConfig = {
   storageBucket: "anahuac-tourism.firebasestorage.app",
   messagingSenderId: "675954232934",
   appId: "1:675954232934:web:3c5269b303cacf720267a7",
-  });
-}
-
+  measurementId: "G-QMWWW53JJQ"
+};
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();

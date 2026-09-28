@@ -896,13 +896,24 @@ async function openSyllabusModal() {
   } else {
     content.innerHTML = `
       <h3>Temario Base de la Facultad</h3>
-      <p>Al no haber subido un PDF, la IA te evaluará aleatoriamente sobre los ejes transversales de las licenciaturas en Turismo, Hotelería y Gastronomía:</p>
-      <ul>
-        <li><strong>Sostenibilidad y Destinos:</strong> Pueblos Mágicos, Indicadores GSTC, Branding de Destinos.</li>
-        <li><strong>Operaciones y Eventos:</strong> Logística, Transportación, Gestión de Crisis y Resolución de problemas.</li>
-        <li><strong>Negocios y Consumidor:</strong> Economía Turística, Marketing, Customer Centricity y Fidelización.</li>
+      <p>Al no haber subido un PDF, la IA elegirá dinámicamente evaluarte sobre los siguientes bloques de conocimiento:</p>
+      
+      <h4 style="margin-top: 1rem; margin-bottom: 0.5rem; color: #E2E8F0;">Bloque A: Materias Centrales</h4>
+      <ul style="margin-bottom: 1rem;">
+        <li><strong>Mercadotecnia Turística Avanzada:</strong> Omnicanalidad, Inbound marketing, Macrosegmentación, Branding.</li>
+        <li><strong>Sostenibilidad y Turismo:</strong> Desarrollo regenerativo, Criterios GSTC, Indicadores de impacto.</li>
+        <li><strong>Estadística para la Dirección:</strong> Distribución normal, series de tiempo, regresión.</li>
       </ul>
-      <p style="margin-top: 1rem; font-size: 0.9em; color: #64748B;">Para estudiar sobre un tema específico (ej. Legislación o Finanzas), arrastra tu propio documento PDF en el panel izquierdo.</p>
+
+      <h4 style="margin-bottom: 0.5rem; color: #E2E8F0;">Bloque B: Conocimientos Transversales</h4>
+      <ul>
+        <li>Gestión de Destinos y Pueblos Mágicos</li>
+        <li>Dirección de Eventos y Transportación</li>
+        <li>Gestión de Hospitabilidad y Atención al Consumidor</li>
+        <li>Economía Turística</li>
+      </ul>
+
+      <p style="margin-top: 1.5rem; font-size: 0.9em; color: #64748B;"><em>¿Quieres un caso sobre un tema específico?</em> Arrastra tu documento PDF en la pestaña "RAG" del panel izquierdo y la IA extraerá el temario automáticamente.</p>
     `;
   }
 }

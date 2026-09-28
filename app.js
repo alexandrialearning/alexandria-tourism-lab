@@ -96,13 +96,8 @@ async function handleLogin() {
   const pass = document.getElementById('loginPassword').value;
   const privacyChecked = document.getElementById('privacyCheckbox').checked;
   
-  if (!name || !email || !pass) {
-    alert("Por favor, ingresa tu nombre, correo y contraseña.");
-    return;
-  }
-
-  if (!privacyChecked) {
-    alert("Debes leer y aceptar el Aviso de Privacidad para continuar.");
+  if (!email || !pass) {
+    alert("Por favor, ingresa tu correo y contraseña.");
     return;
   }
   
@@ -113,16 +108,25 @@ async function handleLogin() {
 
     let userCredential;
     try {
+      // 1. Intentar iniciar sesión primero (Usuario recurrente)
       userCredential = await auth.signInWithEmailAndPassword(email, pass);
     } catch (err) {
+      // 2. Si el usuario no existe, intentar registro (Usuario nuevo)
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+        // Validar requisitos de registro
+        if (!name || !privacyChecked) {
+          alert("Parece que eres un usuario nuevo. Por favor ingresa tu Nombre de Pila y acepta el Aviso de Privacidad para registrarte.");
+          btn.innerText = "Iniciar Sesión";
+          btn.disabled = false;
+          return;
+        }
         userCredential = await auth.createUserWithEmailAndPassword(email, pass);
       } else {
         throw err;
       }
     }
     
-    // Si escribió un nombre y el perfil no lo tiene o lo quiere actualizar
+    // Si escribió un nombre y acabamos de crear la cuenta o quiere actualizarlo
     if (userCredential.user && name) {
       await userCredential.user.updateProfile({ displayName: name });
       state.userName = name;

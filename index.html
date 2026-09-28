@@ -197,9 +197,15 @@
     <footer class="dock-footer" style="flex-direction: column; align-items: center; gap: 0.5rem; padding-bottom: 0.5rem;">
       <div class="dock-controls">
         <!-- Mic Indicator Button (Now Auto-managed) -->
-        <button class="dock-btn mic-btn" id="btnMic" onclick="toggleMic()" title="El micrófono es automático, pero puedes forzarlo aquí">
+        <button class="dock-btn mic-btn" id="btnMic" style="user-select: none; -webkit-user-select: none;"
+          onmousedown="startPushToTalk(event)" 
+          onmouseup="stopPushToTalk(event)" 
+          onmouseleave="stopPushToTalk(event)"
+          ontouchstart="startPushToTalk(event)" 
+          ontouchend="stopPushToTalk(event)"
+          title="Mantén presionado para hablar">
           <span class="dock-icon" id="micIcon">🎙️</span>
-          <span class="dock-label" id="micLabel">Micrófono</span>
+          <span class="dock-label" id="micLabel">Mantener p/Hablar</span>
         </button>
 
         <div class="dock-dropdown">

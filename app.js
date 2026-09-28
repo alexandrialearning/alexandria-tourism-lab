@@ -28,7 +28,6 @@ const state = {
 };
 
 let recognition = null;
-let autoListen = true;
 
 const elements = {
   videoBg: document.getElementById('videoBg'),
@@ -156,6 +155,14 @@ function startCallTimer() {
     const mins = String(Math.floor(state.callDurationSeconds / 60)).padStart(2, '0');
     const secs = String(state.callDurationSeconds % 60).padStart(2, '0');
     elements.callTimer.innerText = `${mins}:${secs}`;
+    
+    // 5 minutos de límite (300 segundos) para el caso
+    if (state.currentScenario === 'agentic' && state.callDurationSeconds >= 300) {
+      clearInterval(state.timerInterval);
+      speakCaption('Sistema', 'Se acabó el tiempo en la junta directiva, vamos a evaluar tu desempeño.');
+      // Simular que le pican a finalizar call pasados 3 segundos
+      setTimeout(() => finishCall(true), 3500);
+    }
   }, 1000);
 }
 
@@ -265,58 +272,52 @@ function initSpeechRecognition() {
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
     elements.userInput.value = transcript;
-    stopMic(); 
+    stopPushToTalk(null); 
     handleUserSubmit(new Event('submit'));
   };
 
   recognition.onerror = (e) => {
-    if (e.error === 'no-speech' && !state.isSpeaking && autoListen) {
-      try { recognition.start(); } catch(err){}
-    }
+    // Ignore no-speech errors since it's push to talk now
   };
 
   recognition.onend = () => {
     state.isRecording = false;
     elements.btnMic.classList.remove('active-mic');
     elements.micIcon.innerText = '🎙️';
-    elements.micLabel.innerText = 'Micrófono (Auto)';
+    elements.micLabel.innerText = 'Mantener p/Hablar';
     elements.pipMicStatus.innerText = '🎙️ En espera';
     elements.pipMicStatus.style.color = '#34D399';
     
     if (!state.isSpeaking && window.setOrbState) {
       window.setOrbState('breathing');
     }
-
-    if (autoListen && !state.isSpeaking) {
-      try { recognition.start(); } catch(err){}
-    }
   };
 }
 
-function startListening() {
-  if (state.currentScenario !== 'agentic') return;
-  autoListen = true;
-  if (recognition && !state.isRecording && !state.isSpeaking) {
-    try { recognition.start(); } catch(e){}
-  }
-}
-
-function stopMic() {
-  autoListen = false;
-  if (recognition && state.isRecording) {
-    recognition.stop();
-  }
-}
-
-function toggleMic() {
+function startPushToTalk(event) {
+  if (event) event.preventDefault(); // Evitar doble evento en táctil
   if (state.currentScenario !== 'agentic') {
-    alert("Genera un escenario primero antes de hablar.");
+    if (event.type === 'mousedown') alert("Genera un escenario primero antes de hablar.");
     return;
   }
-  if (state.currentRecording || state.isRecording) {
-    stopMic();
-  } else {
-    startListening();
+  
+  // Evitamos grabar si la IA está hablando
+  if (state.isSpeaking) return;
+  
+  if (recognition && !state.isRecording) {
+    try { 
+      recognition.start(); 
+      elements.btnMic.style.transform = 'scale(0.95)';
+    } catch(e){}
+  }
+}
+
+function stopPushToTalk(event) {
+  if (event) event.preventDefault();
+  elements.btnMic.style.transform = 'scale(1)';
+  
+  if (recognition && state.isRecording) {
+    recognition.stop();
   }
 }
 
@@ -557,8 +558,8 @@ function askLaw(lawTitle) {
   sendPrompt(`¿Qué establece la regulación sobre "${lawTitle}" para proyectos turísticos?`);
 }
 
-async function finishCall() {
-  if (!confirm('¿Deseas finalizar la simulación y recibir tu evaluación?')) return;
+async function finishCall(auto = false) {
+  if (!auto && !confirm('¿Deseas finalizar la simulación y recibir tu evaluación?')) return;
   
   if (window.speechSynthesis) window.speechSynthesis.cancel();
   updateOrb('working');
@@ -676,6 +677,7 @@ INSTRUCCIONES CLAVE:
 async function triggerAgenticGenerator(usePdf = false) {
   state.sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
   state.conversationHistory = [];
+  state.callDurationSeconds = 0;
   
   if (usePdf) {
     if (!state.currentProject || !state.currentProject.toLowerCase().includes('.pdf')) {

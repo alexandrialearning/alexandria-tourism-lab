@@ -66,6 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
   initSpeechRecognition();
   updateOrb('breathing');
 
+  // Revisar si ya aceptó aviso de privacidad previamente
+  if (localStorage.getItem('privacyAccepted') === 'true') {
+    const privacyContainer = document.getElementById('privacyContainer');
+    const privacyCheckbox = document.getElementById('privacyCheckbox');
+    if (privacyContainer && privacyCheckbox) {
+      privacyContainer.style.display = 'none';
+      privacyCheckbox.checked = true;
+    }
+  }
+
   // Mantener sesión activa al recargar
   auth.onAuthStateChanged((user) => {
     if (user) {
@@ -115,6 +125,7 @@ async function handleLogin() {
     
     state.userName = email.split('@')[0];
     document.getElementById('userProfileTag').innerText = `👤 ${state.userName}`;
+    localStorage.setItem('privacyAccepted', 'true');
     startSimulation();
     
   } catch (error) {

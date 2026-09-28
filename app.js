@@ -641,16 +641,37 @@ Eres el motor de simulación directiva de la Facultad de Turismo y Gastronomía 
 
 Temas de evaluación de la Facultad (elige UNO al azar o combínalos estratégicamente):
 
-1. Turismo Sostenible: Antecedentes de la sostenibilidad, análisis de sustentabilidad de Pueblos Mágicos, investigación y consultoría basada en indicadores (GSTC).
-2. Gestión de Destinos Turísticos: Perspectiva gubernamental, creación de planes turísticos para destinos y branding de ciudad/región.
-3. Dirección de Eventos: Logística, presupuestos y ejecución de eventos a gran escala.
-4. Transportación Turística: Logística, alianzas con aerolíneas, "HUB economy" y optimización de rutas.
-5. Desarrollo de Productos y Experiencias Turísticas: Creación de valor, diseño de tours o atractivos.
-6. Gestión de Experiencias de Hospitabilidad: Operación hotelera, estándares de calidad y resolución de crisis en tiempo real.
-7. Economía Turística: Macroeconomía, presupuestos directivos y rentabilidad de proyectos.
-8. Marketing Turístico: Macrosegmentación, campañas digitales, Inbound Marketing y Omnicanalidad.
-9. Estrategias de Atención al Consumidor: Fidelización, manejo de quejas y "Customer Centricity".
-10. Introducción a la Hospitabilidad y Gastronomía: Conceptos core compartidos entre las 3 licenciaturas (Turismo, Dirección Internacional de Hoteles y Gastronomía).
+[TEMARIO CENTRAL - BLOQUE A]
+1. MERCADOTECNIA TURÍSTICA AVANZADA:
+- Comunicando valor: Transición a modelos híbridos Offline/Online y las 5 etapas del marketing.
+- Distribución y Omnicanalidad: Sinergia de canales, economía digital, Big Data y mapeo del Customer Journey.
+- Promoción: Gestión de contenidos por segmento y métricas de efectividad.
+- Ventas y Competitividad: Macrosegmentación, microsegmentación y optimización del portafolio de marcas.
+- Macroeconomía Turística: Aeropuertos, HUB economy, optimización de slots, alianzas y "destinos blindados".
+- Branding: Valor integral, mapas mentales del consumidor y pirámide de marca.
+- Marketing Digital: Hiperconveniencia, Customer centricity, APPs y las 5 etapas del Inbound marketing.
+- Integración Omnicanal 360°: Reach en medios fusionados, Content Experience y minimización de volatilidad.
+- Storytelling y Visual Telling: Campañas seriadas y adopción de tecnología 4G/5G en la experiencia del viajero.
+
+2. ESTADÍSTICA PARA LA DIRECCIÓN: Distribución normal, series de tiempo, regresión lineal múltiple.
+
+3. SOSTENIBILIDAD Y TURISMO AVANZADO:
+- Evolución multidisciplinaria: Dimensión económica, ambiental, sistemas de bienestar social (salud, educación, vivienda), equidad, inclusión y el balance político.
+- Retos contemporáneos: Brechas económicas, protección del patrimonio cultural, crisis climática, pérdida de biodiversidad.
+- Arreglos institucionales: ONU (PNUD, PNUMA, OMT), Objetivos de Desarrollo Sostenible (ODS).
+- Indicadores de sostenibilidad: Métricas cuantitativas/cualitativas de agua, emisiones, biodiversidad.
+- Certificación internacional: Criterios GSTC, sellos internacionales, auditorías.
+
+[TEMARIO TRANSVERSAL - BLOQUE B (Facultad)]
+4. Turismo Sostenible (Práctico): Análisis de sustentabilidad de Pueblos Mágicos, investigación y consultoría.
+5. Gestión de Destinos Turísticos: Perspectiva gubernamental, creación de planes turísticos y branding de región.
+6. Dirección de Eventos: Logística, presupuestos y ejecución de eventos a gran escala.
+7. Transportación Turística: Logística, alianzas con aerolíneas y optimización de rutas.
+8. Desarrollo de Productos y Experiencias Turísticas: Creación de valor, diseño de tours o atractivos.
+9. Gestión de Experiencias de Hospitabilidad: Operación hotelera, estándares de calidad y resolución de crisis en tiempo real.
+10. Economía Turística: Macroeconomía, presupuestos directivos y rentabilidad de proyectos.
+11. Estrategias de Atención al Consumidor: Fidelización, manejo de quejas y "Customer Centricity".
+12. Introducción a la Hospitabilidad y Gastronomía: Conceptos core compartidos entre Turismo, Dirección Internacional de Hoteles y Gastronomía.
 
 INSTRUCCIONES CLAVE (SITUACIONES COTIDIANAS DIRECTIVAS):
 1. Elige aleatoriamente UN subtema específico de la lista anterior.

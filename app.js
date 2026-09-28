@@ -76,16 +76,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Mantener sesión activa al recargar
-  auth.onAuthStateChanged((user) => {
+  auth.onAuthStateChanged(async (user) => {
     if (user) {
       state.userName = user.displayName || user.email.split('@')[0];
       document.getElementById('userProfileTag').innerText = `👤 ${state.userName}`;
       document.getElementById('startOverlay').style.display = 'none';
       document.getElementById('btnLogout').style.display = 'inline-block';
       startCallTimer();
-      // No reproducimos audio automáticamente al recargar para evitar sustos
       elements.participantName.innerText = "Copiloto Anáhuac";
       elements.roleLabel.innerText = "Facultad de Turismo y Gastronomía";
+      
+      try {
+        const pastSessions = await db.collection("user_sessions")
+          .where("userId", "==", user.uid)
+          .orderBy('updatedAt', 'desc')
+          .limit(2)
+          .get();
+        if (!pastSessions.empty) {
+          state.userMemory = "HISTORIAL RECIENTE DEL ALUMNO (Conócelo y personaliza el nivel):\n";
+          pastSessions.forEach(doc => {
+            const data = doc.data();
+            if (data.evaluation) {
+              state.userMemory += `- Caso: ${data.scenario}. Feedback previo: ${data.evaluation.substring(0, 100)}...\n`;
+            }
+          });
+        }
+      } catch(e) {
+        console.error("Memoria de usuario no disponible", e);
+      }
     }
   });
 });
@@ -422,7 +440,7 @@ async function generateResponse(userText) {
   }
 
   const systemInstruction = {
-    parts: [{ text: roleContext }]
+    parts: [{ text: roleContext + "\n\n" + (state.userMemory || "") }]
   };
 
   try {
@@ -640,7 +658,11 @@ function resetCall() {
 // Agentic Scenario Generator (Syllabus based)
 // -----------------------------------------------------------------
 const agenticSystemPrompt = `
-Eres el motor de simulación directiva de la Facultad de Turismo y Gastronomía de la Universidad Anáhuac. Tu objetivo es poner a prueba el pensamiento crítico, la toma de decisiones, y las habilidades gerenciales de los futuros líderes del sector (Directores de Hoteles, Chefs Ejecutivos, Funcionarios de Turismo, etc.).
+Eres el motor de simulación directiva de la Facultad de Turismo y Gastronomía de la Universidad Anáhuac. 
+TEMA CENTRAL TRANSVERSAL: "Experiencia Turística y Hospitabilidad Inteligente". Todo caso que generes debe girar en torno a cómo la inteligencia, la tecnología, la calidez humana y el análisis de datos pueden crear experiencias turísticas y de hospitabilidad excepcionales.
+
+Tu objetivo es poner a prueba el pensamiento crítico, la toma de decisiones, y las habilidades gerenciales de los futuros líderes del sector (Directores de Hoteles, Chefs Ejecutivos, Funcionarios de Turismo, etc.).
+{MEMORY_PLACEHOLDER}
 
 Temas de evaluación de la Facultad (elige UNO al azar o combínalos estratégicamente):
 
@@ -713,7 +735,7 @@ async function triggerAgenticGenerator(usePdf = false) {
   
   updateOrb('working');
   
-  let dynamicPrompt = agenticSystemPrompt;
+  let dynamicPrompt = agenticSystemPrompt.replace("{MEMORY_PLACEHOLDER}", state.userMemory || "");
   if (usePdf) {
     dynamicPrompt = `Eres un Generador de Escenarios Agénticos. Ignora los temas precargados. Lee el documento PDF adjunto.
     Extrae las competencias más importantes de este documento específico y genera un escenario de Roleplay inmersivo y de alta presión para evaluar al alumno sobre el contenido de este PDF.

@@ -394,13 +394,17 @@ function addTranscriptMsg(sender, text) {
     parts: [{ text: text }]
   });
 
-  // Guardado permanente y anónimo de la sesión
+  // Guardado permanente de la sesión vinculado al usuario
   if (state.sessionId && window.db) {
-    db.collection("anonymous_sessions").doc(state.sessionId).set({
-      scenario: elements.pillLabel ? elements.pillLabel.innerText : 'Desconocido',
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      history: state.conversationHistory
-    }, { merge: true }).catch(err => console.error("Error guardando sesión:", err));
+    const user = firebase.auth().currentUser;
+    if (user) {
+      db.collection("user_sessions").doc(state.sessionId).set({
+        userId: user.uid,
+        scenario: elements.pillLabel ? elements.pillLabel.innerText : 'Desconocido',
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        history: state.conversationHistory
+      }, { merge: true }).catch(err => console.error("Error guardando sesión:", err));
+    }
   }
 
   const msgDiv = document.createElement('div');
@@ -592,6 +596,13 @@ Genera un reporte final para el alumno en formato Markdown con esta estructura e
 
     document.getElementById('feedbackContent').innerHTML = feedbackText;
     updateOrb('neutral');
+    
+    // Guardar evaluación en Firestore
+    if (state.sessionId && window.db) {
+      db.collection("user_sessions").doc(state.sessionId).update({
+        evaluation: feedbackText
+      }).catch(err => console.error("Error guardando rúbrica:", err));
+    }
   } catch (error) {
     console.error(error);
     document.getElementById('feedbackContent').innerHTML = 'Error al generar la evaluación: ' + error.message;
@@ -771,17 +782,23 @@ async function triggerAgenticGenerator(usePdf = false) {
 async function openHistoryModal() {
   document.getElementById('historyModal').style.display = 'flex';
   const content = document.getElementById('historyModalContent');
-  content.innerHTML = 'Cargando historial...';
+  content.innerHTML = 'Cargando tu historial...';
   
-  if (!window.db) {
-    content.innerHTML = 'Error: Base de datos no conectada.';
+  const user = firebase.auth().currentUser;
+  if (!window.db || !user) {
+    content.innerHTML = 'Error: Base de datos no conectada o usuario no autenticado.';
     return;
   }
   
   try {
-    const snapshot = await db.collection("anonymous_sessions").orderBy('updatedAt', 'desc').limit(20).get();
+    const snapshot = await db.collection("user_sessions")
+      .where("userId", "==", user.uid)
+      .orderBy('updatedAt', 'desc')
+      .limit(20)
+      .get();
+      
     if (snapshot.empty) {
-      content.innerHTML = 'No hay sesiones registradas.';
+      content.innerHTML = 'No tienes simulaciones evaluadas todavía.';
       return;
     }
     
@@ -789,23 +806,33 @@ async function openHistoryModal() {
     snapshot.forEach(doc => {
       const data = doc.data();
       const date = data.updatedAt ? data.updatedAt.toDate().toLocaleString('es-MX') : 'Fecha desconocida';
-      html += `<div style="background: rgba(255,255,255,0.05); margin-bottom: 1rem; padding: 1rem; border-radius: 8px;">`;
-      html += `<div style="color: var(--primary-orange); font-weight: bold; margin-bottom: 0.5rem;">${data.scenario}</div>`;
-      html += `<div style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 1rem;">ID: ${doc.id} | Última act: ${date}</div>`;
+      html += `<div style="background: rgba(255,255,255,0.05); margin-bottom: 1rem; padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">`;
+      html += `<div style="color: var(--primary-orange); font-weight: bold; margin-bottom: 0.5rem; font-size: 1.2rem;">${data.scenario}</div>`;
+      html += `<div style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 1rem;">ID: ${doc.id} | ${date}</div>`;
+      
+      if (data.evaluation) {
+        html += `<div style="background: rgba(255,102,0,0.1); border-left: 4px solid var(--primary-orange); padding: 1rem; border-radius: 4px; margin-bottom: 1rem; color: white;">
+                   <h4 style="margin-top:0; margin-bottom:0.5rem; color: var(--primary-orange);">Evaluación Automática</h4>
+                   ${data.evaluation}
+                 </div>`;
+      }
       
       const history = data.history || [];
       if (history.length > 0) {
-        html += `<div style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px;">`;
+        html += `<details style="cursor: pointer;">
+                   <summary style="color: #94A3B8; margin-bottom: 0.5rem;">Ver transcripción de la llamada</summary>
+                   <div style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 4px; cursor: text;">`;
         history.forEach(msg => {
           const isUser = msg.role === 'user';
           const text = msg.parts[0].text;
           const color = isUser ? '#60A5FA' : '#FFF';
-          const sender = isUser ? 'Estudiante' : 'Copiloto';
+          const sender = isUser ? 'Tú' : 'Copiloto';
           html += `<div style="margin-bottom: 0.5rem;"><strong style="color: ${color};">${sender}:</strong> ${text}</div>`;
         });
-        html += `</div>`;
+        html += `  </div>
+                 </details>`;
       } else {
-        html += `<div style="color: #94A3B8; font-style: italic;">Sin mensajes en esta sesión.</div>`;
+        html += `<div style="color: #94A3B8; font-style: italic;">Sin transcripción.</div>`;
       }
       html += `</div>`;
     });

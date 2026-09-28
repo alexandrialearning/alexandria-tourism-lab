@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
       state.userName = user.email.split('@')[0];
       document.getElementById('userProfileTag').innerText = `👤 ${state.userName}`;
       document.getElementById('startOverlay').style.display = 'none';
+      document.getElementById('btnLogout').style.display = 'inline-block';
       startCallTimer();
       // No reproducimos audio automáticamente al recargar para evitar sustos
       elements.participantName.innerText = "Copiloto Anáhuac";
@@ -138,6 +139,7 @@ async function handleLogin() {
 
 async function startSimulation() {
   document.getElementById('startOverlay').style.display = 'none';
+  document.getElementById('btnLogout').style.display = 'inline-block';
   startCallTimer();
   
   elements.participantName.innerText = "Copiloto Anáhuac";
@@ -786,4 +788,15 @@ async function openHistoryModal() {
 
 function closeHistoryModal() {
   document.getElementById('historyModal').style.display = 'none';
+}
+
+async function handleLogout() {
+  if (confirm("¿Estás seguro que deseas cerrar sesión?")) {
+    try {
+      await auth.signOut();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al cerrar sesión", error);
+    }
+  }
 }

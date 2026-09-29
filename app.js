@@ -88,6 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
       elements.participantName.innerText = "Copiloto Anáhuac";
       elements.roleLabel.innerText = "Facultad de Turismo y Gastronomía";
       
+      elements.captionSpeaker.innerText = "Sistema";
+      elements.captionText.innerText = `"Bienvenido de vuelta, ${state.userName}. Genera un escenario o sube un PDF en el panel derecho para comenzar."`;
+      
       try {
         const pastSessions = await db.collection("user_sessions")
           .where("userId", "==", user.uid)

@@ -588,10 +588,14 @@ Genera un reporte final para el alumno "${state.userName}" en formato Markdown c
   };
 
   try {
+    const transcriptText = state.conversationHistory.map(msg => 
+      (msg.role === 'user' ? 'Alumno: ' : 'IA: ') + msg.parts[0].text
+    ).join('\\n');
+
     const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPIV1');
     const result = await callGeminiAPI({
       systemInstruction: systemInstruction,
-      contents: state.conversationHistory
+      contents: [{ role: 'user', parts: [{ text: "Aquí está la transcripción de la simulación:\\n\\n" + transcriptText }] }]
     });
 
     // Convirtiendo markdown simple a HTML
@@ -683,37 +687,18 @@ Eres el motor de simulación directiva de la Facultad de Turismo y Gastronomía 
 Tu objetivo es poner a prueba el pensamiento crítico, la toma de decisiones, y las habilidades gerenciales de los futuros líderes del sector (Directores de Hoteles, Chefs Ejecutivos, Funcionarios de Turismo, etc.).
 {MEMORY_PLACEHOLDER}
 
-Temas de evaluación de la Facultad (elige UNO al azar o combínalos estratégicamente):
+Temas de evaluación de la Facultad (elige SOLO UNO AL AZAR para este caso):
 
-[TEMARIO CENTRAL - BLOQUE A]
-1. MERCADOTECNIA TURÍSTICA AVANZADA:
-- Comunicando valor: Transición a modelos híbridos Offline/Online y las 5 etapas del marketing.
-- Distribución y Omnicanalidad: Sinergia de canales, economía digital, Big Data y mapeo del Customer Journey.
-- Promoción: Gestión de contenidos por segmento y métricas de efectividad.
-- Ventas y Competitividad: Macrosegmentación, microsegmentación y optimización del portafolio de marcas.
-- Macroeconomía Turística: Aeropuertos, HUB economy, optimización de slots, alianzas y "destinos blindados".
-- Branding: Valor integral, mapas mentales del consumidor y pirámide de marca.
-- Marketing Digital: Hiperconveniencia, Customer centricity, APPs y las 5 etapas del Inbound marketing.
-- Integración Omnicanal 360°: Reach en medios fusionados, Content Experience y minimización de volatilidad.
-- Storytelling y Visual Telling: Campañas seriadas y adopción de tecnología 4G/5G en la experiencia del viajero.
-
+1. MERCADOTECNIA TURÍSTICA AVANZADA: Modelos híbridos Offline/Online, distribución y omnicanalidad, branding, economía digital, customer journey.
 2. ESTADÍSTICA PARA LA DIRECCIÓN: Distribución normal, series de tiempo, regresión lineal múltiple.
-
-3. SOSTENIBILIDAD Y TURISMO AVANZADO:
-- Evolución multidisciplinaria: Dimensión económica, ambiental, sistemas de bienestar social (salud, educación, vivienda), equidad, inclusión y el balance político.
-- Retos contemporáneos: Brechas económicas, protección del patrimonio cultural, crisis climática, pérdida de biodiversidad.
-- Arreglos institucionales: ONU (PNUD, PNUMA, OMT), Objetivos de Desarrollo Sostenible (ODS).
-- Indicadores de sostenibilidad: Métricas cuantitativas/cualitativas de agua, emisiones, biodiversidad.
-- Certificación internacional: Criterios GSTC, sellos internacionales, auditorías.
-
-[TEMARIO TRANSVERSAL - BLOQUE B (Facultad)]
-4. Turismo Sostenible (Práctico): Análisis de sustentabilidad de Pueblos Mágicos, investigación y consultoría.
-5. Gestión de Destinos Turísticos: Perspectiva gubernamental, creación de planes turísticos y branding de región.
-6. Dirección de Eventos: Logística, presupuestos y ejecución de eventos a gran escala.
-7. Transportación Turística: Logística, alianzas con aerolíneas y optimización de rutas.
-8. Desarrollo de Productos y Experiencias Turísticas: Creación de valor, diseño de tours o atractivos.
-9. Gestión de Experiencias de Hospitabilidad: Operación hotelera, estándares de calidad y resolución de crisis en tiempo real.
-10. Economía Turística: Macroeconomía, presupuestos directivos y rentabilidad de proyectos.
+3. SOSTENIBILIDAD Y TURISMO AVANZADO: Dimensión económica, ambiental, equidad, inclusión, crisis climática, ODS, certificaciones GSTC.
+4. TURISMO SOSTENIBLE (PRÁCTICO): Análisis de sustentabilidad de Pueblos Mágicos, investigación y consultoría.
+5. GESTIÓN DE DESTINOS TURÍSTICOS: Perspectiva gubernamental, creación de planes turísticos y branding de región.
+6. DIRECCIÓN DE EVENTOS: Logística, presupuestos y ejecución de eventos a gran escala.
+7. TRANSPORTACIÓN TURÍSTICA: Logística, alianzas con aerolíneas y optimización de rutas.
+8. DESARROLLO DE PRODUCTOS Y EXPERIENCIAS TURÍSTICAS: Creación de valor, diseño de tours o atractivos.
+9. GESTIÓN DE EXPERIENCIAS DE HOSPITABILIDAD: Operación hotelera, estándares de calidad y resolución de crisis en tiempo real.
+10. ECONOMÍA TURÍSTICA: Macroeconomía, presupuestos directivos y rentabilidad de proyectos.
 11. Estrategias de Atención al Consumidor: Fidelización, manejo de quejas y "Customer Centricity".
 12. Introducción a la Hospitabilidad y Gastronomía: Conceptos core compartidos entre Turismo, Dirección Internacional de Hoteles y Gastronomía.
 
@@ -727,7 +712,8 @@ INSTRUCCIONES CLAVE (SITUACIONES COTIDIANAS DIRECTIVAS):
 3. Asigna un Rol DIRECTIVO al alumno (Ej. Gerente General, Director de Marketing, Director de Sostenibilidad, CEO).
 4. Plantea una situación común y del día a día (rutinaria pero que requiere toma de decisiones y liderazgo) donde el alumno deba aplicar y explicar los conceptos del temario.
 5. Emite la primera frase del diálogo de forma directa.
-6. IMPORTANTE: Como el alumno es el Director, asume que tú (la IA) NO entiendes a fondo los términos muy técnicos (Ej. Yield Management, Macrosegmentación). Exígele al alumno (el Director) que te los explique con palabras sencillas para que tu departamento pueda ejecutar la estrategia. NUNCA rompas el personaje.`;
+6. IMPORTANTE: Como el alumno es el Director, asume que tú (la IA) NO entiendes a fondo los términos muy técnicos (Ej. Yield Management, Macrosegmentación). Exígele al alumno (el Director) que te los explique con palabras sencillas para que tu departamento pueda ejecutar la estrategia. NUNCA rompas el personaje.
+7. REGLA DE ORO: Mantén SIEMPRE un tono de respeto profesional absoluto. Puedes retar y cuestionar al alumno, pero NUNCA debes ser grosero, usar lenguaje altisonante o faltar al respeto. Siempre dirígete al usuario con educación.`;
 
 async function triggerAgenticGenerator(usePdf = false) {
   state.sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
@@ -765,7 +751,8 @@ async function triggerAgenticGenerator(usePdf = false) {
     2. Asigna un Rol DIRECTIVO al alumno (Ej. Gerente General, Director de Área, CEO).
     3. Plantea una situación común y del día a día (rutinaria pero de nivel directivo) donde el alumno deba liderar y aplicar la teoría del documento.
     4. Emite la primera frase del diálogo.
-    5. IMPORTANTE: Como el alumno es el Director, asume que tú (la IA) eres un mando medio o tercero que NO entiende a fondo los términos muy técnicos. Exígele al alumno que te los explique con palabras sencillas para poder ejecutar sus órdenes. NUNCA rompas el personaje.`;
+    5. IMPORTANTE: Como el alumno es el Director, asume que tú (la IA) eres un mando medio o tercero que NO entiende a fondo los términos muy técnicos. Exígele al alumno que te los explique con palabras sencillas para poder ejecutar sus órdenes. NUNCA rompas el personaje.
+    6. REGLA DE ORO: Mantén SIEMPRE un tono de respeto profesional absoluto. Puedes retar y cuestionar al alumno, pero NUNCA debes ser grosero, usar lenguaje altisonante o faltar al respeto. Siempre dirígete al usuario con educación.`;
   }
   
   const promptText = dynamicPrompt + `\n\nIMPORTANTE: El nombre del alumno es "${state.userName}". Debes dirigirte a él o mencionarlo por su nombre en tu 'first_message' dependiendo del rol que le asignaste (Ej. "Director ${state.userName}", "Licenciado ${state.userName}", "Jefe ${state.userName}", etc.).\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  "title": "Ej. 🌿 Auditoría GSTC",\n  "ai_name": "Ej. Auditora Internacional",\n  "ai_role": "Ej. Evaluando Economía Circular",\n  "scenario_context": "Breve descripción de 2 líneas explicando el conflicto del escenario que le aparecerá al alumno para que entienda su rol antes de hablar.",\n  "first_message": "Ej. Director ${state.userName}, he revisado sus indicadores..."\n}`;

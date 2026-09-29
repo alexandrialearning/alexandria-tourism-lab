@@ -528,22 +528,14 @@ async function handleFileSelect(e) {
   const file = e.target.files[0];
   if (file) {
     state.currentProject = file.name;
-    document.getElementById('projectName').innerText = `📄 ${file.name} (Procesando vectores...)`;
+    document.getElementById('projectName').innerText = `📄 ${file.name} (Cargando archivo...)`;
     document.getElementById('projectInfo').style.display = 'block';
     
-    // Read file as Base64 for fallback
     const reader = new FileReader();
     reader.onload = async (event) => {
       state.currentFileBase64 = event.target.result.split(',')[1];
       
       try {
-        // Guardar documento en Firestore solo como referencia
-        await db.collection("documents").add({
-          fileName: file.name,
-          uploadedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          uploadedBy: state.userName || 'unknown'
-        });
-        
         document.getElementById('projectName').innerText = `📄 ${file.name} (Cargado exitosamente)`;
         
         // Iniciar el escenario automáticamente mandando el Base64 a Gemini

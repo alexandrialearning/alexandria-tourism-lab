@@ -672,7 +672,7 @@ async function triggerAgenticGenerator(usePdf = false) {
       alert('Primero debes arrastrar un Syllabus (PDF) en el área designada.');
       return;
     }
-    if (!state.currentFileBase64) {
+    if (!state.extractedPdfText && !state.currentFileBase64) {
       alert('Esperando a que el archivo termine de procesarse... inténtalo en unos segundos.');
       return;
     }

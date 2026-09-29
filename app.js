@@ -181,6 +181,13 @@ async function handleLogin() {
   }
 }
 
+function loginAsGuest() {
+  state.userName = "Invitado";
+  const userTag = document.getElementById('userProfileTag');
+  if (userTag) userTag.innerText = `👤 Invitado`;
+  startSimulation();
+}
+
 async function startSimulation() {
   document.getElementById('startOverlay').style.display = 'none';
   document.getElementById('btnLogout').style.display = 'inline-block';

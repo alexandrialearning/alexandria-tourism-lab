@@ -776,6 +776,28 @@ body.call-mode {
   white-space: nowrap;
 }
 
+.desktop-label {
+  display: inline !important;
+}
+
+.mobile-label {
+  display: none !important;
+}
+
+#orb-mount {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+#thinkingOrbCanvas {
+  display: block;
+  margin: 0 auto;
+}
+
 .dock-icon-sparkle {
   font-size: 1.25rem;
   animation: sparkleRotate 3s infinite ease-in-out;
@@ -1215,54 +1237,80 @@ body.call-mode {
     color: #94A3B8 !important;
   }
 
+  .desktop-label {
+    display: none !important;
+  }
+
+  .mobile-label {
+    display: inline !important;
+  }
+
+  #orb-mount {
+    transform: translateY(-26px);
+  }
+
   .dock-controls {
-    background: rgba(15, 23, 42, 0.92) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(227, 82, 5, 0.08) !important;
-    width: auto;
-    max-width: 96vw;
-    padding: 0.5rem 0.75rem;
-    gap: 0.55rem;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: rgba(15, 23, 42, 0.94) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(227, 82, 5, 0.1) !important;
+    width: auto !important;
+    max-width: calc(100vw - 16px) !important;
+    padding: 0.45rem 0.65rem !important;
+    gap: 0.45rem !important;
+    box-sizing: border-box !important;
+    flex-wrap: nowrap !important;
   }
 
   .dock-btn {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     color: #F8FAFC !important;
+    padding: 0.5rem 0.7rem !important;
   }
 
   .dock-btn:hover {
-    background: rgba(255, 255, 255, 0.12) !important;
+    background: rgba(255, 255, 255, 0.14) !important;
   }
 
   .dock-label {
     color: #94A3B8 !important;
+    font-size: 0.68rem !important;
   }
 
   .desktop-only-btn {
     display: none !important;
   }
 
-  .btn-more {
-    display: flex !important;
-  }
-  
-  .room-container {
-    padding: 0.6rem;
-    gap: 0.5rem;
-  }
-
-  .anahuac-img-logo {
-    height: 38px;
-  }
-
   .btn-primary-generator {
-    padding: 0.65rem 1.05rem !important;
-    gap: 0.45rem !important;
+    flex: 1 1 auto !important;
+    min-width: 125px !important;
+    max-width: 200px !important;
+    padding: 0.6rem 0.8rem !important;
+    gap: 0.35rem !important;
   }
 
   .btn-primary-generator .btn-generator-label {
-    font-size: 0.82rem !important;
+    font-size: 0.8rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .mic-btn {
+    flex: 0 0 auto !important;
+    padding: 0.5rem 0.7rem !important;
+  }
+
+  .btn-more {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    padding: 0.5rem 0.75rem !important;
+    min-width: 48px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   .case-options-grid {

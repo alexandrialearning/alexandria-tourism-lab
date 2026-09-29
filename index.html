@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anáhuac Tourism Lab</title>
   <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <!-- Responsive Meta Tags -->
   <meta name="theme-color" content="#0B0E14">
@@ -40,6 +40,7 @@
       </div>
 
       <button id="btnStartSimulation" onclick="handleLogin()" class="btn-start" style="width: 100%;">Iniciar Sesión</button>
+      <button type="button" onclick="loginAsGuest()" style="width: 100%; margin-top: 0.65rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.08); color: var(--text-muted); border: 1px solid var(--bg-border); border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 0.88rem;">⚡️ Entrar como Invitado (Modo Demo)</button>
       <div style="font-size: 0.75rem; color: #000000; font-family: monospace; letter-spacing: 0.5px; margin-top: 1.5rem; text-align: center;">
         ⚡️ Powered by Alexandr.ia AI Learning Systems
       </div>
@@ -86,55 +87,68 @@
 
         <!-- Centered Thinking Orb -->
         <div class="avatar-stream-container" id="avatarContainer">
-          <div id="orb-mount"></div>
+          <div id="orb-mount">
+            <canvas id="thinkingOrbCanvas"></canvas>
+          </div>
         </div>
 
-        <script type="importmap">
-        {
-          "imports": {
-            "react": "https://esm.sh/react@18.2.0",
-            "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
-            "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-            "thinking-orbs": "./orb-dist/index.es.js"
-          }
-        }
-        </script>
-
         <script type="module">
-          import React from 'react';
-          import { createRoot } from 'react-dom/client';
-          import { ThinkingOrb } from 'thinking-orbs';
-          
-          let orbRoot = null;
+          import { MODE_DRAWS, resolvePreset } from './orb-dist/engine.es.js';
+
+          const canvas = document.getElementById('thinkingOrbCanvas');
           let currentOrbState = 'breathing';
-          
-          window.setOrbState = function(newState) {
-            currentOrbState = newState;
-            const container = document.getElementById('orb-mount');
-            if (!container) return;
-            
-            if (!orbRoot) {
-              orbRoot = createRoot(container);
-            }
-            
-            const isMobile = window.innerWidth <= 768;
-            const size = isMobile ? Math.min(window.innerWidth * 0.72, 280) : 512;
-            
-            orbRoot.render(React.createElement(ThinkingOrb, { 
-              state: currentOrbState, 
-              size: size, 
-              theme: "dark" // Contraste óptimo con fondo carbón
-            }));
+          let animFrameId = null;
+          let startTime = performance.now();
+
+          function getOrbDimensions() {
+            const isMobile = window.innerWidth <= 900;
+            // Tamaño optimizado para encajar perfectamente tanto en móvil como en desktop
+            return isMobile 
+              ? Math.min(Math.round(window.innerWidth * 0.65), 230)
+              : 460;
           }
-          
-          window.addEventListener('resize', () => {
-            if (window.setOrbState && currentOrbState) {
-              window.setOrbState(currentOrbState);
+
+          function resizeCanvas() {
+            if (!canvas) return;
+            const size = getOrbDimensions();
+            const dpr = Math.min(2, window.devicePixelRatio || 1);
+            canvas.width = Math.round(size * dpr);
+            canvas.height = Math.round(size * dpr);
+            canvas.style.width = size + 'px';
+            canvas.style.height = size + 'px';
+            canvas.style.display = 'block';
+            canvas.style.margin = '0 auto';
+          }
+
+          function drawFrame() {
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              const size = getOrbDimensions();
+              const dpr = Math.min(2, window.devicePixelRatio || 1);
+              const presetKey = size >= 300 ? 512 : (size >= 150 ? 256 : 64);
+              const { mode, speed, opts } = resolvePreset(currentOrbState, presetKey);
+              const drawFn = MODE_DRAWS[mode];
+              const elapsed = ((performance.now() - startTime) / 1000) * speed;
+
+              ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+              ctx.clearRect(0, 0, size, size);
+              if (drawFn) {
+                // Modo oscuro para contraste máximo sobre el fondo de simulación
+                drawFn(ctx, size, elapsed, true, opts);
+              }
             }
-          });
-          
-          // Inicializar inmediatamente una vez que React cargue
-          window.setOrbState('breathing');
+            animFrameId = requestAnimationFrame(drawFrame);
+          }
+
+          window.setOrbState = function(state) {
+            currentOrbState = state || 'breathing';
+            startTime = performance.now();
+          };
+
+          window.addEventListener('resize', resizeCanvas);
+          resizeCanvas();
+          drawFrame();
           window.dispatchEvent(new Event('orbReady'));
         </script>
 
@@ -156,18 +170,20 @@
         <!-- 1. Botón Grande Principal: Generación de Casos o Subir PDF -->
         <button class="dock-btn btn-primary-generator" id="btnOpenCaseModal" onclick="openCaseModal()" title="Generar un nuevo caso con IA o subir un PDF">
           <span class="dock-icon-sparkle">✨</span>
-          <span class="btn-generator-label">Generación de Casos o Subir PDF</span>
+          <span class="btn-generator-label desktop-label">Generación de Casos o Subir PDF</span>
+          <span class="btn-generator-label mobile-label">Casos / PDF</span>
         </button>
 
         <!-- 2. Botón Micrófono -->
         <button class="dock-btn mic-btn" id="btnMic" onclick="toggleMic()" title="Presiona para hablar, y presiona de nuevo para enviar">
           <span class="dock-icon" id="micIcon">🎙️</span>
-          <span class="dock-label" id="micLabel">Toca para Hablar</span>
+          <span class="dock-label desktop-label" id="micLabel">Toca para Hablar</span>
+          <span class="dock-label mobile-label" id="micLabelMobile">Hablar</span>
         </button>
 
         <!-- 3. Botón de Tres Puntos (Móvil: abre menú flotante inferior) -->
         <button class="dock-btn btn-more" id="btnMoreOptions" onclick="toggleMoreMenu()" title="Más opciones de la simulación">
-          <span class="dock-icon" style="letter-spacing: 2px; font-weight: bold; font-size: 1.4rem;">•••</span>
+          <span class="dock-icon" style="letter-spacing: 1px; font-weight: bold; font-size: 1.35rem; line-height: 1;">•••</span>
           <span class="dock-label">Más</span>
         </button>
 
@@ -356,6 +372,6 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
   </script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="app.js?v=26"></script>
+  <script src="app.js?v=27"></script>
 </body>
 </html>

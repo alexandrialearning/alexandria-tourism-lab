@@ -244,8 +244,7 @@ async function speakCaption(speaker, text) {
     
     // Terminar caso después de 3 preguntas
     if (state.currentScenario === 'agentic' && state.userMessageCount >= 3) {
-      speakCaption('Sistema', 'Se han completado las 3 preguntas de esta evaluación. Generando retroalimentación...');
-      setTimeout(() => finishCall(true), 3500);
+      finishCall(true);
     } else {
       startListening();
     }
@@ -591,12 +590,11 @@ async function finishCall(auto = false) {
 
   const systemInstruction = {
     parts: [{ 
-      text: `Eres un profesor experto en turismo evaluando una simulación.
+      text: `Eres un profesor experto evaluando una simulación directiva.
 Lee la transcripción de la conversación.
-Genera un reporte final para el alumno "${state.userName}" en formato Markdown con esta estructura exacta:
-**Resolución de conflicto:** [Calificación de 1 a 10]/10
-**Uso de lenguaje técnico:** [Calificación de 1 a 10]/10
-**Comentario del mentor:** "[Un párrafo de feedback constructivo de 2-3 líneas dirigiéndote a ${state.userName} por su nombre]".`
+Genera un reporte de evaluación detallado, constructivo y riguroso para el alumno "${state.userName}" en formato Markdown.
+Evalúa su toma de decisiones, liderazgo, resolución de conflictos y aplicación de conceptos teóricos.
+Incluye una calificación general sobre 100 y retroalimentación clara sobre qué hizo bien y qué debe mejorar.`
     }]
   };
 
@@ -613,29 +611,11 @@ Genera un reporte final para el alumno "${state.userName}" en formato Markdown c
 
     // Convirtiendo markdown simple a HTML
     let feedbackText = result.data.text;
-    feedbackText = feedbackText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    feedbackText = feedbackText.replace(/\n/g, '<br>');
+    feedbackText = feedbackText.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
+    feedbackText = feedbackText.replace(/\\n/g, '<br>');
 
-    // Detener la simulación para evitar que el micrófono se abra
-    
-    // Parsear texto para generar mensaje de voz resumido
-    let resScore = "10";
-    let lenScore = "10";
-    let comment = "Gran trabajo en la sesión de hoy.";
-    
-    try {
-      const resMatch = feedbackText.match(/Resolución de conflicto:\s*(?:<[^>]+>)*\**(\d+)/i);
-      if (resMatch) resScore = resMatch[1];
-      
-      const lenMatch = feedbackText.match(/Uso de lenguaje técnico:\s*(?:<[^>]+>)*\**(\d+)/i);
-      if (lenMatch) lenScore = lenMatch[1];
-      
-      const commentMatch = feedbackText.match(/Comentario del mentor:\s*(?:<[^>]+>)*\**"?([^"]+)"?/i) || feedbackText.match(/Comentario del mentor:\s*(?:<[^>]+>)*\**(.*)/i);
-      if (commentMatch) comment = commentMatch[1].replace(/<[^>]+>/g, '').trim();
-    } catch(e) { console.warn("Parsing feedback failed:", e); }
-    
-    // Hablar el resultado (pero ocultar las captions visualmente atrás del modal está bien)
-    speakCaption('Profesor Anáhuac', `Se acabó el tiempo. Revisé tu desempeño y lograste un ${resScore} de 10 en resolución y ${lenScore} en lenguaje. ${comment}`);
+    // Hablar el resultado (genérico)
+    speakCaption('Sistema', 'Evaluación terminada. He generado tu reporte de retroalimentación. Revisa la pantalla para ver los detalles de tu desempeño.');
     
     document.getElementById('feedbackContent').innerHTML = feedbackText;
     updateOrb('neutral');

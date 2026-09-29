@@ -104,15 +104,12 @@
         <div class="sidebar-content active" id="viewRag">
           <div class="rag-panel">
             
-            <h4 style="color: #FFF; margin-bottom: 0.5rem;">1. Opción Aleatoria</h4>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Usa los temarios oficiales de Turismo.</p>
             <button id="btnGenerateScenario" class="btn-start" style="width:100%; margin-bottom:1.5rem; background: var(--bg-hover); border: 1px solid var(--primary-orange); color: var(--primary-orange);" onclick="triggerAgenticGenerator(false)">
               🎲 Generar Escenario Aleatorio
             </button>
 
             <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0;"></div>
 
-            <h4 style="color: #FFF; margin-bottom: 0.5rem;">2. Opción desde PDF</h4>
             <div class="upload-dropzone" onclick="triggerFileUpload()" style="margin-bottom: 10px;">
               <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📄</div>
               <strong>Subir PDF de Estudio</strong>
@@ -266,6 +263,6 @@
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
   </script>
-  <script src="app.js?v=7"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>

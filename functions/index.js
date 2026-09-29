@@ -17,7 +17,7 @@ exports.callGeminiAPIV1 = functions.runWith({ secrets: ["GEMINI_API_KEY"] }).htt
   try {
     const payload = {
       contents,
-      generationConfig: generationConfig || { temperature: 0.8, maxOutputTokens: 1000 }
+      generationConfig: generationConfig || { temperature: 0.8, maxOutputTokens: 3000 }
     };
     if (systemInstruction) {
       payload.system_instruction = systemInstruction;

@@ -645,8 +645,11 @@ ESTRUCTURA OBLIGATORIA DEL REPORTE:
 
     // Convirtiendo markdown simple a HTML
     let feedbackText = result.data.text;
-    feedbackText = feedbackText.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
-    feedbackText = feedbackText.replace(/\\n/g, '<br>');
+    feedbackText = feedbackText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    feedbackText = feedbackText.replace(/\n/g, '<br>');
+    feedbackText = feedbackText.replace(/### (.*?)(<br>|$)/g, '<h3 style="margin-top:15px; color:var(--primary-orange);">$1</h3>');
+    feedbackText = feedbackText.replace(/# 📊 (.*?)(<br>|$)/g, '<h2 style="margin-bottom:10px; border-bottom:1px solid #444; padding-bottom:10px;">📊 $1</h2>');
+    feedbackText = feedbackText.replace(/\* (.*?)(<br>|$)/g, '<li style="margin-left: 20px; list-style-type: disc;">$1</li>');
 
     // Hablar el resultado (genérico)
     speakCaption('Sistema', 'Evaluación terminada. He generado tu reporte de retroalimentación. Revisa la pantalla para ver los detalles de tu desempeño.');

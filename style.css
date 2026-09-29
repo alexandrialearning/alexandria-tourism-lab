@@ -284,6 +284,7 @@ body.call-mode {
 
 /* Self-View Picture in Picture */
 .self-pip {
+  display: none;
   position: absolute;
   bottom: 120px;
   right: 20px;

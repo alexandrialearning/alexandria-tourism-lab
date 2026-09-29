@@ -295,24 +295,33 @@ function initSpeechRecognition() {
 
   recognition = new SpeechRecognition();
   recognition.lang = 'es-MX';
-  recognition.interimResults = false;
+  recognition.interimResults = true;
+  recognition.continuous = true;
 
   recognition.onstart = () => {
     state.isRecording = true;
-    updateOrb('listening'); // Orb state for listening
+    updateOrb('listening');
     
     elements.btnMic.classList.add('active-mic');
-    elements.micIcon.innerText = '🎙️';
-    elements.micLabel.innerText = 'Escuchando...';
-    //
-    //
+    elements.micIcon.innerText = '📤';
+    elements.micLabel.innerText = 'Enviar Respuesta';
   };
 
   recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    elements.userInput.value = transcript;
-    stopMic(); 
-    handleUserSubmit(new Event('submit'));
+    let interim_transcript = '';
+    let final_transcript = '';
+
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        final_transcript += event.results[i][0].transcript + ' ';
+      } else {
+        interim_transcript += event.results[i][0].transcript;
+      }
+    }
+
+    if (final_transcript) {
+      elements.userInput.value += final_transcript;
+    }
   };
 
   recognition.onerror = (e) => {
@@ -356,9 +365,13 @@ function toggleMic() {
     alert("Genera un escenario primero antes de hablar.");
     return;
   }
-  if (state.currentRecording || state.isRecording) {
+  if (state.isRecording) {
     stopMic();
+    if (elements.userInput.value.trim() !== '') {
+      handleUserSubmit(new Event('submit'));
+    }
   } else {
+    elements.userInput.value = '';
     startListening();
   }
 }

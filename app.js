@@ -607,7 +607,7 @@ function askLaw(lawTitle) {
 }
 
 async function finishCall(auto = false) {
-  if (!auto && !confirm('¿Deseas finalizar la simulación?')) return;
+  if (!auto && !confirm('¿Deseas finalizar la simulación y recibir tu evaluación?')) return;
   state.currentScenario = 'evaluating';
   if (window.speechSynthesis) window.speechSynthesis.cancel();
   if (state.currentAudio) {
@@ -615,10 +615,69 @@ async function finishCall(auto = false) {
     state.currentAudio.currentTime = 0;
   }
   updateOrb('working');
-  speakCaption('Sistema', 'Simulación finalizada. La sesión se ha guardado.');
-  setTimeout(() => {
-    resetScenario();
-  }, 3000);
+
+  document.getElementById('feedbackModal').style.display = 'flex';
+  document.getElementById('feedbackContent').innerHTML = '<div style="text-align: center; padding: 2rem 0;"><div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⏳ Analizando simulación...</div><p style="color: #94A3B8; font-size: 0.9rem;">Por favor espera, la IA está evaluando tu liderazgo y toma de decisiones.</p></div>';
+
+  const systemInstruction = {
+    parts: [{ 
+      text: `Eres un estricto profesor universitario evaluando el desempeño de un alumno directivo en una simulación de toma de decisiones.
+Analiza la siguiente transcripción y genera un reporte oficial de evaluación para el alumno "${state.userName}".
+
+REGLAS ESTRICTAS:
+1. El reporte debe estar escrito 100% en ESPAÑOL, sin importar el contenido del caso.
+2. Usa un tono académico, profesional y constructivo.
+3. El formato debe ser estrictamente en Markdown usando encabezados y listas.
+
+ESTRUCTURA OBLIGATORIA DEL REPORTE:
+# 📊 Reporte de Evaluación
+
+**Alumno:** ${state.userName}  
+**Calificación Final:** [0 a 100]/100
+
+### 🎯 Resumen de Desempeño
+[Un párrafo de 3 a 4 líneas resumiendo cómo manejó la situación, su nivel de liderazgo y su toma de decisiones]
+
+### ✅ Puntos Fuertes
+* [Punto 1]
+* [Punto 2]
+
+### ⚠️ Áreas de Mejora
+* [Punto 1]
+* [Punto 2]
+
+### 💡 Comentario Final del Evaluador
+[Feedback directo y profesional para el alumno sobre cómo mejorar en su rol directivo]`
+    }]
+  };
+
+  const payloadText = JSON.stringify(state.conversationHistory, null, 2);
+
+  try {
+    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPIV1');
+    const result = await callGeminiAPI({
+      systemInstruction: systemInstruction,
+      contents: [{ role: "user", parts: [{ text: "Aquí tienes la transcripción completa de la simulación. Evalúame siguiendo estrictamente tus instrucciones del sistema:\n\n" + payloadText }] }]
+    });
+
+    const rawFeedback = result.data.text;
+    const formattedHtml = renderMarkdown(rawFeedback);
+
+    document.getElementById('feedbackContent').innerHTML = formattedHtml;
+    updateOrb('neutral');
+    speakCaption('Sistema', 'Evaluación completada. Revisa en pantalla tu reporte de desempeño.');
+
+    // Guardar evaluación en Firestore en la sesión
+    if (state.sessionId && db) {
+      db.collection("user_sessions").doc(state.sessionId).update({
+        evaluation: rawFeedback
+      }).catch(err => console.error("Error guardando rúbrica:", err));
+    }
+  } catch (error) {
+    console.error(error);
+    document.getElementById('feedbackContent').innerHTML = '<div style="color: #EF4444;">Error al generar la evaluación: ' + error.message + '</div>';
+    updateOrb('breathing');
+  }
 }
 
 function closeFeedbackModal() {
@@ -859,7 +918,7 @@ async function openHistoryModal() {
                        <span style="font-size: 0.9rem; text-decoration: underline;">Ver reporte completo ▼</span>
                      </summary>
                      <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
-                       ${data.evaluation}
+                       ${renderMarkdown(data.evaluation)}
                      </div>
                    </details>
                  </div>`;

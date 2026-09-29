@@ -1,17 +1,16 @@
 :root {
-  --bg-dark: #080C14; 
-  --bg-carbon: #0B0F19;
-  --bg-card: rgba(17, 24, 39, 0.90);
-  --bg-dock: rgba(15, 23, 42, 0.92);
-  --bg-border: rgba(255, 255, 255, 0.08); 
+  --bg-dark: #F8FAFC; 
+  --bg-card: rgba(255, 255, 255, 0.75);
+  --bg-dock: rgba(255, 255, 255, 0.95);
+  --bg-border: rgba(0, 0, 0, 0.08); 
   --primary-orange: #E35205;
   --primary-orange-light: #F57F20;
   --accent-brown: #8B4513;
   --accent-rose: #E11D48;
   --accent-emerald: #059669;
   --accent-amber: #D97706;
-  --text-main: #F8FAFC; 
-  --text-muted: #94A3B8; 
+  --text-main: #0F172A; 
+  --text-muted: #64748B; 
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-sm: 8px;
@@ -41,10 +40,11 @@ body.call-mode {
   position: fixed;
   inset: 0;
   z-index: -2;
-  background: var(--bg-dark);
+  background: #F8FAFC;
 }
 
 .ambient-glow-layer {
+  display: none; /* Inactive on desktop (white bg) */
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -72,20 +72,10 @@ body.call-mode {
   }
 }
 
-body.orb-speaking .ambient-glow-layer {
-  animation: orbVibrationPulse 1.6s infinite ease-in-out;
-  opacity: 1;
-}
-
-body.orb-speaking .video-stage {
-  box-shadow: inset 0 0 140px rgba(0,0,0,0.95), 0 0 50px rgba(227, 82, 5, 0.3) !important;
-  border-color: rgba(227, 82, 5, 0.35) !important;
-}
-
 .bg-blur-layer {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 0);
   background-size: 28px 28px;
   opacity: 1;
   pointer-events: none;
@@ -96,8 +86,8 @@ body.orb-speaking .video-stage {
 .start-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(8, 12, 20, 0.95);
-  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -144,12 +134,12 @@ body.orb-speaking .video-stage {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   border: 1px solid var(--bg-border);
   padding: 0.75rem 1.25rem;
   border-radius: var(--radius-md);
-  box-shadow: 0 4px 25px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
   z-index: 10;
 }
 
@@ -170,7 +160,7 @@ body.orb-speaking .video-stage {
   width: auto;
   object-fit: contain;
   transform-origin: left center;
-  filter: drop-shadow(0 2px 8px rgba(227, 82, 5, 0.25));
+  filter: drop-shadow(0 2px 8px rgba(227, 82, 5, 0.15));
 }
 
 .live-dot {
@@ -191,34 +181,32 @@ body.orb-speaking .video-stage {
 .call-timer {
   font-family: monospace;
   font-size: 0.85rem;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.05);
   padding: 0.2rem 0.6rem;
   border-radius: var(--radius-sm);
-  color: var(--primary-orange-light);
+  color: var(--primary-orange);
   margin-left: 0.5rem;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .scenario-pill {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(227, 82, 5, 0.15);
-  border: 1px solid rgba(227, 82, 5, 0.3);
+  background: rgba(227, 82, 5, 0.1);
+  border: 1px solid rgba(227, 82, 5, 0.2);
   padding: 0.4rem 0.9rem;
   border-radius: 99px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #FFAA70;
+  color: var(--primary-orange);
 }
 
 .quality-tag {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.05);
   padding: 0.3rem 0.75rem;
   border-radius: var(--radius-sm);
 }
@@ -653,7 +641,7 @@ body.orb-speaking .video-stage {
   border: 1px solid var(--bg-border);
   padding: 0.6rem 1.25rem;
   border-radius: 99px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 24px rgba(227, 82, 5, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
 }
 
 .dock-btn {
@@ -661,8 +649,8 @@ body.orb-speaking .video-stage {
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid transparent;
   color: var(--text-main);
   padding: 0.55rem 0.95rem;
   border-radius: var(--radius-md);
@@ -671,7 +659,7 @@ body.orb-speaking .video-stage {
 }
 
 .dock-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.06);
   transform: translateY(-2px);
 }
 
@@ -690,26 +678,26 @@ body.orb-speaking .video-stage {
 }
 
 .mic-btn.active-mic {
-  background: rgba(227, 82, 5, 0.2);
-  border-color: rgba(227, 82, 5, 0.5);
-  color: var(--primary-orange-light);
+  background: rgba(227, 82, 5, 0.1);
+  border-color: rgba(227, 82, 5, 0.2);
+  color: var(--primary-orange);
   animation: micPulse 1.5s infinite;
 }
 
 @keyframes micPulse {
-  0% { box-shadow: 0 0 0 0 rgba(227, 82, 5, 0.4); }
+  0% { box-shadow: 0 0 0 0 rgba(227, 82, 5, 0.3); }
   70% { box-shadow: 0 0 0 10px rgba(227, 82, 5, 0); }
   100% { box-shadow: 0 0 0 0 rgba(227, 82, 5, 0); }
 }
 
 .end-call-btn {
-  background: rgba(225, 29, 72, 0.15);
-  border-color: rgba(225, 29, 72, 0.3);
-  color: #FDA4AF;
+  background: rgba(225, 29, 72, 0.1);
+  border-color: rgba(225, 29, 72, 0.2);
+  color: var(--accent-rose);
 }
 
 .end-call-btn:hover {
-  background: rgba(225, 29, 72, 0.25);
+  background: rgba(225, 29, 72, 0.15);
 }
 
 /* Scenario Dropdown */
@@ -1175,9 +1163,86 @@ body.orb-speaking .video-stage {
 }
 
 @media screen and (max-width: 900px) {
+  body.call-mode {
+    background-color: #080C14 !important;
+    color: #F8FAFC;
+  }
+
+  .video-bg {
+    background: #080C14 !important;
+  }
+
+  .ambient-glow-layer {
+    display: block !important;
+  }
+
+  body.orb-speaking .ambient-glow-layer {
+    animation: orbVibrationPulse 1.6s infinite ease-in-out;
+    opacity: 1;
+  }
+
+  body.orb-speaking .video-stage {
+    box-shadow: inset 0 0 140px rgba(0,0,0,0.95), 0 0 50px rgba(227, 82, 5, 0.3) !important;
+    border-color: rgba(227, 82, 5, 0.35) !important;
+  }
+
+  .bg-blur-layer {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0) !important;
+  }
+
+  .call-header {
+    background: rgba(15, 23, 42, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.4) !important;
+    padding: 0.5rem 0.85rem;
+  }
+
+  .call-timer {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--primary-orange-light) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  }
+
+  .scenario-pill {
+    background: rgba(227, 82, 5, 0.15) !important;
+    border: 1px solid rgba(227, 82, 5, 0.3) !important;
+    color: #FFAA70 !important;
+  }
+
+  .quality-tag {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    color: #94A3B8 !important;
+  }
+
+  .dock-controls {
+    background: rgba(15, 23, 42, 0.92) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(227, 82, 5, 0.08) !important;
+    width: auto;
+    max-width: 96vw;
+    padding: 0.5rem 0.75rem;
+    gap: 0.55rem;
+  }
+
+  .dock-btn {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #F8FAFC !important;
+  }
+
+  .dock-btn:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+  }
+
+  .dock-label {
+    color: #94A3B8 !important;
+  }
+
   .desktop-only-btn {
     display: none !important;
   }
+
   .btn-more {
     display: flex !important;
   }
@@ -1187,19 +1252,8 @@ body.orb-speaking .video-stage {
     gap: 0.5rem;
   }
 
-  .call-header {
-    padding: 0.5rem 0.85rem;
-  }
-
   .anahuac-img-logo {
     height: 38px;
-  }
-
-  .dock-controls {
-    width: auto;
-    max-width: 96vw;
-    padding: 0.5rem 0.75rem;
-    gap: 0.55rem;
   }
 
   .btn-primary-generator {

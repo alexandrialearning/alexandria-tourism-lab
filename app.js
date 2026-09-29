@@ -778,7 +778,14 @@ async function triggerAgenticGenerator(usePdf = false) {
     
     // Clean up potential markdown formatting from Gemini
     let resultTextString = response.data.text;
-    resultTextString = resultTextString.replace(/```json/gi, '').replace(/```/g, '').trim();
+    
+    // Extract JSON only (from first { to last })
+    const startIndex = resultTextString.indexOf('{');
+    const endIndex = resultTextString.lastIndexOf('}');
+    
+    if (startIndex !== -1 && endIndex !== -1) {
+      resultTextString = resultTextString.substring(startIndex, endIndex + 1);
+    }
     
     const scenario = JSON.parse(resultTextString);
     

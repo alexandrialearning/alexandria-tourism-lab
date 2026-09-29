@@ -706,7 +706,7 @@ INSTRUCCIONES CLAVE (SITUACIONES COTIDIANAS DIRECTIVAS):
 4. Plantea una situación común y del día a día (rutinaria pero que requiere toma de decisiones y liderazgo) donde el alumno deba aplicar y explicar los conceptos del temario.
 5. Emite la primera frase del diálogo de forma directa.
 6. IMPORTANTE: Como el alumno es el Director, asume que tú (la IA) NO entiendes a fondo los términos muy técnicos (Ej. Yield Management, Macrosegmentación). Exígele al alumno (el Director) que te los explique con palabras sencillas para que tu departamento pueda ejecutar la estrategia. NUNCA rompas el personaje.
-7. REGLA DE ORO: Mantén SIEMPRE un tono de respeto profesional absoluto. Puedes retar y cuestionar al alumno, pero NUNCA debes ser grosero, usar lenguaje altisonante o faltar al respeto. Siempre dirígete al usuario con educación.`;
+7. REGLA DE ORO: El usuario SIEMPRE es la autoridad. Mantén un tono de respeto profesional absoluto y muestra empatía. Sin embargo, no te dejes engañar: cuestiona firmemente las respuestas malas, evasivas o incorrectas. Por el contrario, cuando el alumno te dé una buena respuesta bien fundamentada, mejora tu trato, actitud y docilidad hacia él. NUNCA debes ser grosero o faltar al respeto.`;
 
 async function triggerAgenticGenerator(usePdf = false) {
   state.sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
@@ -745,7 +745,7 @@ async function triggerAgenticGenerator(usePdf = false) {
     3. Plantea una situación común y del día a día (rutinaria pero de nivel directivo) donde el alumno deba liderar y aplicar la teoría del documento.
     4. Emite la primera frase del diálogo.
     5. IMPORTANTE: Como el alumno es el Director, asume que tú (la IA) eres un mando medio o tercero que NO entiende a fondo los términos muy técnicos. Exígele al alumno que te los explique con palabras sencillas para poder ejecutar sus órdenes. NUNCA rompas el personaje.
-    6. REGLA DE ORO: Mantén SIEMPRE un tono de respeto profesional absoluto. Puedes retar y cuestionar al alumno, pero NUNCA debes ser grosero, usar lenguaje altisonante o faltar al respeto. Siempre dirígete al usuario con educación.`;
+    6. REGLA DE ORO: El usuario SIEMPRE es la autoridad. Mantén un tono de respeto profesional absoluto y muestra empatía. Sin embargo, no te dejes engañar: cuestiona firmemente las respuestas malas, evasivas o incorrectas. Por el contrario, cuando el alumno te dé una buena respuesta bien fundamentada, mejora tu trato, actitud y docilidad hacia él. NUNCA debes ser grosero o faltar al respeto.`;
   }
   
   const promptText = dynamicPrompt + `\n\nIMPORTANTE: El nombre del alumno es "${state.userName}". Debes dirigirte a él o mencionarlo por su nombre en tu 'first_message' dependiendo del rol que le asignaste (Ej. "Director ${state.userName}", "Licenciado ${state.userName}", "Jefe ${state.userName}", etc.).\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  "title": "Ej. 🌿 Auditoría GSTC",\n  "ai_name": "Ej. Auditora Internacional",\n  "ai_role": "Ej. Evaluando Economía Circular",\n  "scenario_context": "Breve descripción de 2 líneas explicando el conflicto del escenario que le aparecerá al alumno para que entienda su rol antes de hablar.",\n  "first_message": "Ej. Director ${state.userName}, he revisado sus indicadores..."\n}`;

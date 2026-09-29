@@ -464,8 +464,15 @@ async function generateResponse(userText) {
     roleContext = "Eres la Persona Antagónica asignada en este escenario de evaluación turística. NUNCA rompas tu personaje. Desafía agresivamente los argumentos del estudiante. Responde de forma breve y conversacional (máximo 2 párrafos).";
   }
 
+  let pacingInstruction = "";
+  if (state.userMessageCount === 2) {
+    pacingInstruction = "\\n\\n[INSTRUCCIÓN DEL SISTEMA]: Esta es tu penúltima intervención. Empieza a acercar el caso hacia una conclusión o acuerdo basándote en la respuesta del alumno.";
+  } else if (state.userMessageCount >= 3) {
+    pacingInstruction = "\\n\\n[INSTRUCCIÓN DEL SISTEMA]: Esta es tu ÚLTIMA intervención. El tiempo de la reunión se acabó. Llega a una conclusión final definitiva sobre el caso y despídete en tu personaje.";
+  }
+
   const systemInstruction = {
-    parts: [{ text: roleContext + "\n\n" + (state.userMemory || "") }]
+    parts: [{ text: roleContext + "\\n\\n" + (state.userMemory || "") + pacingInstruction }]
   };
 
   try {
@@ -575,6 +582,7 @@ function askLaw(lawTitle) {
 async function finishCall(auto = false) {
   if (!auto && !confirm('¿Deseas finalizar la simulación y recibir tu evaluación?')) return;
   
+  state.currentScenario = 'evaluating';
   // Detener la simulación INMEDIATAMENTE para evitar más grabaciones
   
   if (window.speechSynthesis) window.speechSynthesis.cancel();

@@ -46,7 +46,7 @@ const elements = {
   btnMic: document.getElementById('btnMic'),
   micIcon: document.getElementById('micIcon'),
   micLabel: document.getElementById('micLabel'),
-  pipMicStatus: document.getElementById('pipMicStatus')
+  //
 };
 
 let pendingOrbState = null;
@@ -304,8 +304,8 @@ function initSpeechRecognition() {
     elements.btnMic.classList.add('active-mic');
     elements.micIcon.innerText = '🎙️';
     elements.micLabel.innerText = 'Escuchando...';
-    elements.pipMicStatus.innerText = '🔴 Transmitiendo';
-    elements.pipMicStatus.style.color = '#F43F5E';
+    //
+    //
   };
 
   recognition.onresult = (event) => {
@@ -325,8 +325,8 @@ function initSpeechRecognition() {
     elements.btnMic.style.background = "var(--bg-card)";
     elements.micIcon.innerText = '🎙️';
     elements.micLabel.innerText = 'Toca para Hablar';
-    elements.pipMicStatus.innerText = '🎙️ En espera';
-    elements.pipMicStatus.style.color = '#34D399';
+    //
+    //
     
     if (!state.isSpeaking && window.setOrbState) {
       window.setOrbState('breathing');
@@ -954,15 +954,10 @@ async function openSyllabusModal() {
       <h3>Temario Base de la Facultad</h3>
       <p>Al no haber subido un PDF, la IA elegirá dinámicamente evaluarte sobre los siguientes bloques de conocimiento:</p>
       
-      <h4 style="margin-top: 1rem; margin-bottom: 0.5rem; color: #E2E8F0;">Bloque A: Materias Centrales</h4>
-      <ul style="margin-bottom: 1rem;">
+      <ul style="margin-top: 1rem; margin-bottom: 1rem;">
         <li><strong>Mercadotecnia Turística Avanzada:</strong> Omnicanalidad, Inbound marketing, Macrosegmentación, Branding.</li>
         <li><strong>Sostenibilidad y Turismo:</strong> Desarrollo regenerativo, Criterios GSTC, Indicadores de impacto.</li>
         <li><strong>Estadística para la Dirección:</strong> Distribución normal, series de tiempo, regresión.</li>
-      </ul>
-
-      <h4 style="margin-bottom: 0.5rem; color: #E2E8F0;">Bloque B: Conocimientos Transversales</h4>
-      <ul>
         <li>Gestión de Destinos y Pueblos Mágicos</li>
         <li>Dirección de Eventos y Transportación</li>
         <li>Gestión de Hospitabilidad y Atención al Consumidor</li>

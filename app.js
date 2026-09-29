@@ -130,16 +130,28 @@ async function handleLogin() {
       // 1. Intentar iniciar sesión primero (Usuario recurrente)
       userCredential = await auth.signInWithEmailAndPassword(email, pass);
     } catch (err) {
-      // 2. Si el usuario no existe, intentar registro (Usuario nuevo)
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+      // 2. Si el usuario no existe o se equivocó de contraseña
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
         // Validar requisitos de registro
         if (!name || !privacyChecked) {
-          alert("Parece que eres un usuario nuevo. Por favor ingresa tu Nombre de Pila y acepta el Aviso de Privacidad para registrarte.");
+          alert("Credenciales incorrectas o usuario no encontrado. Si eres nuevo, ingresa tu Nombre de Pila y acepta el Aviso de Privacidad para registrarte.");
           btn.innerText = "Iniciar Sesión";
           btn.disabled = false;
           return;
         }
-        userCredential = await auth.createUserWithEmailAndPassword(email, pass);
+        
+        try {
+          userCredential = await auth.createUserWithEmailAndPassword(email, pass);
+        } catch (createErr) {
+          if (createErr.code === 'auth/email-already-in-use') {
+            alert("Error: Esta cuenta ya existe. La contraseña es incorrecta.");
+            btn.innerText = "Iniciar Sesión";
+            btn.disabled = false;
+            return;
+          } else {
+            throw createErr;
+          }
+        }
       } else {
         throw err;
       }

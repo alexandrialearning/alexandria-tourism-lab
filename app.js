@@ -14,7 +14,7 @@ const db = firebase.firestore();
 const functions = firebase.functions();
 
 const state = {
-  currentScenario: .mentor.,
+  currentScenario: 'mentor',
   currentAudio: null,
   isSpeaking: false,
   isRecording: false,

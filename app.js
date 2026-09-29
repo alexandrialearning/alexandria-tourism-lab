@@ -877,9 +877,23 @@ async function openHistoryModal() {
       html += `<div style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 1rem;">ID: ${doc.id} | ${date}</div>`;
       
       if (data.evaluation) {
+        // Extraer la calificación final usando regex
+        let calificacion = "N/A";
+        const scoreMatch = data.evaluation.match(/\*\*Calificaci&oacute;n Final:\*\*\s*(\d+\/100)/i) || data.evaluation.match(/Calificaci[oó]n Final:.*?(\d+\/100)/i) || data.evaluation.match(/(\d+\/100)/);
+        if (scoreMatch && scoreMatch[1]) {
+          calificacion = scoreMatch[1];
+        }
+
         html += `<div style="background: rgba(255,102,0,0.1); border-left: 4px solid var(--primary-orange); padding: 1rem; border-radius: 4px; margin-bottom: 1rem; color: white;">
-                   <h4 style="margin-top:0; margin-bottom:0.5rem; color: var(--primary-orange);">Evaluación Automática</h4>
-                   ${data.evaluation}
+                   <details style="cursor: pointer;">
+                     <summary style="font-weight: bold; color: var(--primary-orange); display: flex; align-items: center; justify-content: space-between; font-size: 1.1rem; list-style: none;">
+                       <span>🎯 Calificación: <span style="color: white; background: var(--primary-orange); padding: 2px 8px; border-radius: 12px; margin-left: 5px;">${calificacion}</span></span>
+                       <span style="font-size: 0.9rem; text-decoration: underline;">Ver reporte completo ▼</span>
+                     </summary>
+                     <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                       ${data.evaluation}
+                     </div>
+                   </details>
                  </div>`;
       }
       

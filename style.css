@@ -256,14 +256,16 @@ body.call-mode {
   bottom: 20px;
   left: 20px;
   right: 20px;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-md);
   padding: 0.85rem 1.25rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   transition: all 0.3s ease;
   z-index: 10;
+  max-height: 220px;
+  overflow-y: auto;
 }
 
 .caption-speaker {
@@ -271,15 +273,80 @@ body.call-mode {
   font-weight: 700;
   text-transform: uppercase;
   color: var(--primary-orange);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
   letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .caption-text {
   font-size: 0.95rem;
-  line-height: 1.45;
+  line-height: 1.55;
   color: #F8FAFC;
-  font-weight: 600;
+  font-weight: 500;
+}
+
+.caption-text p {
+  margin: 0.35rem 0;
+}
+
+.caption-text p:first-child {
+  margin-top: 0;
+}
+
+.caption-text p:last-child {
+  margin-bottom: 0;
+}
+
+.caption-text strong,
+.caption-text b {
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.caption-text em,
+.caption-text i {
+  font-style: italic;
+  color: #E2E8F0;
+}
+
+.caption-text ul,
+.caption-text ol {
+  margin: 0.4rem 0;
+  padding-left: 1.25rem;
+}
+
+.caption-text li {
+  margin-bottom: 0.25rem;
+  color: #F1F5F9;
+}
+
+.caption-text h1,
+.caption-text h2,
+.caption-text h3,
+.caption-text h4 {
+  color: var(--primary-orange);
+  margin: 0.5rem 0 0.25rem 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.caption-text blockquote {
+  border-left: 3px solid var(--primary-orange);
+  margin: 0.4rem 0;
+  padding-left: 0.75rem;
+  color: #CBD5E1;
+  font-style: italic;
+}
+
+.caption-text code {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+  color: #FDBA74;
 }
 
 /* Self-View Picture in Picture */

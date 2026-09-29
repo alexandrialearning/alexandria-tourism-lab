@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       elements.roleLabel.innerText = "Facultad de Turismo y Gastronomía";
       
       elements.captionSpeaker.innerText = "Sistema";
-      elements.captionText.innerText = `"Bienvenido de vuelta, ${state.userName}. Genera un escenario o sube un PDF en el panel derecho para comenzar."`;
+      elements.captionText.innerHTML = renderMarkdown(`Bienvenido de vuelta, **${state.userName}**. Genera un escenario o sube un PDF en el panel derecho para comenzar.`);
       
       try {
         const pastSessions = await db.collection("user_sessions")
@@ -205,15 +205,50 @@ function startCallTimer() {
 }
 
 // -----------------------------------------------------------------
+// Markdown Rendering Utility
+// -----------------------------------------------------------------
+function renderMarkdown(text) {
+  if (!text) return '';
+  if (window.marked && typeof window.marked.parse === 'function') {
+    try {
+      return window.marked.parse(text);
+    } catch (e) {
+      console.warn("marked.parse error, using fallback", e);
+    }
+  }
+  let html = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+  html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+  html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+  html = html.replace(/\n\n/g, '<p></p>');
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
+// -----------------------------------------------------------------
 // Audio Synthesis (ElevenLabs ONLY)
 // -----------------------------------------------------------------
 async function speakCaption(speaker, text) {
   elements.captionSpeaker.innerText = speaker;
-  elements.captionText.innerText = `"${text}"`;
+  elements.captionText.innerHTML = renderMarkdown(text);
   
   elements.videoStage.classList.add('speaking');
   state.isSpeaking = true;
   updateOrb('composing'); // Orb state for speaking
+
+  // Limpiar sintaxis de markdown para que el sintetizador de voz no hable asteriscos o signos
+  const cleanTTS = text
+    .replace(/[*#_`~>[\]]/g, '')
+    .replace(/<[^>]*>/g, '')
+    .trim();
 
   let audioBlob = null;
   if (state.ttsApiKey && state.ttsApiKey.trim() !== '') {
@@ -225,7 +260,7 @@ async function speakCaption(speaker, text) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          text: text,
+          text: cleanTTS,
           model_id: "eleven_multilingual_v2",
           voice_settings: { stability: 0.5, similarity_boost: 0.75 }
         })
@@ -274,7 +309,7 @@ async function speakCaption(speaker, text) {
   // Fallback nativo
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
+    const utterance = new SpeechSynthesisUtterance(cleanTTS);
     utterance.lang = 'es-MX';
     utterance.rate = 1.0;
     
@@ -283,7 +318,7 @@ async function speakCaption(speaker, text) {
     
     window.speechSynthesis.speak(utterance);
   } else {
-    setTimeout(onAudioEnd, Math.min(text.length * 50, 4000));
+    setTimeout(onAudioEnd, Math.min(cleanTTS.length * 50, 4000));
   }
 }
 
@@ -435,7 +470,7 @@ function addTranscriptMsg(sender, text) {
   
   const textDiv = document.createElement('div');
   textDiv.className = 'msg-text';
-  textDiv.innerText = text;
+  textDiv.innerHTML = renderMarkdown(text);
   
   msgDiv.appendChild(headerDiv);
   msgDiv.appendChild(textDiv);
@@ -452,19 +487,19 @@ async function generateResponse(userText) {
 
   // Flujo Agéntico Inteligente Universal (Gemini para TODO)
   
-  let roleContext = "Eres un evaluador estricto. Sigue tu rol asignado previamente, NUNCA rompas el personaje. Responde de forma breve, concisa y oral (máximo 2 párrafos).";
+  let roleContext = "Eres un evaluador estricto. Sigue tu rol asignado previamente, NUNCA rompas el personaje. Responde de forma estructurada con Markdown.";
   
   if (state.currentScenario === 'mentor') {
     roleContext = "Eres un Copiloto, un Mentor Socrático experto en turismo. Nunca das la respuesta directa, siempre respondes con preguntas profundas que hagan pensar al estudiante sobre sostenibilidad y rentabilidad.";
   } else if (state.currentScenario === 'overbooking') {
-    roleContext = "Eres un huésped furioso en el lobby del hotel. Hiciste tu reserva hace 3 meses y acaba de ocurrir un overbooking. Estás muy enojado, exiges soluciones inmediatas y amenazas con Profeco. Responde breve y cortante.";
+    roleContext = "Eres un huésped en el lobby del hotel. Hiciste tu reserva hace 3 meses y acaba de ocurrir un overbooking. Exiges soluciones inmediatas y amenazas con Profeco.";
   } else if (state.currentScenario === 'community') {
     roleContext = "Eres el líder de una asamblea ejidal indígena. Un empresario quiere construir un proyecto en tu tierra. Eres desconfiado, defiendes la naturaleza y quieres garantías por escrito. Hablas con firmeza.";
   } else if (state.currentScenario === 'investor') {
-    roleContext = "Eres un inversionista de Wall Street rudo y analítico. Evalúas un pitch turístico. Cuestionas agresivamente el ROI, la TIR y las proyecciones de ventas. No tienes tiempo que perder.";
+    roleContext = "Eres un inversionista de Wall Street analítico. Evalúas un pitch turístico. Cuestionas el ROI, la TIR y las proyecciones de ventas.";
   } else {
     // Escenario agéntico generado por PDF o Aleatorio
-    roleContext = "Eres el personaje de la simulación. MANTÉN SIEMPRE UN TONO DE RESPETO ABSOLUTO, formal y corporativo (trata al usuario de Usted). Plantea tus dudas o problemas de manera profesional, sin exigir cosas de forma maleducada. JAMÁS uses groserías ni expresiones informales o agresivas (ej. no digas 'qué demonios'). Responde de forma natural, clara y argumentada.";
+    roleContext = "Eres el personaje de la simulación. MANTÉN SIEMPRE UN TONO DE RESPETO ABSOLUTO, formal y corporativo (trata al usuario de Usted). Plantea tus dudas o problemas de manera profesional, sin exigir cosas de forma maleducada. JAMÁS uses groserías ni expresiones informales o agresivas (ej. no digas 'qué demonios'). Responde de forma natural, clara y argumentada. Puedes usar formato Markdown (como **negritas** para enfatizar conceptos clave o viñetas cortas si listas puntos) para que la respuesta esté visualmente estructurada.";
   }
 
   let pacingInstruction = "";

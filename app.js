@@ -14,7 +14,8 @@ const db = firebase.firestore();
 const functions = firebase.functions();
 
 const state = {
-  currentScenario: 'mentor',
+  currentScenario: .mentor.,
+  currentAudio: null,
   isSpeaking: false,
   isRecording: false,
   sidebarOpen: true,
@@ -231,17 +232,22 @@ async function speakCaption(speaker, text) {
   }
 
   if (audioBlob) {
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audio = new Audio(audioUrl);
+    if (state.currentAudio) {
+      state.currentAudio.pause();
+      state.currentAudio.currentTime = 0;
+    }
     
-    audio.onended = () => {
+    const audioUrl = URL.createObjectURL(audioBlob);
+    state.currentAudio = new Audio(audioUrl);
+    
+    state.currentAudio.onended = () => {
       elements.videoStage.classList.remove('speaking');
       state.isSpeaking = false;
       URL.revokeObjectURL(audioUrl);
       startListening();
     };
     
-    await audio.play();
+    await state.currentAudio.play();
     return;
   }
 
@@ -550,7 +556,14 @@ function askLaw(lawTitle) {
 async function finishCall(auto = false) {
   if (!auto && !confirm('¿Deseas finalizar la simulación y recibir tu evaluación?')) return;
   
+  // Detener la simulación INMEDIATAMENTE para evitar más grabaciones
+  
   if (window.speechSynthesis) window.speechSynthesis.cancel();
+  if (state.currentAudio) {
+    state.currentAudio.pause();
+    state.currentAudio.currentTime = 0;
+  }
+  
   updateOrb('working');
 
   document.getElementById('feedbackModal').style.display = 'flex';
@@ -580,7 +593,6 @@ Genera un reporte final para el alumno "${state.userName}" en formato Markdown c
     feedbackText = feedbackText.replace(/\n/g, '<br>');
 
     // Detener la simulación para evitar que el micrófono se abra
-    state.currentScenario = 'feedback';
     
     // Parsear texto para generar mensaje de voz resumido
     let resScore = "10";

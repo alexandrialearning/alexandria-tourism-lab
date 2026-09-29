@@ -25,7 +25,8 @@ const state = {
   customVoiceId: 'sDh3eviBhiuHKi0MjTNq',
   ttsApiKey: 'sk_4197546279e7106e0b4d72bfa7f870dd1316bd4e71fbd682',
   conversationHistory: [],
-  sessionId: null
+  sessionId: null,
+  userMessageCount: 0
 };
 
 let recognition = null;
@@ -196,13 +197,7 @@ function startCallTimer() {
     const secs = String(state.callDurationSeconds % 60).padStart(2, '0');
     elements.callTimer.innerText = `${mins}:${secs}`;
     
-    // 5 minutos de límite (300 segundos) para el caso
-    if (state.currentScenario === 'agentic' && state.callDurationSeconds >= 300) {
-      clearInterval(state.timerInterval);
-      speakCaption('Sistema', 'Se acabó el tiempo en la junta directiva, vamos a evaluar tu desempeño.');
-      // Simular que le pican a finalizar call pasados 3 segundos
-      setTimeout(() => finishCall(true), 3500);
-    }
+    // Temporizador sin límite de tiempo para que termine por número de preguntas
   }, 1000);
 }
 
@@ -243,6 +238,19 @@ async function speakCaption(speaker, text) {
     }
   }
 
+  function onAudioEnd() {
+    elements.videoStage.classList.remove('speaking');
+    state.isSpeaking = false;
+    
+    // Terminar caso después de 3 preguntas
+    if (state.currentScenario === 'agentic' && state.userMessageCount >= 3) {
+      speakCaption('Sistema', 'Se han completado las 3 preguntas de esta evaluación. Generando retroalimentación...');
+      setTimeout(() => finishCall(true), 3500);
+    } else {
+      startListening();
+    }
+  }
+
   if (audioBlob) {
     if (state.currentAudio) {
       state.currentAudio.pause();
@@ -253,10 +261,8 @@ async function speakCaption(speaker, text) {
     state.currentAudio = new Audio(audioUrl);
     
     state.currentAudio.onended = () => {
-      elements.videoStage.classList.remove('speaking');
-      state.isSpeaking = false;
       URL.revokeObjectURL(audioUrl);
-      startListening();
+      onAudioEnd();
     };
     
     await state.currentAudio.play();
@@ -270,24 +276,12 @@ async function speakCaption(speaker, text) {
     utterance.lang = 'es-MX';
     utterance.rate = 1.0;
     
-    utterance.onend = () => {
-      elements.videoStage.classList.remove('speaking');
-      state.isSpeaking = false;
-      startListening();
-    };
-    utterance.onerror = () => {
-      elements.videoStage.classList.remove('speaking');
-      state.isSpeaking = false;
-      startListening();
-    };
+    utterance.onend = onAudioEnd;
+    utterance.onerror = onAudioEnd;
     
     window.speechSynthesis.speak(utterance);
   } else {
-    setTimeout(() => {
-      elements.videoStage.classList.remove('speaking');
-      state.isSpeaking = false;
-      startListening();
-    }, Math.min(text.length * 50, 4000));
+    setTimeout(onAudioEnd, Math.min(text.length * 50, 4000));
   }
 }
 
@@ -376,6 +370,7 @@ function handleUserSubmit(e) {
   if (!text) return;
 
   addTranscriptMsg('Tú', text);
+  state.userMessageCount++;
   elements.userInput.value = '';
   
   updateOrb('working'); // Orb state for thinking
@@ -650,6 +645,7 @@ function closeFeedbackModal() {
 function forceResetCall() {
   if (window.speechSynthesis) window.speechSynthesis.cancel();
   state.callDurationSeconds = 0;
+  state.userMessageCount = 0;
   state.currentScenario = 'none';
   elements.transcriptTimeline.innerHTML = '';
   const tabTranscriptBtn = document.getElementById('tabTranscript');
@@ -737,6 +733,7 @@ async function triggerAgenticGenerator(usePdf = false) {
   state.sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
   state.conversationHistory = [];
   state.callDurationSeconds = 0;
+  state.userMessageCount = 0;
   
   if (usePdf) {
     if (!state.currentProject || !state.currentProject.toLowerCase().includes('.pdf')) {

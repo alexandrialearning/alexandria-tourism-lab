@@ -544,12 +544,13 @@ async function handleFileSelect(e) {
         const loadingTask = pdfjsLib.getDocument({data: uint8Array});
         const pdf = await loadingTask.promise;
         let fullText = "";
-        
-        for (let i = 1; i <= pdf.numPages; i++) {
+        const maxPages = Math.min(pdf.numPages, 10);
+        for (let i = 1; i <= maxPages; i++) {
           const page = await pdf.getPage(i);
           const textContent = await page.getTextContent();
           const pageText = textContent.items.map(item => item.str).join(' ');
           fullText += pageText + " ";
+          if (fullText.length > 15000) break; // Detener si ya extrajimos suficiente texto (evita cuelgues)
         }
         
         state.extractedPdfText = fullText;

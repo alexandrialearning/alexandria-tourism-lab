@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       elements.roleLabel.innerText = "Facultad de Turismo y Gastronomía";
       
       elements.captionSpeaker.innerText = "Sistema";
-      elements.captionText.innerHTML = renderMarkdown(`Bienvenido de vuelta, **${state.userName}**. Genera un escenario o sube un PDF en el panel derecho para comenzar.`);
+      elements.captionText.innerHTML = renderMarkdown(`Bienvenido de vuelta, **${state.userName}**. Selecciona **Generar caso aleatorio** o **Subir PDF** para comenzar.`);
       
       try {
         const pastSessions = await db.collection("user_sessions")
@@ -189,7 +189,7 @@ async function startSimulation() {
   elements.participantName.innerText = "Copiloto Anáhuac";
   elements.roleLabel.innerText = "Facultad de Turismo y Gastronomía";
   
-  const intro = `¡Hola ${state.userName}! Soy tu tutor de la Facultad de Turismo y Gastronomía de la Universidad Anáhuac. Por favor, selecciona un Generador de Casos en el panel lateral para iniciar tu evaluación.`;
+  const intro = `¡Hola ${state.userName}! Soy tu tutor de la Facultad de Turismo y Gastronomía de la Universidad Anáhuac. Por favor, selecciona **Generar caso aleatorio** o **Subir PDF** para iniciar tu evaluación.`;
   await speakCaption('Copiloto Anáhuac', intro);
 }
 
@@ -480,8 +480,7 @@ function addTranscriptMsg(sender, text) {
 
 async function generateResponse(userText) {
   if (state.currentScenario !== 'agentic') {
-    // Si el usuario presiona el micrófono antes de generar escenario, le recordamos
-    speakCaption('Sistema', 'Por favor, selecciona un generador de escenarios en el panel lateral primero.');
+    speakCaption('Sistema', 'Por favor, selecciona **Generar caso aleatorio** o **Subir PDF** para comenzar.');
     return;
   }
 
@@ -751,7 +750,7 @@ function resetCall() {
     forceResetCall();
     
     // Reproducir mensaje de bienvenida nuevamente
-    const intro = `¡Hola ${state.userName}! Soy tu tutor de la Facultad de Turismo y Gastronomía de la Universidad Anáhuac. Por favor, selecciona un Generador de Casos en el panel lateral para iniciar tu evaluación.`;
+    const intro = `¡Hola ${state.userName}! Soy tu tutor de la Facultad de Turismo y Gastronomía de la Universidad Anáhuac. Por favor, selecciona **Generar caso aleatorio** o **Subir PDF** para iniciar tu evaluación.`;
     speakCaption('Copiloto Anáhuac', intro);
   }
 }

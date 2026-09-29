@@ -533,19 +533,36 @@ async function handleFileSelect(e) {
     
     const reader = new FileReader();
     reader.onload = async (event) => {
-      state.currentFileBase64 = event.target.result.split(',')[1];
-      
       try {
-        document.getElementById('projectName').innerText = `📄 ${file.name} (Cargado exitosamente)`;
+        document.getElementById('projectName').innerText = `📄 ${file.name} (Procesando texto rápido...)`;
         
-        // Iniciar el escenario automáticamente mandando el Base64 a Gemini
+        const typedarray = new Uint8Array(event.target.result);
+        const loadingTask = pdfjsLib.getDocument(typedarray);
+        const pdf = await loadingTask.promise;
+        
+        let fullText = "";
+        // Leer páginas aleatorias para no exceder límites de memoria ni de red
+        const numPagesToRead = Math.min(pdf.numPages, 10);
+        const step = Math.max(1, Math.floor(pdf.numPages / numPagesToRead));
+        
+        for (let i = 1; i <= pdf.numPages; i += step) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          fullText += textContent.items.map(item => item.str).join(' ') + " \n";
+          if (fullText.length > 30000) break; 
+        }
+        
+        state.extractedPdfText = fullText;
+        state.currentFileBase64 = null; // No mandaremos Base64 masivo para evitar Error 413 Payload Too Large
+        
+        document.getElementById('projectName').innerText = `📄 ${file.name} (Cargado exitosamente)`;
         triggerAgenticGenerator(true);
       } catch (err) {
-        console.error("Error subiendo a Firestore:", err);
+        console.error("Error procesando PDF localmente:", err);
         document.getElementById('projectName').innerText = `📄 ${file.name} (Error procesando)`;
       }
     };
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
   }
 }
 
@@ -555,90 +572,18 @@ function askLaw(lawTitle) {
 }
 
 async function finishCall(auto = false) {
-  if (!auto && !confirm('¿Deseas finalizar la simulación y recibir tu evaluación?')) return;
-  
+  if (!auto && !confirm('¿Deseas finalizar la simulación?')) return;
   state.currentScenario = 'evaluating';
-  // Detener la simulación INMEDIATAMENTE para evitar más grabaciones
-  
   if (window.speechSynthesis) window.speechSynthesis.cancel();
   if (state.currentAudio) {
     state.currentAudio.pause();
     state.currentAudio.currentTime = 0;
   }
-  
   updateOrb('working');
-
-  document.getElementById('feedbackModal').style.display = 'flex';
-  document.getElementById('feedbackContent').innerHTML = 'Generando rúbrica de evaluación...<br><br><small>Por favor espera, la IA está analizando la conversación completa.</small>';
-
-  const systemInstruction = {
-    parts: [{ 
-      text: `Eres un estricto profesor universitario evaluando el desempeño de un alumno directivo en una simulación de toma de decisiones.
-Analiza la siguiente transcripción y genera un reporte oficial de evaluación para el alumno "${state.userName}".
-
-REGLAS ESTRICTAS:
-1. El reporte debe estar escrito 100% en ESPAÑOL, sin importar el contenido del caso.
-2. Usa un tono académico, profesional y constructivo.
-3. El formato debe ser estrictamente en Markdown usando encabezados y listas.
-
-ESTRUCTURA OBLIGATORIA DEL REPORTE:
-# 📊 Reporte de Evaluación
-
-**Alumno:** ${state.userName}
-**Calificación Final:** [0 a 100]/100
-
-### 🎯 Resumen de Desempeño
-[Un párrafo de 3 a 4 líneas resumiendo cómo manejó la situación, su nivel de liderazgo y su toma de decisiones]
-
-### ✅ Puntos Fuertes
-* [Punto 1]
-* [Punto 2]
-
-### ⚠️ Áreas de Mejora
-* [Punto 1]
-* [Punto 2]
-
-### 💡 Comentario Final del Evaluador
-[Feedback directo y profesional para el alumno sobre cómo mejorar en su rol directivo]`
-    }]
-  };
-
-  try {
-    const transcriptText = state.conversationHistory.map(msg => 
-      (msg.role === 'user' ? 'Alumno: ' : 'IA: ') + msg.parts[0].text
-    ).join('\\n');
-
-    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPIV1');
-    const result = await callGeminiAPI({
-      systemInstruction: systemInstruction,
-      contents: [{ role: 'user', parts: [{ text: "Aquí está la transcripción de la simulación:\\n\\n" + transcriptText }] }]
-    });
-
-    // Convirtiendo markdown simple a HTML
-    let feedbackText = result.data.text;
-    feedbackText = feedbackText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    feedbackText = feedbackText.replace(/\n/g, '<br>');
-    feedbackText = feedbackText.replace(/### (.*?)(<br>|$)/g, '<h3 style="margin-top:15px; color:var(--primary-orange);">$1</h3>');
-    feedbackText = feedbackText.replace(/# 📊 (.*?)(<br>|$)/g, '<h2 style="margin-bottom:10px; border-bottom:1px solid #444; padding-bottom:10px;">📊 $1</h2>');
-    feedbackText = feedbackText.replace(/\* (.*?)(<br>|$)/g, '<li style="margin-left: 20px; list-style-type: disc;">$1</li>');
-
-    // Hablar el resultado (genérico)
-    speakCaption('Sistema', 'Evaluación terminada. He generado tu reporte de retroalimentación. Revisa la pantalla para ver los detalles de tu desempeño.');
-    
-    document.getElementById('feedbackContent').innerHTML = feedbackText;
-    updateOrb('neutral');
-    
-    // Guardar evaluación en Firestore
-    if (state.sessionId && db) {
-      db.collection("user_sessions").doc(state.sessionId).update({
-        evaluation: feedbackText
-      }).catch(err => console.error("Error guardando rúbrica:", err));
-    }
-  } catch (error) {
-    console.error(error);
-    document.getElementById('feedbackContent').innerHTML = 'Error al generar la evaluación: ' + error.message;
-    updateOrb('breathing');
-  }
+  speakCaption('Sistema', 'Simulación finalizada. La sesión se ha guardado.');
+  setTimeout(() => {
+    resetScenario();
+  }, 3000);
 }
 
 function closeFeedbackModal() {
@@ -766,15 +711,11 @@ async function triggerAgenticGenerator(usePdf = false) {
   
   try {
     const parts = [];
-    if (usePdf && state.currentFileBase64) {
-      parts.push({
-        inlineData: {
-          mimeType: "application/pdf",
-          data: state.currentFileBase64
-        }
-      });
+    let finalPrompt = promptText;
+    if (usePdf && state.extractedPdfText) {
+      finalPrompt = `CONTENIDO DEL LIBRO/DOCUMENTO A EVALUAR:\n---\n${state.extractedPdfText}\n---\n\n${promptText}`;
     }
-    parts.push({ text: promptText });
+    parts.push({ text: finalPrompt });
 
     const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPIV1');
     const response = await callGeminiAPI({

@@ -533,8 +533,38 @@ async function generateResponse(userText) {
   }
 }
 
+// Case Generator Modal Control
+function openCaseModal() {
+  const modal = document.getElementById('caseModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeCaseModal() {
+  const modal = document.getElementById('caseModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function triggerCaseOption(type) {
+  closeCaseModal();
+  if (type === 'random') {
+    triggerAgenticGenerator(false);
+  }
+}
+
+// Transcript Modal Control
+function openTranscriptModal() {
+  const modal = document.getElementById('transcriptModal');
+  if (modal) modal.style.display = 'flex';
+  const timeline = document.getElementById('transcriptTimeline');
+  if (timeline) timeline.scrollTop = timeline.scrollHeight;
+}
+
+function closeTranscriptModal() {
+  const modal = document.getElementById('transcriptModal');
+  if (modal) modal.style.display = 'none';
+}
+
 function toggleSidebar() {
-  // Función desactivada: El sidebar ya no se puede ocultar
   state.sidebarOpen = true;
 }
 
@@ -544,16 +574,18 @@ function switchSidebarTab(tabName) {
   const viewTranscript = document.getElementById('viewTranscript');
   const viewRag = document.getElementById('viewRag');
 
-  if (tabName === 'transcript') {
-    tabTranscript.classList.add('active');
-    tabRag.classList.remove('active');
-    viewTranscript.classList.add('active');
-    viewRag.classList.remove('active');
-  } else {
-    tabRag.classList.add('active');
-    tabTranscript.classList.remove('active');
-    viewRag.classList.add('active');
-    viewTranscript.classList.remove('active');
+  if (tabTranscript && tabRag && viewTranscript && viewRag) {
+    if (tabName === 'transcript') {
+      tabTranscript.classList.add('active');
+      tabRag.classList.remove('active');
+      viewTranscript.classList.add('active');
+      viewRag.classList.remove('active');
+    } else {
+      tabRag.classList.add('active');
+      tabTranscript.classList.remove('active');
+      viewRag.classList.add('active');
+      viewTranscript.classList.remove('active');
+    }
   }
 }
 
@@ -590,11 +622,17 @@ async function handleFileSelect(e) {
         state.extractedPdfText = fullText;
         state.currentFileBase64 = null; // No mandaremos Base64 masivo para evitar Error 413 Payload Too Large
         
-        document.getElementById('projectName').innerText = `📄 ${file.name} (Cargado exitosamente)`;
+        const pName = document.getElementById('projectName');
+        if (pName) pName.innerText = `📄 ${file.name} (Cargado exitosamente)`;
+        const pInfo = document.getElementById('projectInfo');
+        if (pInfo) pInfo.style.display = 'block';
+        
+        closeCaseModal();
         triggerAgenticGenerator(true);
       } catch (err) {
         console.error("Error procesando PDF localmente:", err);
-        document.getElementById('projectName').innerText = `📄 ${file.name} (Error procesando)`;
+        const pName = document.getElementById('projectName');
+        if (pName) pName.innerText = `📄 ${file.name} (Error procesando)`;
       }
     };
     reader.readAsArrayBuffer(file);
@@ -756,6 +794,7 @@ INSTRUCCIONES CLAVE (SITUACIONES COTIDIANAS DIRECTIVAS):
 7. REGLA DE ORO: El usuario SIEMPRE es la autoridad. Mantén un tono de respeto profesional absoluto y muestra empatía. Sin embargo, no te dejes engañar: cuestiona firmemente las respuestas malas, evasivas o incorrectas. Por el contrario, cuando el alumno te dé una buena respuesta bien fundamentada, mejora tu trato, actitud y docilidad hacia él. NUNCA debes ser grosero o faltar al respeto.`;
 
 async function triggerAgenticGenerator(usePdf = false) {
+  closeCaseModal();
   state.sessionId = 'session_' + Math.random().toString(36).substr(2, 9);
   state.conversationHistory = [];
   state.callDurationSeconds = 0;

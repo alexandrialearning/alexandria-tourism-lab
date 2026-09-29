@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anáhuac Tourism Lab</title>
   <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <!-- Responsive Meta Tags -->
   <meta name="theme-color" content="#0B0E14">
@@ -70,61 +70,8 @@
       </div>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Area: Centered Immersive Stage -->
     <div class="call-body">
-      
-      <!-- Left Sidebar (Chat & RAG) -->
-      <aside class="call-sidebar" id="callSidebar">
-        <div class="sidebar-header">
-          <h3>Asistente Anáhuac</h3>
-        </div>
-        
-        <div class="sidebar-tabs">
-          <button class="tab-btn" id="tabTranscript" onclick="switchSidebarTab('transcript')" style="display: none;">Historial del Caso</button>
-          <button class="tab-btn active" id="tabRag" onclick="switchSidebarTab('rag')">Generador de Casos</button>
-        </div>
-
-        <!-- Chat Panel -->
-        <div class="sidebar-content" id="viewTranscript">
-          <!-- Caja de Contexto -->
-          <div id="scenarioContextBox" style="background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1rem; color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; flex-shrink: 0;">
-            Inicia un escenario desde el panel lateral.
-          </div>
-          
-          <div class="transcript-timeline" id="transcriptTimeline" style="flex-grow: 1;">
-            <!-- Messages will be injected here -->
-          </div>
-          <form class="sidebar-input-form" onsubmit="handleUserSubmit(event)">
-            <input type="text" id="userInput" placeholder="Escribe un mensaje o habla..." autocomplete="off">
-            <button type="submit" class="send-icon-btn">➤</button>
-          </form>
-        </div>
-
-        <!-- RAG / Document Panel -->
-        <div class="sidebar-content active" id="viewRag">
-          <div class="rag-panel">
-            
-            <button id="btnGenerateScenario" class="btn-start" style="width:100%; margin-bottom:1.5rem; background: var(--bg-hover); border: 1px solid var(--primary-orange); color: var(--primary-orange);" onclick="triggerAgenticGenerator(false)">
-              🎲 Generar Escenario Aleatorio
-            </button>
-
-            <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0;"></div>
-
-            <div class="upload-dropzone" onclick="triggerFileUpload()" style="margin-bottom: 10px;">
-              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📄</div>
-              <strong>Subir PDF de Estudio</strong>
-            </div>
-            <input type="file" id="fileInput" accept=".pdf" style="display: none;" onchange="handleFileSelect(event)">
-            <div class="project-info-badge" id="projectInfo" style="display: none; margin-bottom: 10px;">
-              <span id="projectName"></span>
-            </div>
-            
-
-
-          </div>
-        </div>
-      </aside>
-
       <!-- Central Video Stage -->
       <main class="video-stage" id="videoStage">
         <!-- Stream Badges Overlay -->
@@ -136,8 +83,8 @@
           <span id="roleLabel">Inicializando</span>
         </div>
 
-        <!-- FULL SCREEN AVATAR COVER -> REPLACED WITH THINKING ORB -->
-        <div class="avatar-stream-container" id="avatarContainer" style="display: flex; justify-content: center; align-items: center;">
+        <!-- Centered Thinking Orb -->
+        <div class="avatar-stream-container" id="avatarContainer">
           <div id="orb-mount"></div>
         </div>
 
@@ -170,7 +117,7 @@
             orbRoot.render(React.createElement(ThinkingOrb, { 
               state: newState, 
               size: 512, 
-              theme: "dark" // Forzamos dark para que contraste bien con fondos oscuros
+              theme: "dark" // Contraste óptimo con fondos oscuros
             }));
           }
           
@@ -179,7 +126,7 @@
           window.dispatchEvent(new Event('orbReady'));
         </script>
 
-        <!-- Live Captions Box -->
+        <!-- Live Captions Box Floating Center -->
         <div class="live-captions-container">
           <div class="caption-speaker" id="captionSpeaker">Sistema</div>
           <div class="caption-text" id="captionText">Conectando al laboratorio...</div>
@@ -188,34 +135,115 @@
       </main>
     </div>
 
-    <!-- Bottom Zoom/Meet Style Control Dock -->
+    <!-- Hidden PDF file input -->
+    <input type="file" id="fileInput" accept=".pdf" style="display: none;" onchange="handleFileSelect(event)">
+
+    <!-- Bottom Aesthetic Control Dock -->
     <footer class="dock-footer" style="flex-direction: column; align-items: center; gap: 0.5rem; padding-bottom: 0.5rem;">
       <div class="dock-controls">
+        <!-- Botón Grande Principal: Generación de Casos o Subir PDF -->
+        <button class="dock-btn btn-primary-generator" id="btnOpenCaseModal" onclick="openCaseModal()" title="Generar un nuevo caso con IA o subir un PDF">
+          <span class="dock-icon-sparkle">✨</span>
+          <span class="btn-generator-label">Generación de Casos o Subir PDF</span>
+        </button>
+
         <button class="dock-btn mic-btn" id="btnMic" onclick="toggleMic()" title="Presiona para hablar, y presiona de nuevo para enviar">
           <span class="dock-icon" id="micIcon">🎙️</span>
           <span class="dock-label" id="micLabel">Toca para Hablar</span>
         </button>
 
+        <button class="dock-btn" onclick="openTranscriptModal()" title="Ver la transcripción del diálogo">
+          <span class="dock-icon">💬</span>
+          <span class="dock-label">Diálogo</span>
+        </button>
 
-        <button class="dock-btn" onclick="openSyllabusModal()">
+        <button class="dock-btn" onclick="openSyllabusModal()" title="Consultar Temario">
           <span class="dock-icon">📚</span>
           <span class="dock-label">Temario</span>
         </button>
 
-        <button class="dock-btn" onclick="openHistoryModal()">
+        <button class="dock-btn" onclick="openHistoryModal()" title="Ver Historial de Sesiones">
           <span class="dock-icon">📂</span>
           <span class="dock-label">Historial</span>
         </button>
 
-        <button class="dock-btn end-call-btn" onclick="finishCall()">
+        <button class="dock-btn end-call-btn" onclick="finishCall()" title="Finalizar Simulación">
           <span class="dock-icon">🛑</span>
           <span class="dock-label">Finalizar</span>
         </button>
       </div>
-      <div style="font-size: 0.75rem; color: #000000; font-family: monospace; letter-spacing: 0.5px;">
+      <div class="dock-attribution">
         ⚡️ Powered by Alexandr.ia AI Learning Systems
       </div>
     </footer>
+  </div>
+
+  <!-- Modal Estético: Generación de Casos / Subir PDF -->
+  <div id="caseModal" class="case-modal-overlay" style="display: none;">
+    <div class="case-modal-card">
+      <div class="case-modal-header">
+        <div>
+          <span class="modal-badge-tag">Simulador Directivo</span>
+          <h2 class="case-modal-title">Generación de Casos de Estudio</h2>
+        </div>
+        <button class="modal-close-btn" onclick="closeCaseModal()">&times;</button>
+      </div>
+
+      <p class="case-modal-subtitle">
+        Selecciona cómo deseas que la Inteligencia Artificial plantee tu simulación ejecutiva:
+      </p>
+
+      <div class="case-options-grid">
+        <!-- Opción 1: Caso Aleatorio -->
+        <div class="case-option-card" onclick="triggerCaseOption('random')">
+          <div class="card-icon-bubble">🎲</div>
+          <h3>Generar Caso con IA</h3>
+          <p>La IA elegirá dinámicamente un caso del temario oficial (Mercadotecnia Turística, Sostenibilidad, Gestión Hotelera) para evaluar tus decisiones.</p>
+          <button class="btn-card-action" id="btnGenerateScenario">Iniciar Caso Aleatorio →</button>
+        </div>
+
+        <!-- Opción 2: Subir PDF -->
+        <div class="case-option-card card-upload" onclick="triggerFileUpload()">
+          <div class="card-icon-bubble">📄</div>
+          <h3>Subir PDF de Estudio</h3>
+          <p>Sube un syllabus, libro o caso en PDF. La IA extraerá los conceptos centrales y diseñará un escenario especializado en tu documento.</p>
+          <div class="upload-mini-badge" id="projectInfo" style="display: none;">
+            <span id="projectName"></span>
+          </div>
+          <button class="btn-card-action btn-upload-action">Explorar Archivo PDF 📂</button>
+        </div>
+      </div>
+
+      <div class="case-modal-footer">
+        <span class="modal-footer-note">💡 Recuerda: tú eres la máxima autoridad directiva. La IA cuestionará tus decisiones con rigor técnico.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Estético: Transcripción / Diálogo -->
+  <div id="transcriptModal" class="case-modal-overlay" style="display: none;">
+    <div class="case-modal-card transcript-modal-card">
+      <div class="case-modal-header">
+        <div>
+          <span class="modal-badge-tag">Registro de la Simulación</span>
+          <h2 class="case-modal-title">Transcripción del Diálogo</h2>
+        </div>
+        <button class="modal-close-btn" onclick="closeTranscriptModal()">&times;</button>
+      </div>
+
+      <div id="scenarioContextBox" class="modal-context-box">
+        Inicia un escenario desde "Generación de Casos" para comenzar la simulación.
+      </div>
+
+      <div class="transcript-timeline modal-transcript-timeline" id="transcriptTimeline">
+        <!-- Mensajes inyectados -->
+      </div>
+
+      <form class="sidebar-input-form modal-input-form" onsubmit="handleUserSubmit(event)">
+        <input type="text" id="userInput" placeholder="Escribe un mensaje alternativo al micrófono..." autocomplete="off">
+        <button type="submit" class="send-icon-btn">➤</button>
+      </form>
+    </div>
   </div>
 
   <!-- Modal de Retroalimentación Automática -->
@@ -264,6 +292,6 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
   </script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="app.js?v=22"></script>
+  <script src="app.js?v=23"></script>
 </body>
 </html>

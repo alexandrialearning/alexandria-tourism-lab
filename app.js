@@ -464,7 +464,7 @@ async function generateResponse(userText) {
     roleContext = "Eres un inversionista de Wall Street rudo y analítico. Evalúas un pitch turístico. Cuestionas agresivamente el ROI, la TIR y las proyecciones de ventas. No tienes tiempo que perder.";
   } else {
     // Escenario agéntico generado por PDF o Aleatorio
-    roleContext = "Eres el personaje de la simulación. MANTÉN SIEMPRE UN TONO DE RESPETO ABSOLUTO, formal y corporativo (trata al usuario de Usted). Plantea tus dudas o problemas de manera profesional, sin exigir cosas de forma maleducada. JAMÁS uses groserías ni expresiones informales o agresivas (ej. no digas 'qué demonios'). Responde de forma EXTREMADAMENTE BREVE y directa (MÁXIMO 1 o 2 oraciones cortas) para que la conversación sea rápida y fluida.";
+    roleContext = "Eres el personaje de la simulación. MANTÉN SIEMPRE UN TONO DE RESPETO ABSOLUTO, formal y corporativo (trata al usuario de Usted). Plantea tus dudas o problemas de manera profesional, sin exigir cosas de forma maleducada. JAMÁS uses groserías ni expresiones informales o agresivas (ej. no digas 'qué demonios'). Responde de forma natural, clara y argumentada.";
   }
 
   let pacingInstruction = "";

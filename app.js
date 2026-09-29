@@ -241,6 +241,7 @@ async function speakCaption(speaker, text) {
   elements.captionText.innerHTML = renderMarkdown(text);
   
   elements.videoStage.classList.add('speaking');
+  document.body.classList.add('orb-speaking');
   state.isSpeaking = true;
   updateOrb('composing'); // Orb state for speaking
 
@@ -278,6 +279,7 @@ async function speakCaption(speaker, text) {
 
   function onAudioEnd() {
     elements.videoStage.classList.remove('speaking');
+    document.body.classList.remove('orb-speaking');
     state.isSpeaking = false;
     
     // Terminar caso después de 3 preguntas
@@ -547,6 +549,25 @@ function triggerCaseOption(type) {
   closeCaseModal();
   if (type === 'random') {
     triggerAgenticGenerator(false);
+  }
+}
+
+// Mobile Bottom Sheet More Options Menu
+function toggleMoreMenu() {
+  const sheet = document.getElementById('moreOptionsSheet');
+  if (!sheet) return;
+  if (sheet.style.display === 'none' || sheet.style.display === '') {
+    sheet.style.display = 'flex';
+    setTimeout(() => sheet.classList.add('active'), 10);
+  } else {
+    sheet.classList.remove('active');
+    setTimeout(() => { sheet.style.display = 'none'; }, 260);
+  }
+}
+
+function closeMoreMenuOnBackdrop(event) {
+  if (event.target.id === 'moreOptionsSheet') {
+    toggleMoreMenu();
   }
 }
 

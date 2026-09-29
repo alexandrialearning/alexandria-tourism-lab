@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anáhuac Tourism Lab</title>
   <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <!-- Responsive Meta Tags -->
   <meta name="theme-color" content="#0B0E14">
@@ -47,6 +47,7 @@
   </div>
 
   <div class="video-bg" id="videoBg"></div>
+  <div class="ambient-glow-layer" id="ambientGlowLayer"></div>
   <div class="bg-blur-layer"></div>
 
   <div class="room-container">
@@ -105,8 +106,10 @@
           import { ThinkingOrb } from 'thinking-orbs';
           
           let orbRoot = null;
+          let currentOrbState = 'breathing';
           
           window.setOrbState = function(newState) {
+            currentOrbState = newState;
             const container = document.getElementById('orb-mount');
             if (!container) return;
             
@@ -114,12 +117,21 @@
               orbRoot = createRoot(container);
             }
             
+            const isMobile = window.innerWidth <= 768;
+            const size = isMobile ? Math.min(window.innerWidth * 0.72, 280) : 512;
+            
             orbRoot.render(React.createElement(ThinkingOrb, { 
-              state: newState, 
-              size: 512, 
-              theme: "dark" // Contraste óptimo con fondos oscuros
+              state: currentOrbState, 
+              size: size, 
+              theme: "dark" // Contraste óptimo con fondo carbón
             }));
           }
+          
+          window.addEventListener('resize', () => {
+            if (window.setOrbState && currentOrbState) {
+              window.setOrbState(currentOrbState);
+            }
+          });
           
           // Inicializar inmediatamente una vez que React cargue
           window.setOrbState('breathing');
@@ -138,36 +150,44 @@
     <!-- Hidden PDF file input -->
     <input type="file" id="fileInput" accept=".pdf" style="display: none;" onchange="handleFileSelect(event)">
 
-    <!-- Bottom Aesthetic Control Dock -->
+    <!-- Bottom Aesthetic Control Dock (Responsive Mobile / Desktop) -->
     <footer class="dock-footer" style="flex-direction: column; align-items: center; gap: 0.5rem; padding-bottom: 0.5rem;">
       <div class="dock-controls">
-        <!-- Botón Grande Principal: Generación de Casos o Subir PDF -->
+        <!-- 1. Botón Grande Principal: Generación de Casos o Subir PDF -->
         <button class="dock-btn btn-primary-generator" id="btnOpenCaseModal" onclick="openCaseModal()" title="Generar un nuevo caso con IA o subir un PDF">
           <span class="dock-icon-sparkle">✨</span>
           <span class="btn-generator-label">Generación de Casos o Subir PDF</span>
         </button>
 
+        <!-- 2. Botón Micrófono -->
         <button class="dock-btn mic-btn" id="btnMic" onclick="toggleMic()" title="Presiona para hablar, y presiona de nuevo para enviar">
           <span class="dock-icon" id="micIcon">🎙️</span>
           <span class="dock-label" id="micLabel">Toca para Hablar</span>
         </button>
 
-        <button class="dock-btn" onclick="openTranscriptModal()" title="Ver la transcripción del diálogo">
+        <!-- 3. Botón de Tres Puntos (Móvil: abre menú flotante inferior) -->
+        <button class="dock-btn btn-more" id="btnMoreOptions" onclick="toggleMoreMenu()" title="Más opciones de la simulación">
+          <span class="dock-icon" style="letter-spacing: 2px; font-weight: bold; font-size: 1.4rem;">•••</span>
+          <span class="dock-label">Más</span>
+        </button>
+
+        <!-- 4. Botones directos para Ordenador (Ocultos en Móvil) -->
+        <button class="dock-btn desktop-only-btn" onclick="openTranscriptModal()" title="Ver la transcripción del diálogo">
           <span class="dock-icon">💬</span>
           <span class="dock-label">Diálogo</span>
         </button>
 
-        <button class="dock-btn" onclick="openSyllabusModal()" title="Consultar Temario">
+        <button class="dock-btn desktop-only-btn" onclick="openSyllabusModal()" title="Consultar Temario">
           <span class="dock-icon">📚</span>
           <span class="dock-label">Temario</span>
         </button>
 
-        <button class="dock-btn" onclick="openHistoryModal()" title="Ver Historial de Sesiones">
+        <button class="dock-btn desktop-only-btn" onclick="openHistoryModal()" title="Ver Historial de Sesiones">
           <span class="dock-icon">📂</span>
           <span class="dock-label">Historial</span>
         </button>
 
-        <button class="dock-btn end-call-btn" onclick="finishCall()" title="Finalizar Simulación">
+        <button class="dock-btn end-call-btn desktop-only-btn" onclick="finishCall()" title="Finalizar Simulación">
           <span class="dock-icon">🛑</span>
           <span class="dock-label">Finalizar</span>
         </button>
@@ -176,6 +196,50 @@
         ⚡️ Powered by Alexandr.ia AI Learning Systems
       </div>
     </footer>
+  </div>
+
+  <!-- Bottom Sheet Móvil: Opciones Secundarias (Accionado por el botón •••) -->
+  <div id="moreOptionsSheet" class="more-options-sheet" style="display: none;" onclick="closeMoreMenuOnBackdrop(event)">
+    <div class="more-sheet-card">
+      <div class="more-sheet-handle"></div>
+      <div class="more-sheet-header">
+        <h4>Opciones de la Simulación</h4>
+        <button class="sheet-close-btn" onclick="toggleMoreMenu()">&times;</button>
+      </div>
+      <div class="more-sheet-grid">
+        <button class="sheet-action-item" onclick="openTranscriptModal(); toggleMoreMenu();">
+          <span class="sheet-icon">💬</span>
+          <div class="sheet-text">
+            <strong>Transcripción / Diálogo</strong>
+            <small>Leer historial de la conversación o escribir texto</small>
+          </div>
+        </button>
+
+        <button class="sheet-action-item" onclick="openSyllabusModal(); toggleMoreMenu();">
+          <span class="sheet-icon">📚</span>
+          <div class="sheet-text">
+            <strong>Temario de Turismo</strong>
+            <small>Consultar materias y temario activo</small>
+          </div>
+        </button>
+
+        <button class="sheet-action-item" onclick="openHistoryModal(); toggleMoreMenu();">
+          <span class="sheet-icon">📂</span>
+          <div class="sheet-text">
+            <strong>Historial de Evaluaciones</strong>
+            <small>Ver calificaciones y retroalimentación previa</small>
+          </div>
+        </button>
+
+        <button class="sheet-action-item sheet-end-item" onclick="finishCall(); toggleMoreMenu();">
+          <span class="sheet-icon">🛑</span>
+          <div class="sheet-text">
+            <strong>Finalizar Simulación</strong>
+            <small>Concluir el caso y recibir rúbrica de desempeño</small>
+          </div>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Modal Estético: Generación de Casos / Subir PDF -->
@@ -292,6 +356,6 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
   </script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="app.js?v=24"></script>
+  <script src="app.js?v=25"></script>
 </body>
 </html>

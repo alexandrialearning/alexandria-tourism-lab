@@ -2,7 +2,8 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 
 exports.callGeminiAPI = onCall({ 
-  cors: true, 
+  cors: true,
+  invoker: "public", 
   maxInstances: 10,
   secrets: ["GEMINI_API_KEY"]
 }, async (request) => {

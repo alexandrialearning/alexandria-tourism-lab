@@ -537,40 +537,19 @@ async function handleFileSelect(e) {
       state.currentFileBase64 = event.target.result.split(',')[1];
       
       try {
-        // Extraer texto usando pdf.js
-        const pdfData = atob(state.currentFileBase64);
-        const uint8Array = new Uint8Array(pdfData.length);
-        for (let i = 0; i < pdfData.length; i++) {
-          uint8Array[i] = pdfData.charCodeAt(i);
-        }
-        
-        const loadingTask = pdfjsLib.getDocument({data: uint8Array});
-        const pdf = await loadingTask.promise;
-        let fullText = "";
-        const maxPages = Math.min(pdf.numPages, 10);
-        for (let i = 1; i <= maxPages; i++) {
-          const page = await pdf.getPage(i);
-          const textContent = await page.getTextContent();
-          const pageText = textContent.items.map(item => item.str).join(' ');
-          fullText += pageText + " ";
-          if (fullText.length > 15000) break; // Detener si ya extrajimos suficiente texto (evita cuelgues)
-        }
-        
-        state.extractedPdfText = fullText;
-        
-        // Guardar documento crudo en Firestore (Simulando la base vectorial para el prototipo)
+        // Guardar documento en Firestore solo como referencia
         await db.collection("documents").add({
           fileName: file.name,
-          content: fullText.substring(0, 5000), // Guardamos una muestra para no exceder límites
           uploadedAt: firebase.firestore.FieldValue.serverTimestamp(),
           uploadedBy: state.userName || 'unknown'
         });
         
-        document.getElementById('projectName').innerText = `📄 ${file.name} (Indexado en Firestore)`;
-        // Iniciar el escenario automáticamente
+        document.getElementById('projectName').innerText = `📄 ${file.name} (Cargado exitosamente)`;
+        
+        // Iniciar el escenario automáticamente mandando el Base64 a Gemini
         triggerAgenticGenerator(true);
       } catch (err) {
-        console.error("Error procesando PDF o subiendo a Firestore:", err);
+        console.error("Error subiendo a Firestore:", err);
         document.getElementById('projectName').innerText = `📄 ${file.name} (Error procesando)`;
       }
     };

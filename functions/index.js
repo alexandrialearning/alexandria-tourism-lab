@@ -1,21 +1,16 @@
-const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+const functions = require('firebase-functions');
+const logger = require('firebase-functions/logger');
 
-exports.callGeminiAPI = onCall({ 
-  cors: true,
-  invoker: "public", 
-  maxInstances: 10,
-  secrets: ["GEMINI_API_KEY"]
-}, async (request) => {
-  const { systemInstruction, contents, generationConfig } = request.data;
+exports.callGeminiAPIV1 = functions.runWith({ secrets: ["GEMINI_API_KEY"] }).https.onCall(async (data, context) => {
+  const { systemInstruction, contents, generationConfig } = data;
   
   if (!contents || !Array.isArray(contents)) {
-    throw new HttpsError('invalid-argument', 'The function must be called with a valid "contents" array.');
+    throw new functions.https.HttpsError('invalid-argument', 'The function must be called with a valid "contents" array.');
   }
 
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
   if (!GEMINI_API_KEY) {
-    throw new HttpsError('failed-precondition', 'The GEMINI_API_KEY environment variable is missing.');
+    throw new functions.https.HttpsError('failed-precondition', 'The GEMINI_API_KEY environment variable is missing.');
   }
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
   
@@ -34,18 +29,18 @@ exports.callGeminiAPI = onCall({
       body: JSON.stringify(payload)
     });
 
-    const data = await response.json();
+    const respData = await response.json();
 
     if (!response.ok) {
-      logger.error("Gemini API Error:", data);
-      throw new HttpsError('internal', data.error?.message || 'Error from Gemini API');
+      logger.error("Gemini API Error:", respData);
+      throw new functions.https.HttpsError('internal', respData.error?.message || 'Error from Gemini API');
     }
 
-    const aiText = data.candidates[0].content.parts[0].text;
+    const aiText = respData.candidates[0].content.parts[0].text;
     return { text: aiText };
 
   } catch (error) {
     logger.error("Error calling Gemini API", error);
-    throw new HttpsError('internal', 'Unable to generate response from AI.');
+    throw new functions.https.HttpsError('internal', 'Unable to generate response from AI.');
   }
 });

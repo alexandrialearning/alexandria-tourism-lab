@@ -462,7 +462,7 @@ async function generateResponse(userText) {
   };
 
   try {
-    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPI');
+    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPIV1');
     const result = await callGeminiAPI({
       systemInstruction: systemInstruction,
       contents: state.conversationHistory
@@ -593,7 +593,7 @@ Genera un reporte final para el alumno "${state.userName}" en formato Markdown c
   };
 
   try {
-    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPI');
+    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPIV1');
     const result = await callGeminiAPI({
       systemInstruction: systemInstruction,
       contents: state.conversationHistory
@@ -792,7 +792,7 @@ async function triggerAgenticGenerator(usePdf = false) {
     }
     parts.push({ text: promptText });
 
-    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPI');
+    const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPIV1');
     const response = await callGeminiAPI({
       contents: [{ parts }],
       generationConfig: {
@@ -946,7 +946,7 @@ async function openSyllabusModal() {
     content.innerHTML = '<div style="text-align: center;">Analizando documento para extraer el temario... ⏳</div>';
     
     try {
-      const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPI');
+      const callGeminiAPI = firebase.functions().httpsCallable('callGeminiAPIV1');
       const response = await callGeminiAPI({
         contents: [{
           parts: [

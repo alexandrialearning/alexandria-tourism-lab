@@ -405,7 +405,7 @@ function addTranscriptMsg(sender, text) {
   });
 
   // Guardado permanente de la sesión vinculado al usuario
-  if (state.sessionId && window.db) {
+  if (state.sessionId && db) {
     const user = firebase.auth().currentUser;
     if (user) {
       db.collection("user_sessions").doc(state.sessionId).set({
@@ -629,7 +629,7 @@ Incluye una calificación general sobre 100 y retroalimentación clara sobre qu�
     updateOrb('neutral');
     
     // Guardar evaluación en Firestore
-    if (state.sessionId && window.db) {
+    if (state.sessionId && db) {
       db.collection("user_sessions").doc(state.sessionId).update({
         evaluation: feedbackText
       }).catch(err => console.error("Error guardando rúbrica:", err));
@@ -843,7 +843,7 @@ async function openHistoryModal() {
   content.innerHTML = 'Cargando tu historial...';
   
   const user = firebase.auth().currentUser;
-  if (!window.db || !user) {
+  if (!db || !user) {
     content.innerHTML = 'Error: Base de datos no conectada o usuario no autenticado.';
     return;
   }

@@ -1220,9 +1220,11 @@ body.call-mode {
   }
 
   .call-timer {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: var(--primary-orange-light) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    display: none !important;
+  }
+
+  .live-dot {
+    display: none !important;
   }
 
   .scenario-pill {

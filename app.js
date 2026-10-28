@@ -22,7 +22,7 @@ const state = {
   callDurationSeconds: 0,
   timerInterval: null,
   currentProject: null,
-  customVoiceId: 'sDh3eviBhiuHKi0MjTNq',
+  customVoiceId: 'YPcWHXliBaqbvRa5Fcab', // Luis - Mexican / Latin American Spanish Male
   ttsApiKey: 'sk_4197546279e7106e0b4d72bfa7f870dd1316bd4e71fbd682',
   conversationHistory: [],
   sessionId: null,
@@ -362,7 +362,7 @@ async function speakCaption(speaker, text) {
         },
         body: JSON.stringify({
           text: cleanTTS,
-          model_id: "eleven_flash_v2",
+          model_id: "eleven_multilingual_v2",
           voice_settings: { stability: 0.5, similarity_boost: 0.75 }
         })
       });
@@ -413,6 +413,13 @@ async function speakCaption(speaker, text) {
     const utterance = new SpeechSynthesisUtterance(cleanTTS);
     utterance.lang = 'es-MX';
     utterance.rate = 1.0;
+    
+    // Seleccionar explícitamente voz en español nativa si el navegador la tiene
+    const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+    const spanishVoice = voices.find(v => v.lang.startsWith('es-MX') || v.lang.startsWith('es_MX') || v.lang.startsWith('es-419') || v.lang.startsWith('es'));
+    if (spanishVoice) {
+      utterance.voice = spanishVoice;
+    }
     
     utterance.onend = onAudioEnd;
     utterance.onerror = onAudioEnd;

@@ -113,7 +113,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+let audioUnlocked = false;
+function unlockAudio() {
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+  if (!state.currentAudio) state.currentAudio = new Audio();
+  state.currentAudio.src = "data:audio/mp3;base64,//OwgAAAAAAAAAAAAAAABjdW5kAAAAAAAAAAAAAAA=";
+  state.currentAudio.play().catch(()=>{});
+  if (window.speechSynthesis) {
+    const u = new SpeechSynthesisUtterance('');
+    u.volume = 0;
+    window.speechSynthesis.speak(u);
+  }
+}
+
 async function handleLogin() {
+  unlockAudio();
   const name = document.getElementById('loginName').value.trim();
   const email = document.getElementById('loginUsername').value;
   const pass = document.getElementById('loginPassword').value;
@@ -182,6 +197,7 @@ async function handleLogin() {
 }
 
 function loginAsGuest() {
+  unlockAudio();
   state.userName = "Invitado";
   const userTag = document.getElementById('userProfileTag');
   if (userTag) userTag.innerText = `👤 Invitado`;
@@ -269,7 +285,7 @@ async function speakCaption(speaker, text) {
         },
         body: JSON.stringify({
           text: cleanTTS,
-          model_id: "eleven_multilingual_v2",
+          model_id: "eleven_flash_v2",
           voice_settings: { stability: 0.5, similarity_boost: 0.75 }
         })
       });
@@ -298,20 +314,19 @@ async function speakCaption(speaker, text) {
   }
 
   if (audioBlob) {
-    if (state.currentAudio) {
-      state.currentAudio.pause();
-      state.currentAudio.currentTime = 0;
-    }
+    if (!state.currentAudio) state.currentAudio = new Audio();
+    state.currentAudio.pause();
     
     const audioUrl = URL.createObjectURL(audioBlob);
-    state.currentAudio = new Audio(audioUrl);
+    state.currentAudio.src = audioUrl;
+    state.currentAudio.load();
     
     state.currentAudio.onended = () => {
       URL.revokeObjectURL(audioUrl);
       onAudioEnd();
     };
     
-    await state.currentAudio.play();
+    await state.currentAudio.play().catch(e => console.warn("Audio play blocked", e));
     return;
   }
 
@@ -507,7 +522,7 @@ async function generateResponse(userText) {
     roleContext = "Eres un inversionista de Wall Street analítico. Evalúas un pitch turístico. Cuestionas el ROI, la TIR y las proyecciones de ventas.";
   } else {
     // Escenario agéntico generado por PDF o Aleatorio
-    roleContext = "Eres el personaje de la simulación. MANTÉN SIEMPRE UN TONO DE RESPETO ABSOLUTO, formal y corporativo (trata al usuario de Usted). Plantea tus dudas o problemas de manera profesional, sin exigir cosas de forma maleducada. JAMÁS uses groserías ni expresiones informales o agresivas (ej. no digas 'qué demonios'). Responde de forma natural, clara y argumentada. Puedes usar formato Markdown (como **negritas** para enfatizar conceptos clave o viñetas cortas si listas puntos) para que la respuesta esté visualmente estructurada.";
+    roleContext = "Eres el personaje de la simulación. RECUERDA: ERES UN HOMBRE, mantén siempre una identidad masculina porque tu voz sintetizada es de hombre. MANTÉN SIEMPRE UN TONO DE RESPETO ABSOLUTO, formal y corporativo (trata al usuario de Usted). Plantea tus dudas o problemas de manera profesional, sin exigir cosas de forma maleducada. JAMÁS uses groserías ni expresiones informales o agresivas (ej. no digas 'qué demonios'). Responde de forma natural, clara y argumentada. IMPORTANTE - AGILIDAD EJECUTIVA: Tu respuesta hablada DEBE DURAR ENTRE 15 Y 20 SEGUNDOS. Sé ultra conciso y directo: máximo 2 a 3 oraciones breves (35 a 45 palabras / máximo 280 caracteres). Cero monólogos o discursos largos. Ve directo al grano y formula una pregunta o dilema claro al alumno.";
   }
 
   let pacingInstruction = "";
@@ -809,7 +824,7 @@ Temas de evaluación de la Facultad (elige SOLO UNO AL AZAR para este caso):
 
 INSTRUCCIONES CLAVE (SITUACIONES COTIDIANAS DIRECTIVAS):
 1. Elige aleatoriamente UN subtema específico de la lista anterior.
-2. ADOPTA UNA PERSONALIDAD COTIDIANA PERO QUE REQUIERA LIDERAZGO DIRECTIVO. Eres alguien con quien un Director o Gerente General lidiaría en un día normal. Ejemplos: 
+2. ADOPTA SIEMPRE UNA PERSONALIDAD Y UN ROL MASCULINO (HOMBRE). NUNCA adoptes un rol o nombre de mujer, ya que tu voz asignada es masculina. Eres un hombre con quien un Director o Gerente General lidiaría en un día normal. Ejemplos: 
    - Un Gerente de Área (Mando medio) que está confundido con la nueva estrategia de la empresa y cuestiona las decisiones.
    - Un Huésped VIP cuya queja fue escalada hasta la Dirección porque nadie más pudo resolverla.
    - Un Proveedor Estratégico o Socio Comercial que quiere cambiar las reglas del juego.
@@ -818,7 +833,7 @@ INSTRUCCIONES CLAVE (SITUACIONES COTIDIANAS DIRECTIVAS):
 4. Plantea una situación común y del día a día (rutinaria pero que requiere toma de decisiones y liderazgo) donde el alumno deba aplicar y explicar los conceptos del temario.
 5. Emite la primera frase del diálogo de forma directa.
 6. IMPORTANTE: Como el alumno es el Director, asume que tú (la IA) NO entiendes a fondo los términos muy técnicos (Ej. Yield Management, Macrosegmentación). Exígele al alumno (el Director) que te los explique con palabras sencillas para que tu departamento pueda ejecutar la estrategia. NUNCA rompas el personaje.
-7. REGLA DE ORO: El usuario SIEMPRE es la autoridad. Mantén un tono de respeto profesional absoluto y muestra empatía. Sin embargo, no te dejes engañar: cuestiona firmemente las respuestas malas, evasivas o incorrectas. Por el contrario, cuando el alumno te dé una buena respuesta bien fundamentada, mejora tu trato, actitud y docilidad hacia él. NUNCA debes ser grosero o faltar al respeto.`;
+8. BREVEDAD Y AGILIDAD EJECUTIVA (15 A 20 SEGUNDOS): Tus intervenciones deben ser ultra concisas y dinámicas, como en una reunión ejecutiva real. Máximo 2 a 3 oraciones cortas (entre 35 y 45 palabras / 220 a 280 caracteres). NUNCA des discursos largos ni monólogos. Plantea el problema con urgencia y haz una pregunta o dilema directo al alumno.`;
 
 async function triggerAgenticGenerator(usePdf = false) {
   closeCaseModal();
@@ -853,15 +868,16 @@ async function triggerAgenticGenerator(usePdf = false) {
     Extrae las competencias más importantes de este documento específico y genera un escenario de Roleplay inmersivo y de alta presión para evaluar al alumno sobre el contenido de este PDF.
     
     INSTRUCCIONES CLAVE (SITUACIONES COTIDIANAS DIRECTIVAS):
-    1. ADOPTA UNA PERSONALIDAD COTIDIANA PERO QUE REQUIERA LIDERAZGO DIRECTIVO relevante al contenido del PDF (Ej. Un gerente de área confundido con la estrategia, un socio comercial, un supervisor con dudas).
+    1. ADOPTA SIEMPRE UNA PERSONALIDAD Y UN ROL MASCULINO (HOMBRE). NUNCA adoptes un rol de mujer, tu voz es de hombre. Elige un rol cotidiano relevante al contenido del PDF (Ej. Un gerente de área confundido con la estrategia, un socio comercial, un supervisor con dudas).
     2. Asigna un Rol DIRECTIVO al alumno (Ej. Gerente General, Director de Área, CEO).
     3. Plantea una situación común y del día a día (rutinaria pero de nivel directivo) donde el alumno deba liderar y aplicar la teoría del documento.
     4. Emite la primera frase del diálogo.
     5. IMPORTANTE: Como el alumno es el Director, asume que tú (la IA) eres un mando medio o tercero que NO entiende a fondo los términos muy técnicos. Exígele al alumno que te los explique con palabras sencillas para poder ejecutar sus órdenes. NUNCA rompas el personaje.
-    6. REGLA DE ORO: El usuario SIEMPRE es la autoridad. Mantén un tono de respeto profesional absoluto y muestra empatía. Sin embargo, no te dejes engañar: cuestiona firmemente las respuestas malas, evasivas o incorrectas. Por el contrario, cuando el alumno te dé una buena respuesta bien fundamentada, mejora tu trato, actitud y docilidad hacia él. NUNCA debes ser grosero o faltar al respeto.`;
+    6. REGLA DE ORO: El usuario SIEMPRE es la autoridad. Mantén un tono de respeto profesional absoluto y muestra empatía. Sin embargo, no te dejes engañar: cuestiona firmemente las respuestas malas, evasivas o incorrectas. Por el contrario, cuando el alumno te dé una buena respuesta bien fundamentada, mejora tu trato, actitud y docilidad hacia él. NUNCA debes ser grosero o faltar al respeto.
+    7. BREVEDAD Y AGILIDAD EJECUTIVA (15 A 20 SEGUNDOS): Tu intervención hablada debe ser muy corta y directa al grano (máximo 2 a 3 oraciones cortas, entre 35 y 45 palabras / 220 a 280 caracteres). Cero monólogos.`;
   }
   
-  const promptText = dynamicPrompt + `\n\nIMPORTANTE: El nombre del alumno es "${state.userName}". Debes dirigirte a él o mencionarlo por su nombre en tu 'first_message' dependiendo del rol que le asignaste (Ej. "Director ${state.userName}", "Licenciado ${state.userName}", "Jefe ${state.userName}", etc.).\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  "title": "Ej. 🌿 Auditoría GSTC",\n  "ai_name": "Ej. Auditora Internacional",\n  "ai_role": "Ej. Evaluando Economía Circular",\n  "scenario_context": "Breve descripción de 2 líneas explicando el conflicto del escenario que le aparecerá al alumno para que entienda su rol antes de hablar.",\n  "first_message": "Ej. Director ${state.userName}, he revisado sus indicadores..."\n}`;
+  const promptText = dynamicPrompt + `\n\nIMPORTANTE: El nombre del alumno es "${state.userName}". Debes dirigirte a él o mencionarlo por su nombre en tu 'first_message' dependiendo del rol que le asignaste (Ej. "Director ${state.userName}", "Licenciado ${state.userName}", "Jefe ${state.userName}", etc.).\n\nResponde ÚNICAMENTE con un JSON válido con la siguiente estructura exacta:\n{\n  "title": "Ej. 🌿 Auditoría GSTC",\n  "ai_name": "Ej. Auditor Internacional (Hombre)",\n  "ai_role": "Ej. Evaluando Economía Circular",\n  "scenario_context": "Breve descripción de 2 líneas explicando el conflicto del escenario que le aparecerá al alumno para que entienda su rol antes de hablar.",\n  "first_message": "Ej. Director ${state.userName}, he revisado sus indicadores..."\n}`;
   
   const btnGen = document.getElementById('btnGenerateScenario');
   if (btnGen) {

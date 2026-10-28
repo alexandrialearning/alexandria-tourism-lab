@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anáhuac Tourism Lab — Panel Directivo y Docente</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Chart.js para visualizaciones en tiempo real -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Firebase App & Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <style>
+    :root {
+      --primary-orange: #FF5900;
+      --orange-light: #FFF4ED;
+      --orange-subtle: rgba(255, 89, 0, 0.08);
+      --orange-border: rgba(255, 89, 0, 0.25);
+      --bg-body: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F1F5F9;
+      --border-light: #E2E8F0;
+      --border-darker: #CBD5E1;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --text-subtle: #94A3B8;
+      --emerald-accent: #059669;
+      --emerald-bg: #ECFDF5;
+      --rose-accent: #E11D48;
+      --rose-bg: #FFF1F2;
+      --amber-accent: #D97706;
+      --amber-bg: #FFFBEB;
+      --blue-accent: #0284C7;
+      --blue-bg: #F0F9FF;
+      --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+      --card-hover-shadow: 0 12px 30px -4px rgba(255, 89, 0, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(255, 89, 0, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(2, 132, 199, 0.03) 0%, transparent 40%),
+        linear-gradient(to bottom, #FFFFFF 0%, #F8FAFC 100%);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation Bar */
+    .admin-navbar {
+      height: 74px;
+      border-bottom: 1px solid var(--border-light);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .brand-logo {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-badge {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .brand-tag {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.08em;
+      background: var(--orange-light);
+      color: var(--primary-orange);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid var(--orange-border);
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .btn-action-ghost {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      color: var(--text-main);
+      padding: 0.6rem 1.1rem;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .btn-action-ghost:hover {
+      background: var(--bg-subtle);
+      border-color: var(--border-darker);
+      transform: translateY(-1px);
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.74rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--emerald-accent);
+      background: var(--emerald-bg);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--emerald-accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--emerald-accent);
+      animation: pulseAnim 2s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.25); }
+      100% { opacity: 0.4; transform: scale(0.9); }
+    }
+
+    /* Subheader Tabs */
+    .tabs-header {
+      padding: 1.25rem 2.5rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-light);
+      background: #FFFFFF;
+    }
+
+    .tab-pills {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.85rem 1.25rem;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      color: var(--primary-orange);
+      border-bottom: 3px solid var(--primary-orange);
+    }
+
+    .tab-badge {
+      font-size: 0.7rem;
+      background: var(--bg-subtle);
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+
+    .tab-btn.active .tab-badge {
+      background: var(--orange-light);
+      color: var(--primary-orange);
+      border: 1px solid var(--orange-border);
+    }
+
+    /* Main Container */
+    .admin-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 2.25rem 2.5rem;
+    }
+
+    /* Grid Layouts */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      padding: 1.6rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: var(--card-shadow);
+    }
+
+    .stat-card:hover {
+      border-color: var(--orange-border);
+      transform: translateY(-2px);
+      box-shadow: var(--card-hover-shadow);
+    }
+
+    .stat-card-accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      line-height: 1.1;
+      margin-bottom: 0.6rem;
+    }
+
+    .stat-trend {
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+    }
+
+    .trend-up { color: var(--emerald-accent); }
+    .trend-warning { color: var(--amber-accent); }
+    .trend-danger { color: var(--rose-accent); }
+
+    /* Charts Section */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .charts-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      padding: 1.75rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .chart-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .chart-canvas-wrapper {
+      position: relative;
+      height: 290px;
+      width: 100%;
+    }
+
+    /* Section Card */
+    .section-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .section-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-input-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 0.65rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      min-width: 300px;
+    }
+
+    .search-input-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-size: 0.88rem;
+      font-weight: 500;
+      width: 100%;
+    }
+
+    .search-input-box input::placeholder {
+      color: var(--text-subtle);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .filter-pill {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+      padding: 0.5rem 0.95rem;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-pill:hover, .filter-pill.active {
+      background: var(--orange-light);
+      border-color: var(--orange-border);
+      color: var(--primary-orange);
+    }
+
+    /* Students Grid */
+    .students-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .student-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 18px;
+      padding: 1.35rem;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .student-card:hover {
+      border-color: var(--orange-border);
+      transform: translateY(-2px);
+      box-shadow: var(--card-hover-shadow);
+    }
+
+    .student-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .student-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--orange-light), #FFE4D6);
+      border: 1px solid var(--orange-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: var(--primary-orange);
+      font-size: 1.15rem;
+    }
+
+    .student-info {
+      flex: 1;
+      margin-left: 0.85rem;
+    }
+
+    .student-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-main);
+    }
+
+    .student-email {
+      font-size: 0.74rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    .archetype-tag {
+      font-size: 0.68rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.25rem 0.6rem;
+      border-radius: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tag-strategic {
+      background: var(--emerald-bg);
+      color: var(--emerald-accent);
+      border: 1px solid rgba(5, 150, 105, 0.25);
+    }
+
+    .tag-resolutive {
+      background: var(--blue-bg);
+      color: var(--blue-accent);
+      border: 1px solid rgba(2, 132, 199, 0.25);
+    }
+
+    .tag-diplomatic {
+      background: var(--amber-bg);
+      color: var(--amber-accent);
+      border: 1px solid rgba(217, 119, 6, 0.25);
+    }
+
+    .tag-risk {
+      background: var(--rose-bg);
+      color: var(--rose-accent);
+      border: 1px solid rgba(225, 29, 72, 0.25);
+    }
+
+    .tag-dev {
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1px solid var(--border-darker);
+    }
+
+    /* Metrics Mini Grid inside student card */
+    .student-metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .metric-mini-box {
+      text-align: center;
+    }
+
+    .metric-mini-label {
+      font-size: 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+      font-weight: 600;
+    }
+
+    .metric-mini-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .progress-bar-thin {
+      height: 4px;
+      background: var(--border-light);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.3rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    .student-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-light);
+      padding-top: 0.75rem;
+    }
+
+    .student-last-sim {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.74rem;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 230px;
+      font-weight: 500;
+    }
+
+    /* Modal Styling */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 24px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2.25rem;
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25);
+      position: relative;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-main);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      background: var(--orange-light);
+      color: var(--primary-orange);
+      border-color: var(--orange-border);
+    }
+
+    /* Competency bars */
+    .comp-bar {
+      margin-bottom: 0.9rem;
+    }
+
+    .comp-bar-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 0.35rem;
+      font-weight: 500;
+    }
+
+    .comp-bar-track {
+      height: 8px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .comp-bar-progress {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.8s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .admin-navbar {
+        padding: 0 1rem;
+      }
+      .brand-subtitle {
+        display: none;
+      }
+      .admin-container {
+        padding: 1.25rem 1rem;
+      }
+      .students-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <nav class="admin-navbar">
+    <div class="brand-group">
+      <img src="logo.png" alt="Universidad Anáhuac" class="brand-logo">
+      <div class="brand-badge">
+        <div class="brand-title">
+          Anáhuac Tourism Lab
+          <span class="brand-tag">Docente / Admin</span>
+        </div>
+        <div class="brand-subtitle">Facultad de Turismo y Gastronomía — Monitoreo de Liderazgo con IA</div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div class="live-indicator">
+        <div class="pulse-dot"></div>
+        <span>TIEMPO REAL (LIVE)</span>
+      </div>
+      <a href="index.html" class="btn-action-ghost" title="Ir al Simulador de Alumno">
+        <span>🎙️ Modo Simulador</span>
+      </a>
+      <button class="btn-action-ghost" onclick="refreshData()" title="Refrescar métricas">
+        <span>🔄 Actualizar</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Subheader Tabs -->
+  <div class="tabs-header">
+    <div class="tab-pills">
+      <button class="tab-btn active" id="tabOverviewBtn" onclick="switchTab('overview')">
+        📊 Resumen General & KPIs
+      </button>
+      <button class="tab-btn" id="tabStudentsBtn" onclick="switchTab('students')">
+        🎓 Análisis Individual por Alumno
+        <span class="tab-badge" id="studentCountBadge">28</span>
+      </button>
+      <button class="tab-btn" id="tabAuditBtn" onclick="switchTab('audit')">
+        🛡️ Rúbricas & Riesgo de Mediocridad
+      </button>
+    </div>
+
+    <div style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;" id="lastSyncTime">
+      Última sinc: Ahora mismo
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="admin-container">
+
+    <!-- TAB 1: OVERVIEW & GENERAL KPIS -->
+    <div id="tabOverview">
+      <!-- KPI Stats Row -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-accent" style="background: var(--primary-orange);"></div>
+          <div class="stat-label">
+            <span>Alumnos Monitoreados</span>
+            <span>👥</span>
+          </div>
+          <div class="stat-value" id="kpiTotalStudents">28</div>
+          <div class="stat-trend trend-up">
+            <span>↑ +100% Participación</span>
+            <span style="color: var(--text-muted); font-size: 0.72rem;">(Facultad Turismo)</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-accent" style="background: var(--emerald-accent);"></div>
+          <div class="stat-label">
+            <span>Índice Promedio de Liderazgo</span>
+            <span>⭐</span>
+          </div>
+          <div class="stat-value" id="kpiAvgLeadership">81.4<span style="font-size: 1.1rem; color: var(--text-muted); font-weight: 400;">/100</span></div>
+          <div class="stat-trend trend-up">
+            <span>↑ +14.2% Crecimiento medio</span>
+            <span style="color: var(--text-muted); font-size: 0.72rem;">vs semana 1</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-accent" style="background: var(--rose-accent);"></div>
+          <div class="stat-label">
+            <span>Alumnos en Riesgo de Mediocridad</span>
+            <span>⚠️</span>
+          </div>
+          <div class="stat-value" id="kpiMediocrityRisk">3 <span style="font-size: 1.05rem; color: var(--rose-accent); font-weight: 600;">(10.7%)</span></div>
+          <div class="stat-trend trend-danger">
+            <span>● Respuestas evasivas o sin firmeza</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-accent" style="background: var(--blue-accent);"></div>
+          <div class="stat-label">
+            <span>Simulaciones Completadas</span>
+            <span>🎯</span>
+          </div>
+          <div class="stat-value" id="kpiTotalSims">118</div>
+          <div class="stat-trend trend-up">
+            <span>⚡️ Promedio: 4.2 simulaciones / alumno</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Charts Row -->
+      <section class="charts-row">
+        <!-- Chart 1: Evolución de Competencias -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Evolución y Aumento de Competencias Directivas</div>
+              <div class="chart-subtitle">Progreso de competencias clave evaluadas por simulación por voz</div>
+            </div>
+            <span class="brand-tag">Semanal</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="growthChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Arquetipos Directivos -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Distribución de Liderazgo</div>
+              <div class="chart-subtitle">Clasificación según comportamiento ejecutivo</div>
+            </div>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="archetypesChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Top Performers & Attention Required Row -->
+      <section style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+        <div class="section-card">
+          <div class="chart-header" style="margin-bottom: 1.25rem;">
+            <div class="chart-title" style="color: var(--emerald-accent); display: flex; align-items: center; gap: 0.5rem;">
+              <span>🏆 Top Líderes de la Facultad</span>
+            </div>
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace;">Top 4 Destacados</span>
+          </div>
+          <div id="topPerformersList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="chart-header" style="margin-bottom: 1.25rem;">
+            <div class="chart-title" style="color: var(--rose-accent); display: flex; align-items: center; gap: 0.5rem;">
+              <span>🚨 Atención Requerida / Mediocridad Detectada</span>
+            </div>
+            <span style="font-size: 0.72rem; color: var(--text-muted); font-family: monospace;">Acompañamiento</span>
+          </div>
+          <div id="attentionRequiredList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 2: DETAILED STUDENTS ANALYSIS -->
+    <div id="tabStudents" style="display: none;">
+      <section class="section-card">
+        <div class="section-toolbar">
+          <div>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--text-main);">
+              Análisis Individual de Liderazgo por Alumno
+            </h2>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">
+              Monitoreo en tiempo real de los alumnos registrados en Anáhuac Tourism Lab. Haz clic en cualquier tarjeta para ver su rúbrica completa.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <div class="search-input-box">
+              <span>🔍</span>
+              <input type="text" id="studentSearchInput" placeholder="Buscar por nombre o matrícula..." oninput="filterStudents()">
+            </div>
+            <div class="filter-group">
+              <button class="filter-pill active" onclick="setFilter('all', this)">Todos</button>
+              <button class="filter-pill" onclick="setFilter('strategic', this)">Estratégicos</button>
+              <button class="filter-pill" onclick="setFilter('risk', this)">Riesgo Mediocridad</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Cards Grid -->
+        <div class="students-grid" id="studentsContainer">
+          <!-- Injected dynamically via JS -->
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 3: AUDIT & RUBRICS -->
+    <div id="tabAudit" style="display: none;">
+      <section class="section-card">
+        <div class="chart-header">
+          <div>
+            <h2 class="chart-title" style="font-size: 1.4rem;">Metodología de Rúbrica y Detección de Mediocridad</h2>
+            <p class="chart-subtitle">Criterios pedagógicos con los que la Inteligencia Artificial califica la toma de decisiones directivas.</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem;">
+          <div style="background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: 16px; padding: 1.5rem;">
+            <div style="color: var(--primary-orange); font-family: 'Outfit'; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>1. Asertividad y Templanza Ejecutiva</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+              Evalúa si el estudiante mantiene una postura firme pero cordial ante clientes difíciles o mandos medios en pánico. Se penaliza la agresividad o la duda excesiva.
+            </p>
+            <div style="font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; color: var(--text-main); background: #FFFFFF; border: 1px solid var(--border-light); padding: 0.5rem 0.75rem; border-radius: 8px; font-weight: 600;">
+              Ponderación: 30% de la nota final
+            </div>
+          </div>
+
+          <div style="background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: 16px; padding: 1.5rem;">
+            <div style="color: var(--blue-accent); font-family: 'Outfit'; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>2. Fundamentación Técnica en Hospitalidad</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+              El alumno debe aplicar correctamente conceptos de Yield Management, economía circular GSTC, costos operativos o estándares turísticos aprendidos en clase.
+            </p>
+            <div style="font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; color: var(--text-main); background: #FFFFFF; border: 1px solid var(--border-light); padding: 0.5rem 0.75rem; border-radius: 8px; font-weight: 600;">
+              Ponderación: 35% de la nota final
+            </div>
+          </div>
+
+          <div style="background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: 16px; padding: 1.5rem;">
+            <div style="color: var(--rose-accent); font-family: 'Outfit'; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>3. Filtro Anti-Mediocridad y Resolución</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+              Identifica respuestas complacientes, evasión de responsabilidad, culpar a otros departamentos o no fijar un curso de acción concreto en los 3 turnos de voz.
+            </p>
+            <div style="font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; color: var(--text-main); background: #FFFFFF; border: 1px solid var(--border-light); padding: 0.5rem 0.75rem; border-radius: 8px; font-weight: 600;">
+              Ponderación: 35% de la nota final
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- Modal Detalle de Alumno -->
+  <div class="modal-backdrop" id="studentDetailModal" onclick="closeModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close-btn" onclick="closeStudentModal()">✕</button>
+      
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="student-avatar" id="modalStudentAvatar" style="width: 56px; height: 56px; font-size: 1.5rem;">E</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <h2 id="modalStudentName" style="font-family: 'Outfit'; font-size: 1.4rem; font-weight: 700; color: var(--text-main);">Eugenio Salas</h2>
+            <span class="archetype-tag tag-strategic" id="modalStudentArchetype">Líder Estratégico</span>
+          </div>
+          <p id="modalStudentEmail" style="font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; color: var(--text-muted);">eugenio@anahuac.mx</p>
+        </div>
+      </div>
+
+      <!-- Quick Stats in Modal -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: 14px; padding: 1.1rem; margin-bottom: 1.5rem;">
+        <div style="text-align: center;">
+          <div style="font-size: 0.68rem; font-family: 'JetBrains Mono'; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Puntaje Liderazgo</div>
+          <div id="modalScore" style="font-family: 'Outfit'; font-size: 1.6rem; font-weight: 700; color: var(--text-main);">94/100</div>
+          <div id="modalGrowth" style="font-size: 0.74rem; color: var(--emerald-accent); font-weight: 700;">+18% Aumento</div>
+        </div>
+        <div style="text-align: center; border-left: 1px solid var(--border-light); border-right: 1px solid var(--border-light);">
+          <div style="font-size: 0.68rem; font-family: 'JetBrains Mono'; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Riesgo Mediocridad</div>
+          <div id="modalMediocrity" style="font-family: 'Outfit'; font-size: 1.6rem; font-weight: 700; color: var(--emerald-accent);">4.8%</div>
+          <div style="font-size: 0.74rem; color: var(--text-muted); font-weight: 600;">Bajo Riesgo</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 0.68rem; font-family: 'JetBrains Mono'; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Simulaciones</div>
+          <div id="modalSims" style="font-family: 'Outfit'; font-size: 1.6rem; font-weight: 700; color: var(--blue-accent);">5</div>
+          <div style="font-size: 0.74rem; color: var(--text-muted); font-weight: 600;">Completadas</div>
+        </div>
+      </div>
+
+      <!-- Competency breakdown bars -->
+      <div style="margin-bottom: 1.5rem;">
+        <h4 style="font-family: 'Outfit'; font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.85rem;">
+          Desglose de Competencias de Liderazgo
+        </h4>
+        
+        <div class="comp-bar">
+          <div class="comp-bar-header">
+            <span style="color: var(--text-muted);">Asertividad y Firmeza en Decisiones</span>
+            <span id="modalValAssert" style="font-family: 'JetBrains Mono'; color: var(--text-main); font-weight: 700;">92%</span>
+          </div>
+          <div class="comp-bar-track">
+            <div id="modalBarAssert" class="comp-bar-progress" style="width: 92%; background: var(--primary-orange);"></div>
+          </div>
+        </div>
+
+        <div class="comp-bar">
+          <div class="comp-bar-header">
+            <span style="color: var(--text-muted);">Resiliencia y Manejo de Crisis</span>
+            <span id="modalValResil" style="font-family: 'JetBrains Mono'; color: var(--text-main); font-weight: 700;">88%</span>
+          </div>
+          <div class="comp-bar-track">
+            <div id="modalBarResil" class="comp-bar-progress" style="width: 88%; background: var(--blue-accent);"></div>
+          </div>
+        </div>
+
+        <div class="comp-bar">
+          <div class="comp-bar-header">
+            <span style="color: var(--text-muted);">Visión Ética y Sostenibilidad Turística</span>
+            <span id="modalValEthic" style="font-family: 'JetBrains Mono'; color: var(--text-main); font-weight: 700;">96%</span>
+          </div>
+          <div class="comp-bar-track">
+            <div id="modalBarEthic" class="comp-bar-progress" style="width: 96%; background: var(--emerald-accent);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Qualitative Feedback Section -->
+      <div style="background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: 16px; padding: 1.25rem;">
+        <h4 style="font-family: 'Outfit'; font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+          Última Simulación Evaluada:
+        </h4>
+        <p id="modalScenarioTitle" style="font-size: 0.88rem; color: var(--primary-orange); font-weight: 700; margin-bottom: 0.75rem;">
+          🌿 Gestión de Crisis: Overbooking en Convención VIP
+        </p>
+        <p id="modalSummary" style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+          Demostró gran madurez directiva. Supo calmar la tensión del gerente de operaciones y propuso una solución ganar-ganar inmediata.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div style="background: var(--emerald-bg); border: 1px solid rgba(5, 150, 105, 0.25); padding: 0.85rem; border-radius: 12px;">
+            <div style="font-size: 0.72rem; font-weight: 700; color: var(--emerald-accent); text-transform: uppercase; margin-bottom: 0.35rem;">
+              ✅ Puntos Fuertes
+            </div>
+            <ul id="modalStrengths" style="font-size: 0.78rem; color: var(--text-main); padding-left: 1rem; line-height: 1.4;">
+              <li>Manejo impecable del tono corporativo</li>
+            </ul>
+          </div>
+
+          <div style="background: var(--rose-bg); border: 1px solid rgba(225, 29, 72, 0.25); padding: 0.85rem; border-radius: 12px;">
+            <div style="font-size: 0.72rem; font-weight: 700; color: var(--rose-accent); text-transform: uppercase; margin-bottom: 0.35rem;">
+              ⚠️ Áreas de Oportunidad
+            </div>
+            <ul id="modalImprovements" style="font-size: 0.78rem; color: var(--text-main); padding-left: 1rem; line-height: 1.4;">
+              <li>Explicar con mayor claridad los términos técnicos</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script con Lógica de Métricas, Gráficas y Datos Sintéticos -->
+  <script>
+    let allStudents = [];
+    let currentFilter = 'all';
+    let growthChartInstance = null;
+    let archetypesChartInstance = null;
+
+    async function loadDashboardData() {
+      try {
+        const response = await fetch('demo_data.json?v=' + Date.now());
+        if (response.ok) {
+          allStudents = await response.json();
+        } else {
+          allStudents = [];
+        }
+      } catch (err) {
+        console.error("Error al cargar demo_data:", err);
+      }
+
+      initFirestoreListener();
+
+      renderKPIs();
+      renderCharts();
+      renderStudentsList(allStudents);
+      renderHighlights();
+    }
+
+    function initFirestoreListener() {
+      try {
+        const firebaseConfig = {
+          apiKey: "AIzaSyAyhBWleVkUBM8C4LkMAmqt1e1glUEkfMc",
+          authDomain: "anahuac-tourism.firebaseapp.com",
+          projectId: "anahuac-tourism",
+          storageBucket: "anahuac-tourism.firebasestorage.app",
+          messagingSenderId: "675954232934",
+          appId: "1:675954232934:web:3c5269b303cacf720267a7"
+        };
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+        db.collection("user_sessions").orderBy("updatedAt", "desc").limit(5).onSnapshot((snapshot) => {
+          const nowStr = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          document.getElementById('lastSyncTime').innerText = `Última sinc en vivo: ${nowStr} (${snapshot.size} sesiones activas)`;
+        });
+      } catch (e) {
+        console.log("Firebase listener local mode active");
+      }
+    }
+
+    function renderKPIs() {
+      const totalStudents = allStudents.length;
+      const totalSims = allStudents.reduce((acc, s) => acc + s.simulationsCount, 0);
+      const avgLeadership = (allStudents.reduce((acc, s) => acc + s.leadershipScore, 0) / totalStudents).toFixed(1);
+      const highRiskCount = allStudents.filter(s => s.mediocrityRisk > 30).length;
+      const riskPercent = ((highRiskCount / totalStudents) * 100).toFixed(1);
+
+      document.getElementById('kpiTotalStudents').innerText = totalStudents;
+      document.getElementById('kpiTotalSims').innerText = totalSims;
+      document.getElementById('kpiAvgLeadership').innerHTML = `${avgLeadership}<span style="font-size: 1.1rem; color: var(--text-muted); font-weight: 400;">/100</span>`;
+      document.getElementById('kpiMediocrityRisk').innerHTML = `${highRiskCount} <span style="font-size: 1.05rem; color: var(--rose-accent); font-weight: 600;">(${riskPercent}%)</span>`;
+      document.getElementById('studentCountBadge').innerText = totalStudents;
+    }
+
+    function renderCharts() {
+      // 1. Gráfica de Progreso de Competencias (Estilo Light)
+      const ctxGrowth = document.getElementById('growthChart').getContext('2d');
+      if (growthChartInstance) growthChartInstance.destroy();
+
+      growthChartInstance = new Chart(ctxGrowth, {
+        type: 'line',
+        data: {
+          labels: ['Semana 1 (Diagnóstico)', 'Semana 2', 'Semana 3', 'Semana 4 (Actual)'],
+          datasets: [
+            {
+              label: 'Asertividad y Resolución Directiva',
+              data: [62, 70, 78, 86],
+              borderColor: '#FF5900',
+              backgroundColor: 'rgba(255, 89, 0, 0.08)',
+              tension: 0.35,
+              fill: true,
+              pointBackgroundColor: '#FF5900',
+              pointRadius: 4,
+              borderWidth: 2.5
+            },
+            {
+              label: 'Fundamentación Turística / Sostenibilidad',
+              data: [58, 65, 76, 82],
+              borderColor: '#0284C7',
+              backgroundColor: 'transparent',
+              tension: 0.35,
+              borderDash: [5, 5],
+              pointBackgroundColor: '#0284C7',
+              pointRadius: 4,
+              borderWidth: 2
+            },
+            {
+              label: 'Índice de Mediocridad / Evasión (Inverso)',
+              data: [42, 34, 21, 12],
+              borderColor: '#E11D48',
+              backgroundColor: 'transparent',
+              tension: 0.35,
+              pointBackgroundColor: '#E11D48',
+              pointRadius: 4,
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#475569',
+                font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' }
+              }
+            }
+          },
+          scales: {
+            y: {
+              min: 0,
+              max: 100,
+              grid: { color: 'rgba(0, 0, 0, 0.05)' },
+              ticks: { color: '#64748B', font: { family: 'JetBrains Mono' } }
+            },
+            x: {
+              grid: { color: 'rgba(0, 0, 0, 0.03)' },
+              ticks: { color: '#64748B', font: { family: 'Plus Jakarta Sans', weight: '500' } }
+            }
+          }
+        }
+      });
+
+      // 2. Gráfica de Arquetipos (Estilo Light)
+      const ctxArch = document.getElementById('archetypesChart').getContext('2d');
+      if (archetypesChartInstance) archetypesChartInstance.destroy();
+
+      const archCounts = {
+        'Líder Estratégico': 0,
+        'Líder Resolutivo': 0,
+        'Líder Diplomático': 0,
+        'En Desarrollo Directivo': 0,
+        'Riesgo de Mediocridad': 0
+      };
+
+      allStudents.forEach(s => {
+        if (s.archetype.includes('Estratégico')) archCounts['Líder Estratégico']++;
+        else if (s.archetype.includes('Resolutivo')) archCounts['Líder Resolutivo']++;
+        else if (s.archetype.includes('Diplomático')) archCounts['Líder Diplomático']++;
+        else if (s.archetype.includes('Mediocridad')) archCounts['Riesgo de Mediocridad']++;
+        else archCounts['En Desarrollo Directivo']++;
+      });
+
+      archetypesChartInstance = new Chart(ctxArch, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(archCounts),
+          datasets: [{
+            data: Object.values(archCounts),
+            backgroundColor: [
+              '#059669', // Estratégico
+              '#0284C7', // Resolutivo
+              '#D97706', // Diplomático
+              '#64748B', // Desarrollo
+              '#E11D48'  // Mediocridad
+            ],
+            borderWidth: 3,
+            borderColor: '#FFFFFF'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#475569',
+                font: { family: 'Plus Jakarta Sans', size: 10, weight: '600' },
+                boxWidth: 10
+              }
+            }
+          },
+          cutout: '72%'
+        }
+      });
+    }
+
+    function renderStudentsList(students) {
+      const container = document.getElementById('studentsContainer');
+      container.innerHTML = '';
+
+      students.forEach(student => {
+        let tagClass = 'tag-strategic';
+        if (student.archetype.includes('Resolutivo')) tagClass = 'tag-resolutive';
+        else if (student.archetype.includes('Diplomático')) tagClass = 'tag-diplomatic';
+        else if (student.archetype.includes('Mediocridad')) tagClass = 'tag-risk';
+        else if (student.archetype.includes('Desarrollo')) tagClass = 'tag-dev';
+
+        const card = document.createElement('div');
+        card.className = 'student-card';
+        card.onclick = () => openStudentModal(student);
+
+        const initials = student.name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2);
+
+        card.innerHTML = `
+          <div class="student-header">
+            <div style="display: flex; align-items: center;">
+              <div class="student-avatar">${initials}</div>
+              <div class="student-info">
+                <div class="student-name">${student.name}</div>
+                <div class="student-email">${student.email}</div>
+              </div>
+            </div>
+            <span class="archetype-tag ${tagClass}">${student.archetype}</span>
+          </div>
+
+          <div class="student-metrics-row">
+            <div class="metric-mini-box">
+              <div class="metric-mini-label">Liderazgo</div>
+              <div class="metric-mini-val" style="color: var(--text-main);">${student.leadershipScore}%</div>
+              <div class="progress-bar-thin">
+                <div class="progress-bar-fill" style="width: ${student.leadershipScore}%; background: var(--primary-orange);"></div>
+              </div>
+            </div>
+
+            <div class="metric-mini-box">
+              <div class="metric-mini-label">Aumento</div>
+              <div class="metric-mini-val" style="color: var(--emerald-accent);">+${student.growth}%</div>
+              <div class="progress-bar-thin">
+                <div class="progress-bar-fill" style="width: ${student.growth * 3}%; background: var(--emerald-accent);"></div>
+              </div>
+            </div>
+
+            <div class="metric-mini-box">
+              <div class="metric-mini-label">Mediocridad</div>
+              <div class="metric-mini-val" style="color: ${student.mediocrityRisk > 30 ? 'var(--rose-accent)' : 'var(--text-muted)'};">${student.mediocrityRisk}%</div>
+              <div class="progress-bar-thin">
+                <div class="progress-bar-fill" style="width: ${student.mediocrityRisk}%; background: ${student.mediocrityRisk > 30 ? 'var(--rose-accent)' : 'rgba(0,0,0,0.15)'};"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="student-footer">
+            <div class="student-last-sim" title="${student.lastScenario}">
+              <span>🎙️</span>
+              <span style="truncate">${student.lastScenario}</span>
+            </div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">
+              ${student.simulationsCount} sim.
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function renderHighlights() {
+      // Top Performers
+      const topSorted = [...allStudents].sort((a, b) => b.leadershipScore - a.leadershipScore).slice(0, 4);
+      const topContainer = document.getElementById('topPerformersList');
+      topContainer.innerHTML = topSorted.map((s, idx) => `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background: var(--emerald-bg); border: 1px solid rgba(5, 150, 105, 0.2); border-radius: 14px; cursor: pointer;" onclick='openStudentModal(${JSON.stringify(s)})'>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; color: var(--emerald-accent); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; border: 1px solid rgba(5, 150, 105, 0.3);">
+              ${idx + 1}
+            </div>
+            <div>
+              <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);">${s.name}</div>
+              <div style="font-size: 0.74rem; color: var(--text-muted); font-family: monospace;">${s.email}</div>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: 'Outfit'; font-weight: 800; color: var(--emerald-accent); font-size: 1.15rem;">${s.leadershipScore}/100</div>
+            <div style="font-size: 0.7rem; color: var(--emerald-accent); font-weight: 700;">+${s.growth}% mejora</div>
+          </div>
+        </div>
+      `).join('');
+
+      // Attention Required (Mediocrity / Evasive)
+      const riskSorted = [...allStudents].sort((a, b) => b.mediocrityRisk - a.mediocrityRisk).slice(0, 4);
+      const riskContainer = document.getElementById('attentionRequiredList');
+      riskContainer.innerHTML = riskSorted.map((s) => `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background: var(--rose-bg); border: 1px solid rgba(225, 29, 72, 0.2); border-radius: 14px; cursor: pointer;" onclick='openStudentModal(${JSON.stringify(s)})'>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 1.15rem;">⚠️</span>
+            <div>
+              <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);">${s.name}</div>
+              <div style="font-size: 0.74rem; color: var(--rose-accent); font-family: monospace; font-weight: 600;">Riesgo Mediocridad: ${s.mediocrityRisk}%</div>
+            </div>
+          </div>
+          <button style="background: #FFFFFF; border: 1px solid rgba(225, 29, 72, 0.3); color: var(--rose-accent); font-size: 0.74rem; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: 8px; cursor: pointer;">
+            Ver Rúbrica
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function switchTab(tab) {
+      document.getElementById('tabOverview').style.display = tab === 'overview' ? 'block' : 'none';
+      document.getElementById('tabStudents').style.display = tab === 'students' ? 'block' : 'none';
+      document.getElementById('tabAudit').style.display = tab === 'audit' ? 'block' : 'none';
+
+      document.getElementById('tabOverviewBtn').classList.toggle('active', tab === 'overview');
+      document.getElementById('tabStudentsBtn').classList.toggle('active', tab === 'students');
+      document.getElementById('tabAuditBtn').classList.toggle('active', tab === 'audit');
+    }
+
+    function filterStudents() {
+      const q = document.getElementById('studentSearchInput').value.toLowerCase();
+      const filtered = allStudents.filter(s => {
+        const matchName = s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q);
+        if (currentFilter === 'strategic') return matchName && s.archetype.includes('Estratégico');
+        if (currentFilter === 'risk') return matchName && s.mediocrityRisk > 30;
+        return matchName;
+      });
+      renderStudentsList(filtered);
+    }
+
+    function setFilter(filter, el) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
+      el.classList.add('active');
+      filterStudents();
+    }
+
+    function openStudentModal(student) {
+      document.getElementById('modalStudentAvatar').innerText = student.name.charAt(0);
+      document.getElementById('modalStudentName').innerText = student.name;
+      document.getElementById('modalStudentEmail').innerText = student.email;
+      document.getElementById('modalStudentArchetype').innerText = student.archetype;
+      
+      document.getElementById('modalScore').innerText = `${student.leadershipScore}/100`;
+      document.getElementById('modalGrowth').innerText = `+${student.growth}% Aumento`;
+      document.getElementById('modalMediocrity').innerText = `${student.mediocrityRisk}%`;
+      document.getElementById('modalSims').innerText = student.simulationsCount;
+
+      // Bars
+      document.getElementById('modalValAssert').innerText = `${student.assertiveness}%`;
+      document.getElementById('modalBarAssert').style.width = `${student.assertiveness}%`;
+      
+      document.getElementById('modalValResil').innerText = `${student.resilience}%`;
+      document.getElementById('modalBarResil').style.width = `${student.resilience}%`;
+
+      document.getElementById('modalValEthic').innerText = `${student.ethicalVision}%`;
+      document.getElementById('modalBarEthic').style.width = `${student.ethicalVision}%`;
+
+      // Scenario & Feedback
+      document.getElementById('modalScenarioTitle').innerText = `🎙️ ${student.lastScenario}`;
+      document.getElementById('modalSummary').innerText = student.summary;
+
+      document.getElementById('modalStrengths').innerHTML = student.strengths.map(s => `<li>${s}</li>`).join('');
+      document.getElementById('modalImprovements').innerHTML = student.improvements.map(i => `<li>${i}</li>`).join('');
+
+      document.getElementById('studentDetailModal').style.display = 'flex';
+    }
+
+    function closeStudentModal() {
+      document.getElementById('studentDetailModal').style.display = 'none';
+    }
+
+    function closeModal(e) {
+      if (e.target.id === 'studentDetailModal') {
+        closeStudentModal();
+      }
+    }
+
+    function refreshData() {
+      const btn = event.currentTarget;
+      btn.style.opacity = '0.5';
+      setTimeout(() => {
+        loadDashboardData();
+        btn.style.opacity = '1';
+      }, 400);
+    }
+
+    window.addEventListener('DOMContentLoaded', loadDashboardData);
+  </script>
+</body>
+</html>

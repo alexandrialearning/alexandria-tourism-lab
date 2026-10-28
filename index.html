@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anáhuac Tourism Lab</title>
   <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <!-- Responsive Meta Tags -->
   <meta name="theme-color" content="#0B0E14">
@@ -67,6 +67,9 @@
       </div>
 
       <div class="call-actions">
+        <a href="admin.html" class="quality-tag" style="background: rgba(255, 89, 0, 0.15); color: var(--primary-orange); border: 1px solid rgba(255, 89, 0, 0.35); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;" title="Acceso al Panel Docente">
+          <span>📊 Portal Docente</span>
+        </a>
         <span class="quality-tag" id="userProfileTag">Invitado</span>
         <button class="quality-tag" onclick="handleLogout()" style="background: rgba(225, 29, 72, 0.2); color: #FFF; border: none; cursor: pointer; display: none;" id="btnLogout">Cerrar Sesión</button>
       </div>
@@ -254,6 +257,14 @@
             <small>Concluir el caso y recibir rúbrica de desempeño</small>
           </div>
         </button>
+
+        <button class="sheet-action-item" onclick="handleLogout(); toggleMoreMenu();" style="border-top: 1px solid var(--bg-border); margin-top: 0.25rem; padding-top: 1rem;">
+          <span class="sheet-icon">🚪</span>
+          <div class="sheet-text">
+            <strong style="color: #E11D48;">Cerrar Sesión</strong>
+            <small>Salir de la cuenta actual</small>
+          </div>
+        </button>
       </div>
     </div>
   </div>
@@ -372,6 +383,6 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
   </script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="app.js?v=27"></script>
+  <script src="app.js?v=30"></script>
 </body>
 </html>

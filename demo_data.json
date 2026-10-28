@@ -1,0 +1,690 @@
+[
+  {
+    "uid": "01uUOtsFeaeUkEsezrD6CzdKldn1",
+    "name": "Euge",
+    "email": "eugeniooo@anahuac.mx",
+    "simulationsCount": 4,
+    "leadershipScore": 76,
+    "growth": 15,
+    "mediocrityRisk": 27.2,
+    "assertiveness": 55,
+    "resilience": 80,
+    "ethicalVision": 89,
+    "archetype": "Líder Diplomático",
+    "archetypeDesc": "Gran empatía con clientes y colaboradores; evita confrontaciones.",
+    "lastScenario": "Desarrollo de Experiencias Ecoturísticas Sustentables",
+    "lastDate": "2026-10-23 15:18",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "055dPs2ouDeNFXjpepSwtrjUKIm2",
+    "name": "Andy",
+    "email": "andy@anahuac.com.mx",
+    "simulationsCount": 3,
+    "leadershipScore": 78,
+    "growth": 14,
+    "mediocrityRisk": 9.6,
+    "assertiveness": 74,
+    "resilience": 66,
+    "ethicalVision": 99,
+    "archetype": "Líder Resolutivo",
+    "archetypeDesc": "Toma decisiones rápidas bajo presión; foco en resolver el dolor inmediato.",
+    "lastScenario": "Queja Escalada: Huésped Presidencial Insatisfecho",
+    "lastDate": "2026-10-15 10:26",
+    "strengths": [
+      "Manejo impecable del tono corporativo ante cliente molesto",
+      "Propuesta de compensación sin exceder presupuesto"
+    ],
+    "improvements": [
+      "Explicar con mayor claridad los términos de Yield Management",
+      "Establecer tiempos límite para el seguimiento"
+    ],
+    "summary": "Demostró gran madurez directiva. Supo calmar la tensión del gerente de operaciones y propuso una solución ganar-ganar inmediata."
+  },
+  {
+    "uid": "1cKAEtMAbyMhdKUL3p0VlVZFbWb2",
+    "name": "Marco",
+    "email": "marco@anahuac.mx",
+    "simulationsCount": 2,
+    "leadershipScore": 75,
+    "growth": 16,
+    "mediocrityRisk": 20.0,
+    "assertiveness": 55,
+    "resilience": 87,
+    "ethicalVision": 67,
+    "archetype": "Líder Diplomático",
+    "archetypeDesc": "Gran empatía con clientes y colaboradores; evita confrontaciones.",
+    "lastScenario": "Auditoría GSTC: Economía Circular en Resort",
+    "lastDate": "2026-10-20 19:35",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "3BRjy6NOi6P2ycxRK8Bv9fkREoB3",
+    "name": "Victoria Guerra",
+    "email": "victoria.guerra@anahuac.mx",
+    "simulationsCount": 2,
+    "leadershipScore": 64,
+    "growth": 8,
+    "mediocrityRisk": 33.8,
+    "assertiveness": 97,
+    "resilience": 79,
+    "ethicalVision": 78,
+    "archetype": "En Desarrollo Directivo",
+    "archetypeDesc": "Buenas intenciones pero falta fundamentación técnica de hospitalidad.",
+    "lastScenario": "Alianza Estratégica con Aerolínea Internacional",
+    "lastDate": "2026-10-26 15:56",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "3liaVlBgJNhsuatwnHoHbo8FlfJ2",
+    "name": "Eugenio",
+    "email": "eugeniosalasi@outlook.com",
+    "simulationsCount": 3,
+    "leadershipScore": 94,
+    "growth": 28,
+    "mediocrityRisk": 6.8,
+    "assertiveness": 80,
+    "resilience": 88,
+    "ethicalVision": 66,
+    "archetype": "Líder Estratégico",
+    "archetypeDesc": "Excelente visión global, delega con claridad y mantiene templanza.",
+    "lastScenario": "Resolución de Conflicto Sindical y Alimentos",
+    "lastDate": "2026-10-16 10:33",
+    "strengths": [
+      "Manejo impecable del tono corporativo ante cliente molesto",
+      "Propuesta de compensación sin exceder presupuesto"
+    ],
+    "improvements": [
+      "Explicar con mayor claridad los términos de Yield Management",
+      "Establecer tiempos límite para el seguimiento"
+    ],
+    "summary": "Demostró gran madurez directiva. Supo calmar la tensión del gerente de operaciones y propuso una solución ganar-ganar inmediata."
+  },
+  {
+    "uid": "8cvMGjI4uiUl8c9hYeU7rRVNrzx2",
+    "name": "Eugenio",
+    "email": "eugenio5@snahuac.mx",
+    "simulationsCount": 3,
+    "leadershipScore": 54,
+    "growth": 26,
+    "mediocrityRisk": 44.8,
+    "assertiveness": 57,
+    "resilience": 71,
+    "ethicalVision": 98,
+    "archetype": "Líder Titubeante / Riesgo de Mediocridad",
+    "archetypeDesc": "Respuestas evasivas, delega culpa y duda en decisiones financieras críticas.",
+    "lastScenario": "Resolución de Conflicto Sindical y Alimentos",
+    "lastDate": "2026-10-13 15:26",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "B42nvPJnHTaoIvj9Ewh5cR3ynGk2",
+    "name": "Fernando",
+    "email": "fer@anahuac.mx",
+    "simulationsCount": 3,
+    "leadershipScore": 52,
+    "growth": 19,
+    "mediocrityRisk": 33.4,
+    "assertiveness": 86,
+    "resilience": 77,
+    "ethicalVision": 73,
+    "archetype": "Líder Titubeante / Riesgo de Mediocridad",
+    "archetypeDesc": "Respuestas evasivas, delega culpa y duda en decisiones financieras críticas.",
+    "lastScenario": "Alianza Estratégica con Aerolínea Internacional",
+    "lastDate": "2026-10-14 15:40",
+    "strengths": [
+      "Manejo impecable del tono corporativo ante cliente molesto",
+      "Propuesta de compensación sin exceder presupuesto"
+    ],
+    "improvements": [
+      "Explicar con mayor claridad los términos de Yield Management",
+      "Establecer tiempos límite para el seguimiento"
+    ],
+    "summary": "Demostró gran madurez directiva. Supo calmar la tensión del gerente de operaciones y propuso una solución ganar-ganar inmediata."
+  },
+  {
+    "uid": "DndEaqxnzqcBD7Ys4Vl9GsAnbgo1",
+    "name": "Danna Galvan",
+    "email": "danna.galvan@anahuac.mx",
+    "simulationsCount": 5,
+    "leadershipScore": 83,
+    "growth": 24,
+    "mediocrityRisk": 19.6,
+    "assertiveness": 91,
+    "resilience": 52,
+    "ethicalVision": 87,
+    "archetype": "Líder Resolutivo",
+    "archetypeDesc": "Toma decisiones rápidas bajo presión; foco en resolver el dolor inmediato.",
+    "lastScenario": "Desarrollo de Experiencias Ecoturísticas Sustentables",
+    "lastDate": "2026-10-14 09:51",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "ISMfdQWV1qMsUNOBykTUUdPJDeo2",
+    "name": "Eugenio",
+    "email": "eugen@anahuac.mx",
+    "simulationsCount": 4,
+    "leadershipScore": 64,
+    "growth": 27,
+    "mediocrityRisk": 27.8,
+    "assertiveness": 56,
+    "resilience": 72,
+    "ethicalVision": 66,
+    "archetype": "En Desarrollo Directivo",
+    "archetypeDesc": "Buenas intenciones pero falta fundamentación técnica de hospitalidad.",
+    "lastScenario": "Yield Management: Fijación de Tarifas Alta Temporada",
+    "lastDate": "2026-10-25 18:18",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "JUmZb45jIJhv3zBlUfzToIcoFes1",
+    "name": "Jessy",
+    "email": "00635693@anahuac.mx",
+    "simulationsCount": 6,
+    "leadershipScore": 52,
+    "growth": 10,
+    "mediocrityRisk": 41.4,
+    "assertiveness": 64,
+    "resilience": 95,
+    "ethicalVision": 85,
+    "archetype": "Líder Titubeante / Riesgo de Mediocridad",
+    "archetypeDesc": "Respuestas evasivas, delega culpa y duda en decisiones financieras críticas.",
+    "lastScenario": "Resolución de Conflicto Sindical y Alimentos",
+    "lastDate": "2026-10-14 18:16",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "NGLii6yjqJRgZ8uvMhDac540lAs2",
+    "name": "Maria Mayorga",
+    "email": "maria.mayorga@anahuac.mx",
+    "simulationsCount": 5,
+    "leadershipScore": 64,
+    "growth": 25,
+    "mediocrityRisk": 27.8,
+    "assertiveness": 60,
+    "resilience": 84,
+    "ethicalVision": 84,
+    "archetype": "En Desarrollo Directivo",
+    "archetypeDesc": "Buenas intenciones pero falta fundamentación técnica de hospitalidad.",
+    "lastScenario": "Auditoría GSTC: Economía Circular en Resort",
+    "lastDate": "2026-10-15 19:10",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "QgLnGFkOxEOTC11LHLqAusaSl3r1",
+    "name": "Omar",
+    "email": "alexandri@gmail.com",
+    "simulationsCount": 3,
+    "leadershipScore": 70,
+    "growth": 9,
+    "mediocrityRisk": 16.0,
+    "assertiveness": 83,
+    "resilience": 51,
+    "ethicalVision": 91,
+    "archetype": "Líder Diplomático",
+    "archetypeDesc": "Gran empatía con clientes y colaboradores; evita confrontaciones.",
+    "lastScenario": "Resolución de Conflicto Sindical y Alimentos",
+    "lastDate": "2026-10-24 17:11",
+    "strengths": [
+      "Manejo impecable del tono corporativo ante cliente molesto",
+      "Propuesta de compensación sin exceder presupuesto"
+    ],
+    "improvements": [
+      "Explicar con mayor claridad los términos de Yield Management",
+      "Establecer tiempos límite para el seguimiento"
+    ],
+    "summary": "Demostró gran madurez directiva. Supo calmar la tensión del gerente de operaciones y propuso una solución ganar-ganar inmediata."
+  },
+  {
+    "uid": "RTnYAV8S9rYIo5r0MYQqb0X6vn62",
+    "name": "Alexandria Learning",
+    "email": "alexandria.learning@gmail.com",
+    "simulationsCount": 6,
+    "leadershipScore": 63,
+    "growth": 25,
+    "mediocrityRisk": 33.6,
+    "assertiveness": 96,
+    "resilience": 95,
+    "ethicalVision": 87,
+    "archetype": "En Desarrollo Directivo",
+    "archetypeDesc": "Buenas intenciones pero falta fundamentación técnica de hospitalidad.",
+    "lastScenario": "Yield Management: Fijación de Tarifas Alta Temporada",
+    "lastDate": "2026-10-16 19:29",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "VtSCopmVxlgEZ3WQQwDaxEnaqXi1",
+    "name": "monica",
+    "email": "monica@anahuac.mx",
+    "simulationsCount": 4,
+    "leadershipScore": 80,
+    "growth": 20,
+    "mediocrityRisk": 20.0,
+    "assertiveness": 98,
+    "resilience": 75,
+    "ethicalVision": 85,
+    "archetype": "Líder Resolutivo",
+    "archetypeDesc": "Toma decisiones rápidas bajo presión; foco en resolver el dolor inmediato.",
+    "lastScenario": "Auditoría GSTC: Economía Circular en Resort",
+    "lastDate": "2026-10-18 13:33",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "YGXBVUu7rRVSj3x8Pj1hAC7J8Rr1",
+    "name": "Alonso",
+    "email": "alonsosalasi@anahuac.mx",
+    "simulationsCount": 4,
+    "leadershipScore": 84,
+    "growth": 21,
+    "mediocrityRisk": 10.8,
+    "assertiveness": 82,
+    "resilience": 86,
+    "ethicalVision": 63,
+    "archetype": "Líder Resolutivo",
+    "archetypeDesc": "Toma decisiones rápidas bajo presión; foco en resolver el dolor inmediato.",
+    "lastScenario": "Auditoría GSTC: Economía Circular en Resort",
+    "lastDate": "2026-10-26 09:18",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "cONRAzKGtSc6Kpoz7yetyun6Djz2",
+    "name": "Monica",
+    "email": "learning@gmail.com",
+    "simulationsCount": 3,
+    "leadershipScore": 61,
+    "growth": 4,
+    "mediocrityRisk": 33.2,
+    "assertiveness": 86,
+    "resilience": 58,
+    "ethicalVision": 82,
+    "archetype": "En Desarrollo Directivo",
+    "archetypeDesc": "Buenas intenciones pero falta fundamentación técnica de hospitalidad.",
+    "lastScenario": "Alianza Estratégica con Aerolínea Internacional",
+    "lastDate": "2026-10-26 19:29",
+    "strengths": [
+      "Manejo impecable del tono corporativo ante cliente molesto",
+      "Propuesta de compensación sin exceder presupuesto"
+    ],
+    "improvements": [
+      "Explicar con mayor claridad los términos de Yield Management",
+      "Establecer tiempos límite para el seguimiento"
+    ],
+    "summary": "Demostró gran madurez directiva. Supo calmar la tensión del gerente de operaciones y propuso una solución ganar-ganar inmediata."
+  },
+  {
+    "uid": "dCOqClH0kJTHUhmlUGLhQXLD4C93",
+    "name": "Marc",
+    "email": "marc@anahuac.com",
+    "simulationsCount": 5,
+    "leadershipScore": 77,
+    "growth": 10,
+    "mediocrityRisk": 20.4,
+    "assertiveness": 81,
+    "resilience": 52,
+    "ethicalVision": 72,
+    "archetype": "Líder Diplomático",
+    "archetypeDesc": "Gran empatía con clientes y colaboradores; evita confrontaciones.",
+    "lastScenario": "Auditoría GSTC: Economía Circular en Resort",
+    "lastDate": "2026-10-19 09:16",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "hSGjGZUlb5MHb3e2NIlc9Em3asU2",
+    "name": "Fernanda Molina13",
+    "email": "fernanda.molina13@anahuac.mx",
+    "simulationsCount": 3,
+    "leadershipScore": 95,
+    "growth": 11,
+    "mediocrityRisk": 0,
+    "assertiveness": 89,
+    "resilience": 69,
+    "ethicalVision": 96,
+    "archetype": "Líder Estratégico",
+    "archetypeDesc": "Excelente visión global, delega con claridad y mantiene templanza.",
+    "lastScenario": "Desarrollo de Experiencias Ecoturísticas Sustentables",
+    "lastDate": "2026-10-14 17:10",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "jELOc5i1enhEvyvEGNGxritMJwz2",
+    "name": "Andre Hamparzumian",
+    "email": "andre.hamparzumian@anahuac.mx",
+    "simulationsCount": 2,
+    "leadershipScore": 83,
+    "growth": 22,
+    "mediocrityRisk": 12.6,
+    "assertiveness": 95,
+    "resilience": 87,
+    "ethicalVision": 90,
+    "archetype": "Líder Resolutivo",
+    "archetypeDesc": "Toma decisiones rápidas bajo presión; foco en resolver el dolor inmediato.",
+    "lastScenario": "Queja Escalada: Huésped Presidencial Insatisfecho",
+    "lastDate": "2026-10-11 17:54",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "jYPqtOLMxjPUwMevyhTvNaa5BC02",
+    "name": "Fernando",
+    "email": "fernando@anahuac.mx",
+    "simulationsCount": 2,
+    "leadershipScore": 95,
+    "growth": 25,
+    "mediocrityRisk": 0,
+    "assertiveness": 55,
+    "resilience": 63,
+    "ethicalVision": 62,
+    "archetype": "Líder Estratégico",
+    "archetypeDesc": "Excelente visión global, delega con claridad y mantiene templanza.",
+    "lastScenario": "Gestión de Crisis: Overbooking en Convención VIP",
+    "lastDate": "2026-10-24 17:57",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "l0LwazFjivahhnAai4QXRmHveiJ2",
+    "name": "Kevin Learning",
+    "email": "kevin.learning@gmail.com",
+    "simulationsCount": 6,
+    "leadershipScore": 78,
+    "growth": 14,
+    "mediocrityRisk": 14.6,
+    "assertiveness": 89,
+    "resilience": 53,
+    "ethicalVision": 73,
+    "archetype": "Líder Resolutivo",
+    "archetypeDesc": "Toma decisiones rápidas bajo presión; foco en resolver el dolor inmediato.",
+    "lastScenario": "Yield Management: Fijación de Tarifas Alta Temporada",
+    "lastDate": "2026-10-23 17:24",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "o1Zs4BKaSNSM6fSE6uMDuqIeiYc2",
+    "name": "Daniela Barragan",
+    "email": "daniela.barragan@anahuac.mx",
+    "simulationsCount": 5,
+    "leadershipScore": 59,
+    "growth": 21,
+    "mediocrityRisk": 24.8,
+    "assertiveness": 90,
+    "resilience": 88,
+    "ethicalVision": 97,
+    "archetype": "En Desarrollo Directivo",
+    "archetypeDesc": "Buenas intenciones pero falta fundamentación técnica de hospitalidad.",
+    "lastScenario": "Queja Escalada: Huésped Presidencial Insatisfecho",
+    "lastDate": "2026-10-20 11:45",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "pNfg0MrdBfXthGF6y0TICAzWfXu2",
+    "name": "Eugenio",
+    "email": "eugenio@anahuac.mx",
+    "simulationsCount": 2,
+    "leadershipScore": 55,
+    "growth": 27,
+    "mediocrityRisk": 32.0,
+    "assertiveness": 75,
+    "resilience": 87,
+    "ethicalVision": 83,
+    "archetype": "Líder Titubeante / Riesgo de Mediocridad",
+    "archetypeDesc": "Respuestas evasivas, delega culpa y duda en decisiones financieras críticas.",
+    "lastScenario": "Alianza Estratégica con Aerolínea Internacional",
+    "lastDate": "2026-10-24 14:48",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "pob6WbhQjYYdNe7qTbnOsyY22U43",
+    "name": "Alexanria Learning",
+    "email": "alexanria.learning@gmail.com",
+    "simulationsCount": 2,
+    "leadershipScore": 89,
+    "growth": 8,
+    "mediocrityRisk": 14.8,
+    "assertiveness": 68,
+    "resilience": 85,
+    "ethicalVision": 74,
+    "archetype": "Líder Estratégico",
+    "archetypeDesc": "Excelente visión global, delega con claridad y mantiene templanza.",
+    "lastScenario": "Resolución de Conflicto Sindical y Alimentos",
+    "lastDate": "2026-10-22 14:26",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "uplEIpHZH9b1vUSZ2CVlNz1ePqF3",
+    "name": "Santiago Calanche",
+    "email": "santiago.calanche@anahuac.mx",
+    "simulationsCount": 5,
+    "leadershipScore": 92,
+    "growth": 20,
+    "mediocrityRisk": 2.4,
+    "assertiveness": 73,
+    "resilience": 86,
+    "ethicalVision": 81,
+    "archetype": "Líder Estratégico",
+    "archetypeDesc": "Excelente visión global, delega con claridad y mantiene templanza.",
+    "lastScenario": "Desarrollo de Experiencias Ecoturísticas Sustentables",
+    "lastDate": "2026-10-14 16:50",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  },
+  {
+    "uid": "wnPhmMPtghfrhNPzKHg8JiFJt932",
+    "name": "Omar",
+    "email": "euge3@anahuac.mx",
+    "simulationsCount": 6,
+    "leadershipScore": 96,
+    "growth": 10,
+    "mediocrityRisk": 0,
+    "assertiveness": 62,
+    "resilience": 89,
+    "ethicalVision": 85,
+    "archetype": "Líder Estratégico",
+    "archetypeDesc": "Excelente visión global, delega con claridad y mantiene templanza.",
+    "lastScenario": "Auditoría GSTC: Economía Circular en Resort",
+    "lastDate": "2026-10-15 10:14",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "xaUoz08MtlSOjGBfkJAMzuITJCS2",
+    "name": "Alex Learning",
+    "email": "alex.learning@gmail.com",
+    "simulationsCount": 5,
+    "leadershipScore": 75,
+    "growth": 15,
+    "mediocrityRisk": 14.0,
+    "assertiveness": 81,
+    "resilience": 68,
+    "ethicalVision": 89,
+    "archetype": "Líder Diplomático",
+    "archetypeDesc": "Gran empatía con clientes y colaboradores; evita confrontaciones.",
+    "lastScenario": "Auditoría GSTC: Economía Circular en Resort",
+    "lastDate": "2026-10-24 17:14",
+    "strengths": [
+      "Firmeza en la política de sostenibilidad del hotel",
+      "Defensa sólida de los márgenes de ganancia"
+    ],
+    "improvements": [
+      "Mayor empatía en la réplica inicial",
+      "Evitar tecnicismos con mandos medios"
+    ],
+    "summary": "Resolución contundente aunque un poco rígida en el trato inicial. Excelente dominio de costos operativos."
+  },
+  {
+    "uid": "zzBzdWYj3NPfPRMbtepgaDsVAnG2",
+    "name": "Marian Diaz09",
+    "email": "marian.diaz09@anahuac.mx",
+    "simulationsCount": 6,
+    "leadershipScore": 64,
+    "growth": 25,
+    "mediocrityRisk": 29.8,
+    "assertiveness": 59,
+    "resilience": 89,
+    "ethicalVision": 60,
+    "archetype": "En Desarrollo Directivo",
+    "archetypeDesc": "Buenas intenciones pero falta fundamentación técnica de hospitalidad.",
+    "lastScenario": "Alianza Estratégica con Aerolínea Internacional",
+    "lastDate": "2026-10-14 10:42",
+    "strengths": [
+      "Escucha activa y paciencia para entender el dilema"
+    ],
+    "improvements": [
+      "Riesgo de mediocridad: Aceptó condiciones abusivas del proveedor por no confrontar",
+      "Falta de liderazgo asertivo"
+    ],
+    "summary": "Mostró inseguridad al defender la postura institucional. Debe trabajar en la toma de decisiones difíciles bajo presión."
+  }
+]

@@ -127,16 +127,93 @@ function unlockAudio() {
   }
 }
 
+// Control de Modo Alumno vs Docente en pantalla de inicio
+let currentLoginRole = 'student';
+
+function switchLoginRole(role) {
+  currentLoginRole = role;
+  const tabStudent = document.getElementById('tabRoleStudent');
+  const tabTeacher = document.getElementById('tabRoleTeacher');
+  const rowStudentName = document.getElementById('rowStudentName');
+  const usernameLabel = document.getElementById('loginUsernameLabel');
+  const btnSubmit = document.getElementById('btnStartSimulation');
+  const btnGuest = document.getElementById('btnGuestAccess');
+  const userInput = document.getElementById('loginUsername');
+  const passInput = document.getElementById('loginPassword');
+
+  if (role === 'teacher') {
+    if (tabTeacher) {
+      tabTeacher.style.background = 'var(--primary-orange)';
+      tabTeacher.style.color = '#FFF';
+      tabTeacher.style.fontWeight = '700';
+    }
+    if (tabStudent) {
+      tabStudent.style.background = 'transparent';
+      tabStudent.style.color = 'var(--text-muted)';
+      tabStudent.style.fontWeight = '600';
+    }
+
+    if (rowStudentName) rowStudentName.style.display = 'none';
+    if (usernameLabel) usernameLabel.innerText = 'Correo Docente / Directivo';
+    if (btnSubmit) btnSubmit.innerText = 'Acceder al Portal Docente 📊';
+    if (btnGuest) btnGuest.style.display = 'none';
+
+    // Precarga automática amigable para demo
+    if (userInput && !userInput.value) userInput.value = 'eugeniosalasi@outlook.com';
+    if (passInput && !passInput.value) passInput.value = 'AnPit$126';
+  } else {
+    if (tabStudent) {
+      tabStudent.style.background = 'var(--primary-orange)';
+      tabStudent.style.color = '#FFF';
+      tabStudent.style.fontWeight = '700';
+    }
+    if (tabTeacher) {
+      tabTeacher.style.background = 'transparent';
+      tabTeacher.style.color = 'var(--text-muted)';
+      tabTeacher.style.fontWeight = '600';
+    }
+
+    if (rowStudentName) rowStudentName.style.display = 'block';
+    if (usernameLabel) usernameLabel.innerText = 'Matrícula o Correo Institucional';
+    if (btnSubmit) btnSubmit.innerText = 'Iniciar Sesión';
+    if (btnGuest) btnGuest.style.display = 'block';
+  }
+}
+
 async function handleLogin() {
   unlockAudio();
   const name = document.getElementById('loginName').value.trim();
-  const email = document.getElementById('loginUsername').value;
+  let email = document.getElementById('loginUsername').value.trim();
   const pass = document.getElementById('loginPassword').value;
   const privacyChecked = document.getElementById('privacyCheckbox').checked;
   
   if (!email || !pass) {
     alert("Por favor, ingresa tu correo y contraseña.");
     return;
+  }
+
+  // Si está en pestaña docente o ingresó el correo del docente
+  const isDocenteEmail = email.toLowerCase() === 'eugeniosalasi@outlook.com';
+  if (currentLoginRole === 'teacher' || isDocenteEmail) {
+    const btn = document.getElementById('btnStartSimulation');
+    btn.innerText = "Verificando acceso docente...";
+    btn.disabled = true;
+
+    try {
+      await auth.signInWithEmailAndPassword(email, pass);
+      window.location.href = 'admin.html';
+      return;
+    } catch (err) {
+      alert("Error de autenticación docente: " + err.message);
+      btn.innerText = "Acceder al Portal Docente 📊";
+      btn.disabled = false;
+      return;
+    }
+  }
+
+  // Normalizar email de alumno si puso matrícula
+  if (!email.includes('@')) {
+    email += '@anahuac.mx';
   }
   
   try {

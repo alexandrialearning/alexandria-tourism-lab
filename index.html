@@ -21,16 +21,28 @@
     <div class="login-card">
       <img src="logo.png" alt="Anáhuac Logo" class="overlay-logo">
       <h2 style="color: var(--primary-orange); font-family: var(--font-heading); margin-bottom: 0.5rem; font-size: 2rem;">Anáhuac Tourism Lab</h2>
-      <p style="color: var(--text-muted); margin-bottom: 2rem; text-align: center;">Acceso al Simulador de Liderazgo Turístico</p>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem; text-align: center;">Acceso al Ecosistema de Liderazgo Turístico</p>
+
+      <!-- Selector de Rol: Alumno vs Docente -->
+      <div style="display: flex; background: rgba(0, 0, 0, 0.08); padding: 4px; border-radius: var(--radius-md); margin-bottom: 1.5rem; border: 1px solid var(--bg-border);">
+        <button type="button" id="tabRoleStudent" onclick="switchLoginRole('student')" style="flex: 1; padding: 0.6rem; border: none; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: var(--primary-orange); color: #FFF;">
+          🎓 Alumno (Simulador)
+        </button>
+        <button type="button" id="tabRoleTeacher" onclick="switchLoginRole('teacher')" style="flex: 1; padding: 0.6rem; border: none; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-muted);">
+          📊 Docente / Directivo
+        </button>
+      </div>
       
-      <div style="width: 100%; text-align: left; margin-bottom: 1.5rem;">
-        <label style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Nombre de Pila</label>
-        <input type="text" id="loginName" placeholder="ej. Eugenio" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--bg-border); background: #FFF; color: #000; font-size: 1rem; margin-bottom: 1rem;">
+      <div style="width: 100%; text-align: left; margin-bottom: 1.25rem;">
+        <div id="rowStudentName">
+          <label style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; display: block;">Nombre de Pila</label>
+          <input type="text" id="loginName" placeholder="ej. Eugenio" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--bg-border); background: #FFF; color: #000; font-size: 1rem; margin-bottom: 1rem;">
+        </div>
         
-        <label style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Matrícula o Correo Institucional</label>
+        <label id="loginUsernameLabel" style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; display: block;">Matrícula o Correo Institucional</label>
         <input type="text" id="loginUsername" placeholder="ej. 00123456@anahuac.mx" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--bg-border); background: #FFF; color: #000; font-size: 1rem; margin-bottom: 1rem;">
         
-        <label style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Contraseña</label>
+        <label style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; display: block;">Contraseña</label>
         <input type="password" id="loginPassword" placeholder="••••••••" style="width: 100%; padding: 0.8rem; border-radius: var(--radius-md); border: 1px solid var(--bg-border); background: #FFF; color: #000; font-size: 1rem; margin-bottom: 1rem;">
         
         <div id="privacyContainer" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
@@ -40,8 +52,15 @@
       </div>
 
       <button id="btnStartSimulation" onclick="handleLogin()" class="btn-start" style="width: 100%;">Iniciar Sesión</button>
-      <button type="button" onclick="loginAsGuest()" style="width: 100%; margin-top: 0.65rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.08); color: var(--text-muted); border: 1px solid var(--bg-border); border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 0.88rem;">⚡️ Entrar como Invitado (Modo Demo)</button>
-      <div style="font-size: 0.75rem; color: #000000; font-family: monospace; letter-spacing: 0.5px; margin-top: 1.5rem; text-align: center;">
+      <button type="button" id="btnGuestAccess" onclick="loginAsGuest()" style="width: 100%; margin-top: 0.65rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.08); color: var(--text-muted); border: 1px solid var(--bg-border); border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 0.88rem;">⚡️ Entrar como Invitado (Modo Demo)</button>
+      
+      <!-- Link directo al Portal Docente -->
+      <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--bg-border); display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+        <span style="font-size: 0.8rem; color: var(--text-muted);">¿Eres profesor o directivo?</span>
+        <a href="admin.html" style="font-size: 0.82rem; color: var(--primary-orange); font-weight: 700; text-decoration: none;">Ir al Portal Docente →</a>
+      </div>
+
+      <div style="font-size: 0.75rem; color: #000000; font-family: monospace; letter-spacing: 0.5px; margin-top: 1rem; text-align: center;">
         ⚡️ Powered by Alexandr.ia AI Learning Systems
       </div>
     </div>
@@ -383,6 +402,6 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
   </script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="app.js?v=30"></script>
+  <script src="app.js?v=32"></script>
 </body>
 </html>
